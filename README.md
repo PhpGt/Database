@@ -73,7 +73,7 @@ use phpgt\database\Database;
 
 $db = new Database();
 
-// Call SQL scripts directly, injecting named parameters:
+// Build SQL query dynamically, filtering using chained methods:
 $studentArray = $db["student"]
 	->where("course_title", "Marine Biology")
 	->where("year", ">", 2016)
