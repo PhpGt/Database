@@ -62,7 +62,7 @@ order by
 	`last_name`
 ```
 
-### Building the query in PHP:
+### Building the query in PHP.
 
 Instead of having a raw SQL query to inject parameters into, the query can be built using chained functions, as shown below.
 
@@ -83,7 +83,7 @@ $studentArray = $db["student"]
 
 Apart from the SQL schema, there is no need for any SQL queries in the above example - queries are build dynamically and efficiently for you.
 
-### Manipulating SQL results in PHP:
+### Manipulating SQL results in PHP.
 
 A combination of the two methods of data access can be used to extend existing SQL queries. Using the SQL query from the first example above, the query result can be manipulated further by chained methods as follows:
 
