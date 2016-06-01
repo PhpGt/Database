@@ -96,6 +96,6 @@ $studentArray = $db["student"]
 	])
 	// Further processing of SQL query in PHP:
 	->where("date_of_birth", ">", "1990-01-01")
-	->groupBy("year")
+	->groupBy("city")
 	->get();
 ```
