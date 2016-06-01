@@ -81,7 +81,7 @@ $studentArray = $db["student"]
 	->get();
 ```
 
-Apart from the SQL schema, there is no need for any SQL queries in the above example - queries are build dynamically and efficiently for you.
+Apart from the SQL schema, there is no need for any SQL queries in the above example - queries are built dynamically and efficiently for you.
 
 ### Manipulating SQL results in PHP.
 
