@@ -1,7 +1,9 @@
 <?php
 namespace Gt\Database;
 
-interface ClientInterface extends ConnectionInterface, ArrayAccess {
+use ArrayAccess;
+
+interface ClientInterface extends ArrayAccess {
 
 /**
  * Synonym for ArrayAccess::offsetGet

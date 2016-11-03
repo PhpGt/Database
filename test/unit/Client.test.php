@@ -3,8 +3,9 @@ namespace Gt\Database;
 
 class ClientTest extends \PHPUnit_Framework_TestCase {
 
-public function testTest() {
-	$this->assertTrue(true);
+public function testInstanceOfInterface() {
+	$db = new Client();
+	$this->assertInstanceOf("\Gt\Database\ClientInterface", $db);
 }
 
 }#
