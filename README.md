@@ -1,5 +1,4 @@
-# phpgt database
-Separates database logic through a simple interface.
+# Separates database logic through a simple interface.
 
 ***
 
