@@ -33,7 +33,7 @@ public function queryCollection(string $name):QueryCollectionInterface {
 }
 
 public function offsetExists($offset) {
-
+	$this->queryCollectionFactory->directoryExists($offset);
 }
 
 public function offsetGet($offset) {
@@ -41,11 +41,11 @@ public function offsetGet($offset) {
 }
 
 public function offsetSet($offset, $value) {
-
+	throw new ReadOnlyArrayAccessException(self::class);
 }
 
 public function offsetUnset($offset) {
-
+	throw new ReadOnlyArrayAccessException(self::class);
 }
 
 }#
