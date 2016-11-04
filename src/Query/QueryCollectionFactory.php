@@ -38,11 +38,6 @@ public function create(string $name):QueryCollectionInterface {
  * @return string       Absolute path to directory
  */
 private function locateDirectory(string $name)/* string? */ {
-// var_dump($name, $this->basePath);die();
-// 	if(!is_dir($this->basePath)) {
-// 		return null;
-// 	}
-
 	foreach (new DirectoryIterator($this->basePath) as $fileInfo) {
 		if($fileInfo->isDot()
 		|| !$fileInfo->isDir()) {
@@ -58,8 +53,10 @@ private function locateDirectory(string $name)/* string? */ {
 	return null;
 }
 
-private function directoryExists(string $name):bool {
-	return !is_null($this->locateDirectory());
+public function directoryExists(string $name):bool {
+	$thing = !is_null($this->locateDirectory($name));
+
+	return !is_null($this->locateDirectory($name));
 }
 
 private function getDefaultBasePath():string {

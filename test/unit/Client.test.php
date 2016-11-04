@@ -38,6 +38,7 @@ public function testQueryCollectionPathExists(string $name, string $path) {
 	$queryCollectionFactory = new QueryCollectionFactory(dirname($path));
 	$db = new DatabaseClient(null, $queryCollectionFactory);
 
+	$this->assertTrue(isset($db[$name]));
 	$queryCollection = $db->queryCollection($name);
 
 	$this->assertInstanceOf("\\Gt\\Database\\Query\\QueryCollectionInterface",
@@ -53,7 +54,24 @@ public function testQueryCollectionPathNotExists(string $name, string $path) {
 	$queryCollectionFactory = new QueryCollectionFactory(dirname($path));
 	$db = new DatabaseClient(null, $queryCollectionFactory);
 
+	$this->assertFalse(isset($db[$name]));
 	$queryCollection = $db->queryCollection($name);
+}
+
+/**
+ * @expectedException \Gt\Database\ReadOnlyArrayAccessException
+ */
+public function testOffsetSet() {
+	$db = new DatabaseClient();
+	$db["test"] = "qwerty";
+}
+
+/**
+ * @expectedException \Gt\Database\ReadOnlyArrayAccessException
+ */
+public function testOffsetUnset() {
+	$db = new DatabaseClient();
+	unset($db["test"]);
 }
 
 }#

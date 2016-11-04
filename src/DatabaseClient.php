@@ -33,7 +33,7 @@ public function queryCollection(string $name):QueryCollectionInterface {
 }
 
 public function offsetExists($offset) {
-	$this->queryCollectionFactory->directoryExists($offset);
+	return $this->queryCollectionFactory->directoryExists($offset);
 }
 
 public function offsetGet($offset) {
