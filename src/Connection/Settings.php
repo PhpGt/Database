@@ -3,11 +3,6 @@ namespace Gt\Database\Connection;
 
 class Settings {
 
-const DRIVER_MYSQL = "mysql";
-const DRIVER_POSTGRES = "pgsql";
-const DRIVER_SQLITE = "sqlite";
-const DRIVER_SQLSERVER = "dblib";
-
 /** @var string */
 private $dataSource;
 /** @var string */

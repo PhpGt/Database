@@ -4,6 +4,7 @@ namespace Gt\Database;
 use Gt\Database\Query\QueryCollectionInterface;
 use Gt\Database\Query\QueryCollectionFactory;
 use Gt\Database\Connection\Settings;
+use Gt\Database\Connection\DefaultSettings;
 
 class DatabaseClient implements DatabaseClientInterface {
 
@@ -15,7 +16,7 @@ private $connectionSettings;
 public function __construct(Settings $connectionSettings = null,
 QueryCollectionFactory $queryCollectionFactory = null) {
 	if(is_null($connectionSettings)) {
-		$connectionSettings = new Settings();
+		$connectionSettings = new DefaultSettings();
 	}
 	if(is_null($queryCollectionFactory)) {
 		$queryCollectionFactory = new QueryCollectionFactory();
