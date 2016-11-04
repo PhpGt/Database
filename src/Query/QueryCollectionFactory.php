@@ -1,17 +1,17 @@
 <?php
-namespace Gt\Database\Entity;
+namespace Gt\Database\Query;
 
 use DirectoryIterator;
 
-class TableCollectionFactory {
+class QueryCollectionFactory {
 
-/** @var string Path to directory containing TableCollection directories */
+/** @var string Path to directory containing QueryCollection directories */
 private $basePath;
-/** @var string The class name to use when creating new TableCollections */
+/** @var string The class name to use when creating new QueryCollections */
 private $className;
 
 public function __construct(string $basePath = null,
-string $className = "\Gt\Database\Entity\TableCollection") {
+string $className = "\Gt\Database\Query\QueryCollection") {
 	if(is_null($basePath)) {
 		$basePath = $this->getDefaultBasePath();
 	}
@@ -21,7 +21,7 @@ string $className = "\Gt\Database\Entity\TableCollection") {
 	$this->className = $className;
 }
 
-public function create(string $name):TableCollectionInterface {
+public function create(string $name):QueryCollectionInterface {
 	$directory = $this->locateDirectory($name);
 	return new $this->className($directory);
 }
@@ -29,7 +29,7 @@ public function create(string $name):TableCollectionInterface {
 /**
  * Case-insensitive attempt to match the provided directory name with a
  * directory within the basePath.
- * @param  string $name Name of the TableCollection
+ * @param  string $name Name of the QueryCollection
  * @return string       Absolute path to directory
  */
 private function locateDirectory(string $name):string {
@@ -45,7 +45,7 @@ private function locateDirectory(string $name):string {
 		}
 	}
 
-	throw new TableCollectionNotFoundException($name);
+	throw new QueryCollectionNotFoundException($name);
 }
 
 private function getDefaultBasePath():string {
@@ -55,7 +55,7 @@ private function getDefaultBasePath():string {
 private function checkClassIsCorrectImplementation(string $className) {
 	$implementations = class_implements($className);
 	if(!in_array(
-	"Gt\Database\Entity\TableCollectionInterface", $implementations)) {
+	"Gt\Database\Query\QueryCollectionInterface", $implementations)) {
 		throw new FactoryClassImplementationException($className);
 	}
 }

@@ -1,31 +1,30 @@
 <?php
 namespace Gt\Database;
 
-use Gt\Database\Entity\TableCollection;
-use Gt\Database\Entity\TableCollectionFactory;
+use Gt\Database\Query\QueryCollection;
+use Gt\Database\Query\QueryCollectionFactory;
 
-class ClientTest extends \PHPUnit_Framework_TestCase {
+class DatabaseClientTest extends \PHPUnit_Framework_TestCase {
 
 public function testInterface() {
-	$db = new Client();
-	$this->assertInstanceOf("\Gt\Database\ClientInterface", $db);
+	$db = new DatabaseClient();
+	$this->assertInstanceOf("\Gt\Database\DatabaseClientInterface", $db);
 }
 
-public function testTableCollectionMethod() {
+public function testQueryCollectionMethod() {
 	$argumentMap = [
-		["apple", $this->createMock(TableCollection::class)],
-		["orange", $this->createMock(TableCollection::class)],
+		["apple", $this->createMock(QueryCollection::class)],
+		["orange", $this->createMock(QueryCollection::class)],
 	];
 
-	$tableCollectionFactory = $this->createMock(TableCollectionFactory::class);
-	$tableCollectionFactory->method("create")
+	$queryCollectionFactory = $this->createMock(QueryCollectionFactory::class);
+	$queryCollectionFactory->method("create")
 		->will($this->returnValueMap($argumentMap));
 
-	$db = new Client(null, $tableCollectionFactory);
-	$testTableCollection3 = $db["orange"];
+	$db = new DatabaseClient(null, $queryCollectionFactory);
 
-	$this->assertSame($db->tableCollection("apple"), $db["apple"]);
-	$this->assertNotSame($db->tableCollection("orange"), $db["apple"]);
+	$this->assertSame($db->queryCollection("apple"), $db["apple"]);
+	$this->assertNotSame($db->queryCollection("orange"), $db["apple"]);
 }
 
 }#
