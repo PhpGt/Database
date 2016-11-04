@@ -22,12 +22,13 @@ string $className = "\Gt\Database\Query\QueryCollection") {
 }
 
 public function create(string $name):QueryCollectionInterface {
-	$directory = $this->locateDirectory($name);
-	if(is_null($directory)) {
-		throw new QueryCollectionNotFoundException($directory);
+	$directoryPath = $this->locateDirectory($name);
+
+	if(is_null($directoryPath)) {
+		throw new QueryCollectionNotFoundException($name);
 	}
 
-	return new $this->className($directory);
+	return new $this->className($directoryPath);
 }
 
 /**
@@ -37,6 +38,11 @@ public function create(string $name):QueryCollectionInterface {
  * @return string       Absolute path to directory
  */
 private function locateDirectory(string $name)/* string? */ {
+// var_dump($name, $this->basePath);die();
+// 	if(!is_dir($this->basePath)) {
+// 		return null;
+// 	}
+
 	foreach (new DirectoryIterator($this->basePath) as $fileInfo) {
 		if($fileInfo->isDot()
 		|| !$fileInfo->isDir()) {
@@ -45,7 +51,7 @@ private function locateDirectory(string $name)/* string? */ {
 
 		$basename = $fileInfo->getBasename();
 		if(strtolower($name) === strtolower($basename)) {
-			return $fileInfo->getPathname();
+			return $fileInfo->getRealPath();
 		}
 	}
 

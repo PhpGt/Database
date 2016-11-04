@@ -1,4 +1,4 @@
 <?php
 namespace Gt\Database\Query;
 
-class FactoryClassImplementationException extends \Exception {}#
+class FactoryClassImplementationException extends \Gt\Database\Exception {}#

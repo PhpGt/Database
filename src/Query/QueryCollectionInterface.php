@@ -7,4 +7,8 @@ namespace Gt\Database\Query;
  */
 interface QueryCollectionInterface /* extends QueryBuilder?? */ {
 
+public function __construct(string $directoryPath);
+
+public function query(string $name, array $placeholderValueMap = []);
+
 }#

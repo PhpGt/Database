@@ -6,6 +6,10 @@ use Gt\Database\Query\QueryCollectionFactory;
 
 class DatabaseClientTest extends \PHPUnit_Framework_TestCase {
 
+public static function tearDownAfterClass() {
+	\Gt\Database\Test\Helper::deleteTmpDir();
+}
+
 public function testInterface() {
 	$db = new DatabaseClient();
 	$this->assertInstanceOf("\Gt\Database\DatabaseClientInterface", $db);
@@ -25,6 +29,31 @@ public function testQueryCollectionMethod() {
 
 	$this->assertSame($db->queryCollection("apple"), $db["apple"]);
 	$this->assertNotSame($db->queryCollection("orange"), $db["apple"]);
+}
+
+/**
+ * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
+ */
+public function testQueryCollectionPathExists(string $name, string $path) {
+	$queryCollectionFactory = new QueryCollectionFactory(dirname($path));
+	$db = new DatabaseClient(null, $queryCollectionFactory);
+
+	$queryCollection = $db->queryCollection($name);
+
+	$this->assertInstanceOf("\\Gt\\Database\\Query\\QueryCollectionInterface",
+		$queryCollection
+	);
+}
+
+/**
+ * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
+ * @expectedException \Gt\Database\Query\QueryCollectionNotFoundException
+ */
+public function testQueryCollectionPathNotExists(string $name, string $path) {
+	$queryCollectionFactory = new QueryCollectionFactory(dirname($path));
+	$db = new DatabaseClient(null, $queryCollectionFactory);
+
+	$queryCollection = $db->queryCollection($name);
 }
 
 }#

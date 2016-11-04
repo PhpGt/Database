@@ -8,9 +8,6 @@ use ArrayAccess;
 
 interface DatabaseClientInterface extends ArrayAccess {
 
-public function __construct(Settings $connectionSettings = null,
-QueryCollectionFactory $tableCollectionFactory = null);
-
 /**
  * Synonym for ArrayAccess::offsetGet
  */
