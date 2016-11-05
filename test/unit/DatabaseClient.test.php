@@ -32,7 +32,7 @@ public function testQueryCollectionMethod() {
 }
 
 /**
- * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
+ * @dataProvider \Gt\Database\Test\Helper::queryCollectionPathExistsProvider
  */
 public function testQueryCollectionPathExists(string $name, string $path) {
 	$queryCollectionFactory = new QueryCollectionFactory(dirname($path));
