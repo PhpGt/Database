@@ -28,14 +28,22 @@ public static function queryPathNotExistsProvider() {
 	return self::queryPathProvider(false);
 }
 
-private static function queryPathProvider(bool $exists) {
+public static function queryPathExtensionNotValidProvider() {
+	return self::queryPathProvider(true, null);
+}
+
+private static function queryPathProvider(bool $exists, $extension = "sql") {
 	$data = [];
 
 	foreach(self::queryCollectionPathProvider(true) as $qcName => $qcData) {
 		$queryCollectionPath = $qcData[1];
 
+		if(is_null($extension)) {
+			$extension = uniqid();
+		}
+
 		$queryName = uniqid("query");
-		$filename = $queryName . ".sql";
+		$filename = "$queryName.$extension";
 		$filePath = implode(DIRECTORY_SEPARATOR, [
 			$queryCollectionPath,
 			$filename,

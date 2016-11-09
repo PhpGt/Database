@@ -23,4 +23,14 @@ string $queryName, string $directoryOfQueries) {
 	$queryFilePath = $queryFactory->findQueryFilePath($queryName);
 }
 
+/**
+ * @dataProvider \Gt\Database\Test\Helper::queryPathExtensionNotValidProvider
+ * @expectedException \Gt\Database\Query\QueryNotFoundException
+ */
+public function testFindQueryFilePathWithInvalidExtension(
+string $queryName, string $directoryOfQueries) {
+	$queryFactory = new QueryFactory($directoryOfQueries);
+	$queryFilePath = $queryFactory->findQueryFilePath($queryName);
+}
+
 }#
