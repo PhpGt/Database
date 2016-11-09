@@ -6,10 +6,6 @@ use Gt\Database\Query\QueryCollectionFactory;
 
 class DatabaseClientTest extends \PHPUnit_Framework_TestCase {
 
-public static function tearDownAfterClass() {
-	\Gt\Database\Test\Helper::deleteTmpDir();
-}
-
 public function testInterface() {
 	$db = new DatabaseClient();
 	$this->assertInstanceOf("\Gt\Database\DatabaseClientInterface", $db);

@@ -12,25 +12,26 @@ public static function getTmpDir() {
 		sys_get_temp_dir(),
 		"phpgt",
 		"database",
+		uniqid()
 	]);
 }
 
-public static function deleteTmpDir() {
-	exec("rm -rf " . self::getTmpDir());
+public static function deleteDir(string $dir) {
+	exec("rm -rf $dir");
 }
 
-public function queryPathExistsProvider() {
-	return $this->queryPathProvider(true);
+public static function queryPathExistsProvider() {
+	return self::queryPathProvider(true);
 }
 
-public function queryPathNotExistsProvider() {
-	return $this->queryPathProvider(false);
+public static function queryPathNotExistsProvider() {
+	return self::queryPathProvider(false);
 }
 
-private function queryPathProvider(bool $exists) {
+private static function queryPathProvider(bool $exists) {
 	$data = [];
 
-	foreach($this->queryCollectionPathProvider(true) as $qcName => $qcData) {
+	foreach(self::queryCollectionPathProvider(true) as $qcName => $qcData) {
 		$queryCollectionPath = $qcData[1];
 
 		$queryName = uniqid("query");
@@ -53,15 +54,15 @@ private function queryPathProvider(bool $exists) {
 	return $data;
 }
 
-public function queryCollectionPathExistsProvider() {
-	return $this->queryCollectionPathProvider(true);
+public static function queryCollectionPathExistsProvider() {
+	return self::queryCollectionPathProvider(true);
 }
 
-public function queryCollectionPathNotExistsProvider() {
-	return $this->queryCollectionPathProvider(false);
+public static function queryCollectionPathNotExistsProvider() {
+	return self::queryCollectionPathProvider(false);
 }
 
-private function queryCollectionPathProvider(bool $exists) {
+private static function queryCollectionPathProvider(bool $exists) {
 	$data = [];
 
 	for($i = 0; $i < self::COUNT_PATH_PROVIDER; ++$i) {
