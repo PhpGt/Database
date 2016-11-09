@@ -9,9 +9,15 @@ const ALLOWED_EXTENSIONS = ["sql", "php"];
 
 /** @var string Absolute path to directory on disk containing query files */
 private $directoryOfQueries;
+/** @var string Which class to use when creating Queries. */
+private $className;
 
-public function __construct(string $directoryOfQueries) {
+public function __construct(string $directoryOfQueries,
+string $className = Query::class) {
+	$this->checkClassIsCorrectImplementation($className);
+
 	$this->directoryOfQueries = $directoryOfQueries;
+	$this->className = $className;
 }
 
 public function findQueryFilePath(string $name):string {
@@ -33,7 +39,14 @@ public function findQueryFilePath(string $name):string {
 }
 
 public function create(string $name):QueryInterface {
-	return new Query();
+	return new $this->className();
+}
+
+private function checkClassIsCorrectImplementation($className) {
+	$implementations = class_implements($className);
+	if(!in_array("Gt\Database\Query\QueryInterface", $implementations)) {
+		throw new FactoryClassImplementationException($className);
+	}
 }
 
 }#
