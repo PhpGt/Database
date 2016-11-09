@@ -43,16 +43,7 @@ foreach($query->fetchAll() as $comment) {
 
 ```
 
-## Method outline:
-
-+ `Client::tableCollection(string $name):TableCollectionInterface` synonym for `ArrayAccess::offsetGet`. Gets `TableCollection` according to name.
-+ `Client::table(string $name):Illuminate\Database\Query\Builder` access the raw database table by name, bypassing TableCollections.
-
-+ `TableCollection::query(string $name, array $variables)` return a `Query` object ready for further filtering or execution.
-
-+ `Query::fetch():ResultRow` execute the query, returning one row (the first, or next) of the result set.
-+ `Query::fetchAll()::ResultCollection` execute the query, returning all rows in the result set.
-
+## Compatible database engines.
 Compatibility is provided for the following database providers:
 
 * MySQL.
