@@ -31,7 +31,7 @@ public function findQueryFilePath(string $name):string {
 }
 
 public function create(string $name):QueryInterface {
-	// TODO.
+	return new Query();
 }
 
 }#

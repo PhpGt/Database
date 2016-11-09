@@ -25,4 +25,8 @@ string $name, array $placeholderValueMap = []):QueryInterface {
 	return $this->queryFactory->create($name, $placeholderValueMap);
 }
 
+public function getDirectoryPath():string {
+	return $this->directoryPath;
+}
+
 }#

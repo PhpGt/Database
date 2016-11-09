@@ -31,6 +31,12 @@ public function create(string $name):QueryCollectionInterface {
 	return new $this->className($directoryPath);
 }
 
+public function directoryExists(string $name):bool {
+	$thing = !is_null($this->locateDirectory($name));
+
+	return !is_null($this->locateDirectory($name));
+}
+
 /**
  * Case-insensitive attempt to match the provided directory name with a
  * directory within the basePath.
@@ -53,14 +59,8 @@ private function locateDirectory(string $name)/* string? */ {
 	return null;
 }
 
-public function directoryExists(string $name):bool {
-	$thing = !is_null($this->locateDirectory($name));
-
-	return !is_null($this->locateDirectory($name));
-}
-
 private function getDefaultBasePath():string {
-	return realpath(__DIR__ . "/../..");
+	return getcwd();
 }
 
 private function checkClassIsCorrectImplementation(string $className) {

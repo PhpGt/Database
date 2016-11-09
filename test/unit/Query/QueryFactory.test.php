@@ -1,7 +1,7 @@
 <?php
 namespace Gt\Database\Query;
 
-class QueryFactory extends \PHPUnit_Framework_TestCase {
+class QueryFactoryTest extends \PHPUnit_Framework_TestCase {
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
