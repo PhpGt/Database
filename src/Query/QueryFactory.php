@@ -39,7 +39,8 @@ public function findQueryFilePath(string $name):string {
 }
 
 public function create(string $name):QueryInterface {
-	return new $this->className();
+	$queryFilePath = $this->findQueryFilePath($name);
+	return new $this->className($queryFilePath);
 }
 
 private function checkClassIsCorrectImplementation($className) {

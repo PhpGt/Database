@@ -20,10 +20,11 @@ string $directoryPath, QueryFactoryInterface $queryFactory = null) {
 	$this->queryFactory = $queryFactory;
 }
 
-// TODO: PHP 7.1 iterable to allow an array OR \Gt\Database\PlaceholderMap.
+// TODO: PHP 7.1 iterable, to allow Gt\Database\Gt\Database\PlaceholderMap
 public function query(
-string $name, /*iterable*/ $placeholderValueMap = []):QueryInterface {
-	return $this->queryFactory->create($name, $placeholderValueMap);
+string $name, /*iterable*/array $placeholderValueMap = []):QueryInterface {
+	$query = $this->queryFactory->create($name, $placeholderValueMap);
+	return $query;
 }
 
 public function getDirectoryPath():string {

@@ -56,6 +56,7 @@ private static function queryPathProvider(bool $exists, $extension = "sql") {
 		$data []= [
 			$queryName,
 			$queryCollectionPath,
+			$filePath,
 		];
 	}
 
