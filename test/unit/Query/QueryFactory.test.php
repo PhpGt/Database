@@ -13,4 +13,14 @@ string $queryName, string $directoryOfQueries) {
 	$this->assertFileExists($queryFilePath);
 }
 
+/**
+ * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
+ * @expectedException \Gt\Database\Query\QueryNotFoundException
+ */
+public function testFindQueryFilePathNotExists(
+string $queryName, string $directoryOfQueries) {
+	$queryFactory = new QueryFactory($directoryOfQueries);
+	$queryFilePath = $queryFactory->findQueryFilePath($queryName);
+}
+
 }#

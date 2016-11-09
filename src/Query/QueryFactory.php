@@ -29,7 +29,7 @@ public function findQueryFilePath(string $name):string {
 		return $fileInfo->getRealPath();
 	}
 
-	throw new QueryNotFoundException($this->collectionName . "::" . $name);
+	throw new QueryNotFoundException($this->directoryOfQueries . ", " . $name);
 }
 
 public function create(string $name):QueryInterface {
