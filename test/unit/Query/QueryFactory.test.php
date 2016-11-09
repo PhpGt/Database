@@ -33,4 +33,17 @@ string $queryName, string $directoryOfQueries) {
 	$queryFilePath = $queryFactory->findQueryFilePath($queryName);
 }
 
+/**
+ * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
+ */
+public function testQueryCreated(
+string $queryName, string $directoryOfQueries) {
+	$queryFactory = new QueryFactory($directoryOfQueries);
+	$query = $queryFactory->create($queryName);
+	$this->assertInstanceOf(
+		"\Gt\Database\Query\QueryInterface",
+		$query
+	);
+}
+
 }#
