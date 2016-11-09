@@ -20,8 +20,9 @@ string $directoryPath, QueryFactoryInterface $queryFactory = null) {
 	$this->queryFactory = $queryFactory;
 }
 
+// TODO: PHP 7.1 iterable to allow an array OR \Gt\Database\PlaceholderMap.
 public function query(
-string $name, array $placeholderValueMap = []):QueryInterface {
+string $name, /*iterable*/ $placeholderValueMap = []):QueryInterface {
 	return $this->queryFactory->create($name, $placeholderValueMap);
 }
 
