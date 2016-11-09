@@ -46,4 +46,11 @@ string $queryName, string $directoryOfQueries) {
 	);
 }
 
+/**
+ * @expectedException \Gt\Database\Query\FactoryClassImplementationException
+ */
+public function testIncorrectQueryClass() {
+	$queryFactory = new QueryFactory("/tmp", \DateTime::class);
+}
+
 }#
