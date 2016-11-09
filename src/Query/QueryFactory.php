@@ -1,19 +1,21 @@
 <?php
 namespace Gt\Database\Query;
 
+use DirectoryIterator;
+
 class QueryFactory implements QueryFactoryInterface {
 
 const ALLOWED_EXTENSIONS = ["sql", "php"];
 
 /** @var string Absolute path to directory on disk containing query files */
-private $directoryPath;
+private $directoryOfQueries;
 
-public function __construct(string $directoryPath) {
-	$this->directoryPath = $directoryPath;
+public function __construct(string $directoryOfQueries) {
+	$this->directoryOfQueries = $directoryOfQueries;
 }
 
 public function findQueryFilePath(string $name):string {
-	foreach(new DirectoryIterator($this->directoryPath) as $fileInfo) {
+	foreach(new DirectoryIterator($this->directoryOfQueries) as $fileInfo) {
 		if($fileInfo->isDot()
 		|| $fileInfo->isDir()) {
 			continue;
@@ -24,7 +26,7 @@ public function findQueryFilePath(string $name):string {
 			continue;
 		}
 
-		return $this->getRealPath();
+		return $fileInfo->getRealPath();
 	}
 
 	throw new QueryNotFoundException($this->collectionName . "::" . $name);
