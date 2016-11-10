@@ -11,14 +11,14 @@ class QueryTest extends \PHPUnit_Framework_TestCase {
  */
 public function testConstructionQueryPathNotExists(
 string $queryName, string $queryCollectionPath, string $queryPath) {
-	$query = new Query($queryPath);
+	$query = new SqlQuery($queryPath);
 }
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
  */
 public function testConstructionQueryPathExists(
 string $queryName, string $queryCollectionPath, string $queryPath) {
-	$query = new Query($queryPath);
+	$query = new SqlQuery($queryPath);
 }
 
 }#

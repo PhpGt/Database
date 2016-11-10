@@ -1,5 +1,5 @@
 <?php
 namespace Gt\Database\Query;
 
-class FactoryClassImplementationException
+class QueryFileExtensionException
 extends \Gt\Database\DatabaseException {}#

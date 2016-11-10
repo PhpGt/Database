@@ -2,22 +2,20 @@
 namespace Gt\Database\Query;
 
 use DirectoryIterator;
+use SplFileInfo;
 
 class QueryFactory implements QueryFactoryInterface {
 
-const ALLOWED_EXTENSIONS = ["sql", "php"];
+const CLASS_FOR_EXTENSION = [
+	"sql" => "\Gt\Database\Query\SqlQuery",
+	"php" => "\Gt\Database\Query\PhpQuery",
+];
 
 /** @var string Absolute path to directory on disk containing query files */
 private $directoryOfQueries;
-/** @var string Which class to use when creating Queries. */
-private $className;
 
-public function __construct(string $directoryOfQueries,
-string $className = Query::class) {
-	$this->checkClassIsCorrectImplementation($className);
-
+public function __construct(string $directoryOfQueries) {
 	$this->directoryOfQueries = $directoryOfQueries;
-	$this->className = $className;
 }
 
 public function findQueryFilePath(string $name):string {
@@ -27,11 +25,7 @@ public function findQueryFilePath(string $name):string {
 			continue;
 		}
 
-		$ext = strtolower($fileInfo->getExtension());
-		if(!in_array($ext, self::ALLOWED_EXTENSIONS)) {
-			continue;
-		}
-
+		$this->getExtensionIfValid($fileInfo);
 		return $fileInfo->getRealPath();
 	}
 
@@ -40,14 +34,25 @@ public function findQueryFilePath(string $name):string {
 
 public function create(string $name):QueryInterface {
 	$queryFilePath = $this->findQueryFilePath($name);
-	return new $this->className($queryFilePath);
+	$queryClass = $this->getQueryClassForFilePath($queryFilePath);
+
+	return new $queryClass($queryFilePath);
 }
 
-private function checkClassIsCorrectImplementation($className) {
-	$implementations = class_implements($className);
-	if(!in_array("Gt\Database\Query\QueryInterface", $implementations)) {
-		throw new FactoryClassImplementationException($className);
+public function getQueryClassForFilePath(string $filePath) {
+	$fileInfo = new SplFileInfo($filePath);
+	$ext = $this->getExtensionIfValid($fileInfo);
+	return self::CLASS_FOR_EXTENSION[$ext];
+}
+
+private function getExtensionIfValid(SplFileInfo $fileInfo) {
+	$ext = strtolower($fileInfo->getExtension());
+
+	if(!array_key_exists($ext, self::CLASS_FOR_EXTENSION)) {
+		throw new QueryFileExtensionException($ext);
 	}
+
+	return $ext;
 }
 
 }#

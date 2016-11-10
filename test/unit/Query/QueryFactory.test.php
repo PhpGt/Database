@@ -25,7 +25,7 @@ string $queryName, string $directoryOfQueries) {
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExtensionNotValidProvider
- * @expectedException \Gt\Database\Query\QueryNotFoundException
+ * @expectedException \Gt\Database\Query\QueryFileExtensionException
  */
 public function testFindQueryFilePathWithInvalidExtension(
 string $queryName, string $directoryOfQueries) {
@@ -44,13 +44,6 @@ string $queryName, string $directoryOfQueries) {
 		"\Gt\Database\Query\QueryInterface",
 		$query
 	);
-}
-
-/**
- * @expectedException \Gt\Database\Query\FactoryClassImplementationException
- */
-public function testIncorrectQueryClass() {
-	$queryFactory = new QueryFactory("/tmp", \DateTime::class);
 }
 
 }#
