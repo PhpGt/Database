@@ -8,7 +8,7 @@ namespace Gt\Database\Query;
 interface QueryCollectionInterface /* extends QueryBuilder?? */ {
 
 // TODO: PHP 7.1 iterable to allow an array OR \Gt\Database\PlaceholderMap.
-public function query(string $name, /*iterable*/ $placeholderValueMap = [])
-:QueryInterface;
+public function query(
+string $name, /*iterable*/array $placeholderValueMap = []):QueryInterface;
 
 }#

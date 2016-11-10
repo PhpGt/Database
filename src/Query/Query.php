@@ -7,6 +7,10 @@ class Query implements QueryInterface {
 private $filePath;
 
 public function __construct(string $filePath) {
+	if(!is_file($filePath)) {
+		throw new QueryNotFoundException($filePath);
+	}
+
 	$this->filePath = $filePath;
 }
 
