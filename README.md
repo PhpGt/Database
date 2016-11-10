@@ -1,4 +1,4 @@
-# Separates database logic through a simple interface.
+# Database logic organisation for PHP 7 projects.
 
 Encloses your application's database scripts within a simple and standardised interface, separating database access from your page logic.
 
