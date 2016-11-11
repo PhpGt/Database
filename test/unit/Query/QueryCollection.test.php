@@ -1,6 +1,8 @@
 <?php
 namespace Gt\Database\Query;
 
+use Gt\Database\Connection\DefaultSettings;
+
 class QueryCollectionTest extends \PHPUnit_Framework_TestCase {
 
 public function testQueryCollectionQuery() {
@@ -8,7 +10,12 @@ public function testQueryCollectionQuery() {
 
 	$queryFactory = $this->createMock(QueryFactory::class);
 
-	$queryCollection = new QueryCollection(__DIR__, $queryFactory);
+	$queryCollection = new QueryCollection(
+		__DIR__,
+		new DefaultSettings(),
+		$queryFactory
+	);
+
 	$this->assertInstanceOf(
 		QueryInterface::class,
 		$queryCollection->query("something")
