@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Database\Query;
 
+use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Test\Helper;
 
 class QueryCollectionFactoryTest extends \PHPUnit_Framework_TestCase {
@@ -13,7 +14,10 @@ public function testCurrentWorkingDirectoryDefault() {
 	mkdir($queryCollectionDirectoryPath, 0775, true);
 	chdir($baseDir);
 	$queryCollectionFactory = new QueryCollectionFactory();
-	$queryCollection = $queryCollectionFactory->create($queryCollectionName);
+	$queryCollection = $queryCollectionFactory->create(
+		$queryCollectionName,
+		new DefaultSettings()
+	);
 
 	$this->assertEquals(
 		$queryCollectionDirectoryPath,
