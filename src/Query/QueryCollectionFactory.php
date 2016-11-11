@@ -16,14 +16,15 @@ public function __construct(string $basePath = null) {
 	$this->basePath = $basePath;
 }
 
-public function create(string $name):QueryCollectionInterface {
+public function create(string $name, SettingsInterface $settings)
+:QueryCollectionInterface {
 	$directoryPath = $this->locateDirectory($name);
 
 	if(is_null($directoryPath)) {
 		throw new QueryCollectionNotFoundException($name);
 	}
 
-	return new QueryCollection($directoryPath);
+	return new QueryCollection($directoryPath, $settings);
 }
 
 public function directoryExists(string $name):bool {

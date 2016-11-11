@@ -4,7 +4,7 @@ namespace Gt\Database\Connection;
 class DefaultSettings implements SettingsInterface {
 
 const DEFAULT_DATASOURCE = SettingsInterface::DRIVER_SQLITE;
-const DEFAULT_DATABASE = "example";
+const DEFAULT_DATABASE = "/tmp/phpgt-default-database.sqlite";
 const DEFAULT_HOSTNAME = "localhost";
 const DEFAULT_USERNAME = "admin";
 const DEFAULT_PASSWORD = "";

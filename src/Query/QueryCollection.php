@@ -2,6 +2,7 @@
 namespace Gt\Database\Query;
 
 use DirectoryIterator;
+use Gt\Database\Connection\SettingsInterface;
 
 class QueryCollection implements QueryCollectionInterface {
 
@@ -11,9 +12,10 @@ private $directoryPath;
 private $queryFactory;
 
 public function __construct(
-string $directoryPath, QueryFactoryInterface $queryFactory = null) {
+string $directoryPath, QueryFactoryInterface $queryFactory = null,
+SettingsInterface $settings) {
 	if(is_null($queryFactory)) {
-		$queryFactory = new QueryFactory($directoryPath);
+		$queryFactory = new QueryFactory($directoryPath, $settings);
 	}
 
 	$this->directoryPath = $directoryPath;

@@ -3,6 +3,8 @@ namespace Gt\Database\Connection;
 
 interface SettingsInterface {
 
+const DEFAULT_NAME = "default";
+
 const DRIVER_MYSQL = "mysql";
 const DRIVER_POSTGRES = "pgsql";
 const DRIVER_SQLITE = "sqlite";
