@@ -12,8 +12,8 @@ private $directoryPath;
 private $queryFactory;
 
 public function __construct(
-string $directoryPath, QueryFactoryInterface $queryFactory = null,
-SettingsInterface $settings) {
+string $directoryPath, SettingsInterface $settings,
+QueryFactoryInterface $queryFactory = null) {
 	if(is_null($queryFactory)) {
 		$queryFactory = new QueryFactory($directoryPath, $settings);
 	}

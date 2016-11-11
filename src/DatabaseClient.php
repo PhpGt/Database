@@ -52,6 +52,7 @@ string $queryCollectionName,
 string $connectionName = SettingsInterface::DEFAULT_NAME)
 :QueryCollectionInterface {
 	$settings = $this->settingsArray[$connectionName];
+
 	return $this->queryCollectionFactory->create(
 		$queryCollectionName,
 		$settings

@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Database;
 
+use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Query\QueryCollection;
 use Gt\Database\Query\QueryCollectionFactory;
 
@@ -12,19 +13,19 @@ public function testInterface() {
 }
 
 public function testQueryCollectionMethod() {
-	$argumentMap = [
-		["apple", $this->createMock(QueryCollection::class)],
-		["orange", $this->createMock(QueryCollection::class)],
-	];
+	$queryCollection = $this->createMock(QueryCollection::class);
 
 	$queryCollectionFactory = $this->createMock(QueryCollectionFactory::class);
 	$queryCollectionFactory->method("create")
-		->will($this->returnValueMap($argumentMap));
+	->willReturn($queryCollection);
 
-	$db = new DatabaseClient(null, $queryCollectionFactory);
+	// $settings = new DefaultSettings();
+	$db = new DatabaseClient($queryCollectionFactory);
 
-	$this->assertSame($db->queryCollection("apple"), $db["apple"]);
-	$this->assertNotSame($db->queryCollection("orange"), $db["apple"]);
+	$this->assertSame(
+		$db->queryCollection("example"),
+		$queryCollection
+	);
 }
 
 /**
@@ -32,7 +33,7 @@ public function testQueryCollectionMethod() {
  */
 public function testQueryCollectionPathExists(string $name, string $path) {
 	$queryCollectionFactory = new QueryCollectionFactory(dirname($path));
-	$db = new DatabaseClient(null, $queryCollectionFactory);
+	$db = new DatabaseClient($queryCollectionFactory);
 
 	$this->assertTrue(isset($db[$name]));
 	$queryCollection = $db->queryCollection($name);
@@ -48,7 +49,7 @@ public function testQueryCollectionPathExists(string $name, string $path) {
  */
 public function testQueryCollectionPathNotExists(string $name, string $path) {
 	$queryCollectionFactory = new QueryCollectionFactory(dirname($path));
-	$db = new DatabaseClient(null, $queryCollectionFactory);
+	$db = new DatabaseClient($queryCollectionFactory);
 
 	$this->assertFalse(isset($db[$name]));
 	$queryCollection = $db->queryCollection($name);

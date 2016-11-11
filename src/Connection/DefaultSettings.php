@@ -29,4 +29,8 @@ public function getPassword():string {
 	return self::DEFAULT_PASSWORD;
 }
 
+public function getConnectionName():string {
+	return self::DEFAULT_NAME;
+}
+
 }#

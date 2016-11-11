@@ -2,6 +2,7 @@
 namespace Gt\Database\Query;
 
 use DirectoryIterator;
+use Gt\Database\Connection\SettingsInterface;
 
 class QueryCollectionFactory {
 
