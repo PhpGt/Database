@@ -37,7 +37,7 @@ public function directoryExists(string $name):bool {
  * @param  string $name Name of the QueryCollection
  * @return string       Absolute path to directory
  */
-private function locateDirectory(string $name)/* :string? */ {
+private function locateDirectory(string $name)/* :?string */ {
 	foreach (new DirectoryIterator($this->basePath) as $fileInfo) {
 		if($fileInfo->isDot()
 		|| !$fileInfo->isDir()) {
