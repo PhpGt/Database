@@ -17,4 +17,8 @@ public function __construct(string $filePath) {
 
 public abstract function execute();
 
+public function getFilePath():string {
+	return $this->filePath;
+}
+
 }#

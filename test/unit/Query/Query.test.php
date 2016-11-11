@@ -19,6 +19,7 @@ string $queryName, string $queryCollectionPath, string $queryPath) {
 public function testConstructionQueryPathExists(
 string $queryName, string $queryCollectionPath, string $queryPath) {
 	$query = new SqlQuery($queryPath);
+	$this->assertFileExists($query->getFilePath());
 }
 
 }#
