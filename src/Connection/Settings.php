@@ -1,7 +1,7 @@
 <?php
 namespace Gt\Database\Connection;
 
-class Settings {
+class Settings implements SettingsInterface {
 
 /** @var string */
 private $dataSource;

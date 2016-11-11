@@ -1,9 +1,9 @@
 <?php
 namespace Gt\Database\Connection;
 
-class DefaultSettings {
+class DefaultSettings implements SettingsInterface {
 
-const DEFAULT_DATASOURCE = "mysql";
+const DEFAULT_DATASOURCE = SettingsInterface::DRIVER_SQLITE;
 const DEFAULT_DATABASE = "example";
 const DEFAULT_HOSTNAME = "localhost";
 const DEFAULT_USERNAME = "admin";
