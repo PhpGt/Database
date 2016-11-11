@@ -17,7 +17,8 @@ private $password;
 private $connectionName;
 
 public function __construct(string $dataSource, string $database,
-string $hostname, string $username, string $password, string $connectionName) {
+string $hostname, string $username, string $password,
+string $connectionName = self::DEFAULT_NAME) {
 	$this->dataSource = $dataSource;
 	$this->database = $database;
 	$this->hostname = $hostname;
