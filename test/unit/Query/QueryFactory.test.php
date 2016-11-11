@@ -1,6 +1,8 @@
 <?php
 namespace Gt\Database\Query;
 
+use Gt\Database\Connection\DefaultSettings;
+
 class QueryFactoryTest extends \PHPUnit_Framework_TestCase {
 
 /**
@@ -8,7 +10,10 @@ class QueryFactoryTest extends \PHPUnit_Framework_TestCase {
  */
 public function testFindQueryFilePathExists(
 string $queryName, string $directoryOfQueries) {
-	$queryFactory = new QueryFactory($directoryOfQueries);
+	$queryFactory = new QueryFactory(
+		$directoryOfQueries,
+		new DefaultSettings()
+	);
 	$queryFilePath = $queryFactory->findQueryFilePath($queryName);
 	$this->assertFileExists($queryFilePath);
 }
@@ -19,7 +24,10 @@ string $queryName, string $directoryOfQueries) {
  */
 public function testFindQueryFilePathNotExists(
 string $queryName, string $directoryOfQueries) {
-	$queryFactory = new QueryFactory($directoryOfQueries);
+	$queryFactory = new QueryFactory(
+		$directoryOfQueries,
+		new DefaultSettings()
+	);
 	$queryFilePath = $queryFactory->findQueryFilePath($queryName);
 }
 
@@ -29,7 +37,10 @@ string $queryName, string $directoryOfQueries) {
  */
 public function testFindQueryFilePathWithInvalidExtension(
 string $queryName, string $directoryOfQueries) {
-	$queryFactory = new QueryFactory($directoryOfQueries);
+	$queryFactory = new QueryFactory(
+		$directoryOfQueries,
+		new DefaultSettings()
+	);
 	$queryFilePath = $queryFactory->findQueryFilePath($queryName);
 }
 
@@ -38,7 +49,10 @@ string $queryName, string $directoryOfQueries) {
  */
 public function testQueryCreated(
 string $queryName, string $directoryOfQueries) {
-	$queryFactory = new QueryFactory($directoryOfQueries);
+	$queryFactory = new QueryFactory(
+		$directoryOfQueries,
+		new DefaultSettings()
+	);
 	$query = $queryFactory->create($queryName);
 	$this->assertInstanceOf(
 		"\Gt\Database\Query\QueryInterface",

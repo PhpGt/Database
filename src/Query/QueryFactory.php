@@ -41,7 +41,7 @@ public function create(string $name):QueryInterface {
 	$queryFilePath = $this->findQueryFilePath($name);
 	$queryClass = $this->getQueryClassForFilePath($queryFilePath);
 
-	return new Query($queryFilePath, $this->settings);
+	return new $queryClass($queryFilePath, $this->settings);
 }
 
 public function getQueryClassForFilePath(string $filePath) {
