@@ -44,6 +44,22 @@ public function testQueryCollectionPathExists(string $name, string $path) {
 }
 
 /**
+ * @dataProvider \Gt\Database\Test\Helper::queryCollectionPathExistsProvider
+ */
+public function testOffsetGet(string $name, string $path) {
+	$queryCollectionFactory = new QueryCollectionFactory(dirname($path));
+	$db = new DatabaseClient($queryCollectionFactory);
+
+	$offsetGot = $db->offsetGet($name);
+	$arrayAccessed = $db[$name];
+
+	$this->assertEquals(
+		$offsetGot->getDirectoryPath(),
+		$arrayAccessed->getDirectoryPath()
+	);
+}
+
+/**
  * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
  * @expectedException \Gt\Database\Query\QueryCollectionNotFoundException
  */
