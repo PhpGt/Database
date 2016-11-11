@@ -28,7 +28,6 @@ public function create(string $name):QueryCollectionInterface {
 
 public function directoryExists(string $name):bool {
 	$thing = !is_null($this->locateDirectory($name));
-
 	return !is_null($this->locateDirectory($name));
 }
 
