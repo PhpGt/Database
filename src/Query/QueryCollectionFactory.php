@@ -7,18 +7,13 @@ class QueryCollectionFactory {
 
 /** @var string Path to directory containing QueryCollection directories */
 private $basePath;
-/** @var string The class name to use when creating new QueryCollections */
-private $className;
 
-public function __construct(string $basePath = null,
-string $className = "\Gt\Database\Query\QueryCollection") {
+public function __construct(string $basePath = null) {
 	if(is_null($basePath)) {
 		$basePath = $this->getDefaultBasePath();
 	}
 
-	$this->checkClassIsCorrectImplementation($className);
 	$this->basePath = $basePath;
-	$this->className = $className;
 }
 
 public function create(string $name):QueryCollectionInterface {
@@ -28,7 +23,7 @@ public function create(string $name):QueryCollectionInterface {
 		throw new QueryCollectionNotFoundException($name);
 	}
 
-	return new $this->className($directoryPath);
+	return new QueryCollection($directoryPath);
 }
 
 public function directoryExists(string $name):bool {
@@ -61,14 +56,6 @@ private function locateDirectory(string $name)/* string? */ {
 
 private function getDefaultBasePath():string {
 	return getcwd();
-}
-
-private function checkClassIsCorrectImplementation(string $className) {
-	$implementations = class_implements($className);
-	if(!in_array(
-	"Gt\Database\Query\QueryCollectionInterface", $implementations)) {
-		throw new FactoryClassImplementationException($className);
-	}
 }
 
 }#
