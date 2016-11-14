@@ -33,4 +33,8 @@ public function getConnectionName():string {
 	return self::DEFAULT_NAME;
 }
 
+public function getTablePrefix():string {
+	return "";
+}
+
 }#

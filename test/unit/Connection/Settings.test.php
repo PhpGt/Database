@@ -10,6 +10,7 @@ public function testPropertiesSet() {
 		"hostname" => "test-hostname",
 		"username" => "test-username",
 		"password" => "test-password",
+		"tablePrefix" => "test_",
 		"connectionName" => "test-connection",
 	];
 
@@ -19,6 +20,7 @@ public function testPropertiesSet() {
 		$details["hostname"],
 		$details["username"],
 		$details["password"],
+		$details["tablePrefix"],
 		$details["connectionName"]
 	);
 
@@ -27,6 +29,7 @@ public function testPropertiesSet() {
 	$this->assertEquals($details["hostname"], $settings->getHostname());
 	$this->assertEquals($details["username"], $settings->getUsername());
 	$this->assertEquals($details["password"], $settings->getPassword());
+	$this->assertEquals($details["tablePrefix"], $settings->getTablePrefix());
 	$this->assertEquals(
 		$details["connectionName"], $settings->getConnectionName());
 }

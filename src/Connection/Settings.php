@@ -14,16 +14,19 @@ private $username;
 /** @var string */
 private $password;
 /** @var string */
+private $tablePrefix;
+/** @var string */
 private $connectionName;
 
 public function __construct(string $dataSource, string $database,
-string $hostname, string $username, string $password,
+string $hostname, string $username, string $password, string $tablePrefix = "",
 string $connectionName = self::DEFAULT_NAME) {
 	$this->dataSource = $dataSource;
 	$this->database = $database;
 	$this->hostname = $hostname;
 	$this->username = $username;
 	$this->password = $password;
+	$this->tablePrefix = $tablePrefix;
 	$this->connectionName = $connectionName;
 }
 
@@ -49,6 +52,10 @@ public function getPassword():string {
 
 public function getConnectionName():string {
 	return $this->connectionName;
+}
+
+public function getTablePrefix():string {
+	return $this->tablePrefix;
 }
 
 }#

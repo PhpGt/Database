@@ -3,6 +3,8 @@ namespace Gt\Database\Query;
 
 use DirectoryIterator;
 use SplFileInfo;
+use Gt\Database\Connection\Driver;
+use Gt\Database\Connection\DriverInterface;
 use Gt\Database\Connection\SettingsInterface;
 
 class QueryFactory implements QueryFactoryInterface {
@@ -14,13 +16,13 @@ const CLASS_FOR_EXTENSION = [
 
 /** @var string Absolute path to directory on disk containing query files */
 private $directoryOfQueries;
-/** @var \Gt\Database\Connection\SettingsInterface */
-private $settings;
+/** @var \Gt\Database\Connection\DriverInterface */
+private $driver;
 
 public function __construct(
 string $directoryOfQueries, SettingsInterface $settings) {
 	$this->directoryOfQueries = $directoryOfQueries;
-	$this->settings = $settings;
+	$this->driver = new Driver($settings);
 }
 
 public function findQueryFilePath(string $name):string {
@@ -41,7 +43,7 @@ public function create(string $name):QueryInterface {
 	$queryFilePath = $this->findQueryFilePath($name);
 	$queryClass = $this->getQueryClassForFilePath($queryFilePath);
 
-	return new $queryClass($queryFilePath, $this->settings);
+	return new $queryClass($queryFilePath, $this->driver);
 }
 
 public function getQueryClassForFilePath(string $filePath) {
