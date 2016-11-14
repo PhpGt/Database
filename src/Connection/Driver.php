@@ -53,6 +53,7 @@ private function pdoSingleton():PDO {
 
 private function getDsn():string {
 	$driverName = $this->settings->getDataSource();
+
 	$parameters = implode(";", [
 		"dbname=" . $this->settings->getDatabase(),
 		"host=" . $this->settings->getHostname(),

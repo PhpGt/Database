@@ -13,6 +13,6 @@ namespace Gt\Database\Query;
  */
 interface QueryInterface {
 
-public function prepare();
+public function prepare():QueryInterface;
 
 }#

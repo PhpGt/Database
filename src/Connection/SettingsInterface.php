@@ -8,6 +8,7 @@ const DEFAULT_NAME = "default";
 const DRIVER_MYSQL = "mysql";
 const DRIVER_POSTGRES = "pgsql";
 const DRIVER_SQLITE = "sqlite";
+const DRIVER_SQLITE_MEMORY = "sqlite::memory";
 const DRIVER_SQLSERVER = "dblib";
 
 public function getDataSource():string;
