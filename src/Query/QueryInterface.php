@@ -13,9 +13,6 @@ namespace Gt\Database\Query;
  */
 interface QueryInterface {
 
-// TODO: PHP 7.1 iterable, to allow Gt\Database\Gt\Database\PlaceholderMap
-
-// TODO: Does the \Illuminate\Database\Query\Builder get passed in through a
-// method? If so, what interface does _that_ class respect?
+public function prepare();
 
 }#

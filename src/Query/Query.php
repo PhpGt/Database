@@ -17,10 +17,9 @@ public function __construct(string $filePath, DriverInterface $driver) {
 
 	$this->filePath = $filePath;
 	$this->driver = $driver;
-	$this->execute();
 }
 
-public abstract function execute();
+public abstract function prepare();
 
 public function getFilePath():string {
 	return $this->filePath;

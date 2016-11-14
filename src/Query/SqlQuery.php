@@ -3,7 +3,7 @@ namespace Gt\Database\Query;
 
 class SqlQuery extends Query {
 
-public function execute() {
+public function prepare() {
 
 }
 

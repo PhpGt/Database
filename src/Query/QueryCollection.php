@@ -24,8 +24,8 @@ QueryFactoryInterface $queryFactory = null) {
 
 // TODO: PHP 7.1 iterable, to allow Gt\Database\Gt\Database\PlaceholderMap
 public function query(
-string $name, /*iterable*/array $placeholderValueMap = []):QueryInterface {
-	$query = $this->queryFactory->create($name, $placeholderValueMap);
+string $name, /*iterable*/array $placeholderMap = []):QueryInterface {
+	$query = $this->queryFactory->create($name, $placeholderMap);
 	return $query;
 }
 

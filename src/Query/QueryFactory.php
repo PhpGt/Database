@@ -39,11 +39,14 @@ public function findQueryFilePath(string $name):string {
 	throw new QueryNotFoundException($this->directoryOfQueries . ", " . $name);
 }
 
-public function create(string $name):QueryInterface {
+// TODO: PHP 7.1 iterable, to allow Gt\Database\Gt\Database\PlaceholderMap
+public function create(
+string $name, /*iterable*/array $placeholderMap = []):QueryInterface {
 	$queryFilePath = $this->findQueryFilePath($name);
 	$queryClass = $this->getQueryClassForFilePath($queryFilePath);
-
-	return new $queryClass($queryFilePath, $this->driver);
+	$query = new $queryClass($queryFilePath, $this->driver);
+	$query->prepare($placeholderMap);
+	return $query;
 }
 
 public function getQueryClassForFilePath(string $filePath) {
