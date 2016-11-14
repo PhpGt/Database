@@ -71,7 +71,7 @@ public static function queryCollectionPathNotExistsProvider() {
 	return self::queryCollectionPathProvider(false);
 }
 
-private static function queryCollectionPathProvider(bool $exists) {
+private static function queryCollectionPathProvider(boolean $exists) {
 	$data = [];
 
 	for($i = 0; $i < self::COUNT_PATH_PROVIDER; ++$i) {
