@@ -21,11 +21,11 @@ string $queryName, string $queryCollectionPath, string $queryPath) {
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
  */
-// public function testQueryFound(
-// string $queryName, string $queryCollectionPath, string $queryPath) {
-// 	$query = new SqlQuery($queryPath, $this->getDriver());
-// 	$this->assertFileExists($query->getFilePath());
-// }
+public function testQueryFound(
+string $queryName, string $queryCollectionPath, string $queryPath) {
+	$query = new SqlQuery($queryPath, $this->getDriver());
+	$this->assertFileExists($query->getFilePath());
+}
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider

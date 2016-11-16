@@ -14,13 +14,17 @@ private $connection;
 
 public function __construct(SettingsInterface $settings) {
 	$this->settings = $settings;
-	$capsuleManager = new CapsuleManager();
-	$capsuleManager->addConnection($settings->getConnectionSettings());
-	$this->connection = $capsuleManager->getConnection();
+	$this->connect();
 }
 
 public function getConnection():Connection {
 	return $this->connection;
+}
+
+private function connect() {
+	$capsuleManager = new CapsuleManager();
+	$capsuleManager->addConnection($this->settings->getConnectionSettings());
+	$this->connection = $capsuleManager->getConnection();
 }
 
 }#

@@ -28,8 +28,13 @@ private $tablePrefix;
 /** @var string */
 private $connectionName;
 
-public function __construct(string $dataSource, string $database,
-string $hostname, string $username, string $password, string $tablePrefix = "",
+public function __construct(
+string $dataSource,
+string $database,
+string $hostname = "localhost",
+string $username = "",
+string $password = "",
+string $tablePrefix = "",
 string $connectionName = DefaultSettings::DEFAULT_NAME) {
 	$this->dataSource = $dataSource;
 	$this->database = $database;

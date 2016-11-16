@@ -2,8 +2,6 @@
 namespace Gt\Database\Query;
 
 use Gt\Database\Connection\DriverInterface;
-use Illuminate\Database\Capsule\Manager as CapsuleManager;
-use Illuminate\Database\Connection;
 
 /**
  * Represents either an SQL file containing the raw query, or PHP file
@@ -18,10 +16,5 @@ use Illuminate\Database\Connection;
 interface QueryInterface {
 
 public function prepare():QueryInterface;
-
-public function createConnection(
-CapsuleManager $capsuleManager = null,
-DriverInterface $driver = null
-):Connection;
 
 }#

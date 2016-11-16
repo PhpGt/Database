@@ -47,9 +47,8 @@ string $queryName, string $directoryOfQueries) {
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
- * @expectedException \Gt\Database\Connection\ConnectionNotConfiguredException
  */
-public function testQueryNotCreatedWhenNoDatabase(
+public function testQueryCreated(
 string $queryName, string $directoryOfQueries) {
 	$queryFactory = new QueryFactory(
 		$directoryOfQueries,
