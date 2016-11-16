@@ -13,10 +13,10 @@ class SqlQueryTest extends \PHPUnit_Framework_TestCase {
  * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
  * @expectedException \Gt\Database\Query\QueryNotFoundException
  */
-// public function testQueryNotFound(
-// string $queryName, string $queryCollectionPath, string $queryPath) {
-// 	$query = new SqlQuery($queryPath, $this->getDriver());
-// }
+public function testQueryNotFound(
+string $queryName, string $queryCollectionPath, string $queryPath) {
+	$query = new SqlQuery($queryPath, $this->getDriver());
+}
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
@@ -37,18 +37,18 @@ class SqlQueryTest extends \PHPUnit_Framework_TestCase {
 // 	$query->prepare();
 // }
 
-// private function getDriver():DriverInterface {
-// 	$settings = new Settings(
-// 		Settings::DRIVER_SQLITE_MEMORY,
-// 		"GtDatabaseTest",
-// 		"localhost",
-// 		"root",
-// 		""
-// 	);
-// 	$driver = new Driver($settings);
-// 	$driver->connect();
+private function getDriver():DriverInterface {
+	$settings = new Settings(
+		Settings::DRIVER_SQLITE_MEMORY,
+		"GtDatabaseTest",
+		"localhost",
+		"root",
+		""
+	);
+	$driver = new Driver($settings);
+	$driver->connect();
 
-// 	return $driver;
-// }
+	return $driver;
+}
 
 }#
