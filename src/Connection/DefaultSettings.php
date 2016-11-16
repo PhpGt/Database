@@ -3,9 +3,12 @@ namespace Gt\Database\Connection;
 
 class DefaultSettings implements SettingsInterface {
 
+const CHARSET = "utf-8";
+const COLLATION = "utf8_unicode_ci";
+
 const DEFAULT_NAME = "default";
 const DEFAULT_DATASOURCE = Settings::DRIVER_SQLITE;
-const DEFAULT_DATABASE = "/tmp/phpgt-default-database.sqlite";
+const DEFAULT_DATABASE = Settings::DATABASE_IN_MEMORY;
 const DEFAULT_HOSTNAME = "localhost";
 const DEFAULT_USERNAME = "admin";
 const DEFAULT_PASSWORD = "";
@@ -36,6 +39,19 @@ public function getConnectionName():string {
 
 public function getTablePrefix():string {
 	return "";
+}
+
+public function getConnectionSettings():array {
+	return [
+		"driver" => $this->getDataSource(),
+		"host" => $this->getHostname(),
+		"database" => $this->getDatabase(),
+		"username" => $this->getUsername(),
+		"password" => $this->getPassword(),
+		"charset" => self::CHARSET,
+		"collation" => self::COLLATION,
+		"prefix" => $this->getTablePrefix(),
+	];
 }
 
 }#

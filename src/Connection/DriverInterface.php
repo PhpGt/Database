@@ -1,9 +1,10 @@
 <?php
 namespace Gt\Database\Connection;
 
+use Illuminate\Database\Connection;
+
 interface DriverInterface {
 
-public function connect();
-public function getConnection():ConnectionInterface;
+public function getConnection():Connection;
 
 }#

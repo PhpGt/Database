@@ -39,14 +39,13 @@ string $queryName, string $queryCollectionPath, string $queryPath) {
 
 private function getDriver():DriverInterface {
 	$settings = new Settings(
-		Settings::DRIVER_SQLITE_MEMORY,
-		"GtDatabaseTest",
+		Settings::DRIVER_SQLITE,
+		Settings::DATABASE_IN_MEMORY,
 		"localhost",
 		"root",
 		""
 	);
 	$driver = new Driver($settings);
-	$driver->connect();
 
 	return $driver;
 }

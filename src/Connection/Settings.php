@@ -3,11 +3,15 @@ namespace Gt\Database\Connection;
 
 class Settings implements SettingsInterface {
 
+const CHARSET = "utf-8";
+const COLLATION = "utf8_unicode_ci";
+
 const DRIVER_MYSQL = "mysql";
 const DRIVER_POSTGRES = "pgsql";
 const DRIVER_SQLITE = "sqlite";
-const DRIVER_SQLITE_MEMORY = "sqlite::memory";
 const DRIVER_SQLSERVER = "dblib";
+
+const DATABASE_IN_MEMORY = ":memory:";
 
 /** @var string */
 private $dataSource;
@@ -62,6 +66,19 @@ public function getConnectionName():string {
 
 public function getTablePrefix():string {
 	return $this->tablePrefix;
+}
+
+public function getConnectionSettings():array {
+	return [
+		"driver" => $this->getDataSource(),
+		"host" => $this->getHostname(),
+		"database" => $this->getDatabase(),
+		"username" => $this->getUsername(),
+		"password" => $this->getPassword(),
+		"charset" => self::CHARSET,
+		"collation" => self::COLLATION,
+		"prefix" => $this->getTablePrefix(),
+	];
 }
 
 }#
