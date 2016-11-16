@@ -52,7 +52,7 @@ public function testDefaultConnectionName() {
 	);
 
 	$this->assertEquals(
-		Settings::DEFAULT_NAME, $settings->getConnectionName());
+		DefaultSettings::DEFAULT_NAME, $settings->getConnectionName());
 }
 
 }#

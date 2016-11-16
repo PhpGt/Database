@@ -3,6 +3,12 @@ namespace Gt\Database\Connection;
 
 class Settings implements SettingsInterface {
 
+const DRIVER_MYSQL = "mysql";
+const DRIVER_POSTGRES = "pgsql";
+const DRIVER_SQLITE = "sqlite";
+const DRIVER_SQLITE_MEMORY = "sqlite::memory";
+const DRIVER_SQLSERVER = "dblib";
+
 /** @var string */
 private $dataSource;
 /** @var string */
@@ -20,7 +26,7 @@ private $connectionName;
 
 public function __construct(string $dataSource, string $database,
 string $hostname, string $username, string $password, string $tablePrefix = "",
-string $connectionName = self::DEFAULT_NAME) {
+string $connectionName = DefaultSettings::DEFAULT_NAME) {
 	$this->dataSource = $dataSource;
 	$this->database = $database;
 	$this->hostname = $hostname;

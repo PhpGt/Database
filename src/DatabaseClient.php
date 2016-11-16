@@ -1,11 +1,12 @@
 <?php
 namespace Gt\Database;
 
-use Gt\Database\Query\QueryCollectionInterface;
-use Gt\Database\Query\QueryCollectionFactory;
+use Gt\Database\Connection\DefaultSettings;
+use Gt\Database\Connection\Driver;
 use Gt\Database\Connection\Settings;
 use Gt\Database\Connection\SettingsInterface;
-use Gt\Database\Connection\DefaultSettings;
+use Gt\Database\Query\QueryCollectionFactory;
+use Gt\Database\Query\QueryCollectionInterface;
 
 /**
  * The DatabaseClient stores the factory for creating QueryCollections, and an
@@ -17,18 +18,18 @@ class DatabaseClient implements DatabaseClientInterface {
 
 /** @var QueryCollectionFactory */
 private $queryCollectionFactory;
-/** @var SettingsInterface[] */
-private $settingsArray;
+/** @var \Gt\Database\Connection\Driver[] */
+private $driverArray;
 
 public function __construct(
 QueryCollectionFactory $queryCollectionFactory = null,
 SettingsInterface...$connectionSettings) {
 	if(empty($connectionSettings)) {
-		$connectionSettings[SettingsInterface::DEFAULT_NAME]
+		$connectionSettings[DefaultSettings::DEFAULT_NAME]
 			= new DefaultSettings();
 	}
 
-	$this->storeConnectionSettings($connectionSettings);
+	$this->storeConnectionDriversFromSettings($connectionSettings);
 
 	if(is_null($queryCollectionFactory)) {
 		$queryCollectionFactory = new QueryCollectionFactory();
@@ -37,10 +38,10 @@ SettingsInterface...$connectionSettings) {
 	$this->queryCollectionFactory = $queryCollectionFactory;
 }
 
-private function storeConnectionSettings(array $settingsArray) {
+private function storeConnectionDriversFromSettings(array $settingsArray) {
 	foreach ($settingsArray as $settings) {
 		$connectionName = $settings->getConnectionName();
-		$this->settingsArray[$connectionName] = $settings;
+		$this->driverArray[$connectionName] = new Driver($settings);
 	}
 }
 
@@ -49,13 +50,13 @@ private function storeConnectionSettings(array $settingsArray) {
  */
 public function queryCollection(
 string $queryCollectionName,
-string $connectionName = SettingsInterface::DEFAULT_NAME)
+string $connectionName = DefaultSettings::DEFAULT_NAME)
 :QueryCollectionInterface {
-	$settings = $this->settingsArray[$connectionName];
+	$driver = $this->driverArray[$connectionName];
 
 	return $this->queryCollectionFactory->create(
 		$queryCollectionName,
-		$settings
+		$driver
 	);
 }
 

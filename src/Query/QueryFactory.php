@@ -1,11 +1,13 @@
 <?php
 namespace Gt\Database\Query;
 
-use DirectoryIterator;
 use SplFileInfo;
+use DirectoryIterator;
+use Exception;
+use InvalidArgumentException;
 use Gt\Database\Connection\Driver;
 use Gt\Database\Connection\DriverInterface;
-use Gt\Database\Connection\SettingsInterface;
+use Gt\Database\Connection\ConnectionNotConfiguredException;
 
 class QueryFactory implements QueryFactoryInterface {
 
@@ -20,9 +22,9 @@ private $directoryOfQueries;
 private $driver;
 
 public function __construct(
-string $directoryOfQueries, SettingsInterface $settings) {
+string $directoryOfQueries, DriverInterface $driver) {
 	$this->directoryOfQueries = $directoryOfQueries;
-	$this->driver = new Driver($settings);
+	$this->driver = $driver;
 }
 
 public function findQueryFilePath(string $name):string {
@@ -42,11 +44,16 @@ public function findQueryFilePath(string $name):string {
 // TODO: PHP 7.1 iterable, to allow Gt\Database\Gt\Database\PlaceholderMap
 public function create(
 string $name, /*iterable*/array $placeholderMap = []):QueryInterface {
-	$queryFilePath = $this->findQueryFilePath($name);
-	$queryClass = $this->getQueryClassForFilePath($queryFilePath);
-	$query = new $queryClass($queryFilePath, $this->driver);
-	$query->prepare($placeholderMap);
-	return $query;
+	try {
+		$queryFilePath = $this->findQueryFilePath($name);
+		$queryClass = $this->getQueryClassForFilePath($queryFilePath);
+		$query = new $queryClass($queryFilePath, $this->driver);
+		$query->prepare($placeholderMap);
+		return $query;
+	}
+	catch(InvalidArgumentException $exception) {
+		$this->throwCorrectException($exception);
+	}
 }
 
 public function getQueryClassForFilePath(string $filePath) {
@@ -63,6 +70,26 @@ private function getExtensionIfValid(SplFileInfo $fileInfo) {
 	}
 
 	return $ext;
+}
+
+private function throwCorrectException(Exception $exception) {
+	$message = $exception->getMessage();
+
+	switch(get_class($exception)) {
+	case InvalidArgumentException::class:
+		$matches = [];
+		if(1 !== preg_match(
+		"/Database \[(.+)\] not configured/", $message, $matches)) {
+			throw $exception;
+		}
+
+		$connectionName = $matches[1];
+		throw new ConnectionNotConfiguredException($connectionName);
+		break;
+
+	default:
+		throw $exception;
+	}
 }
 
 }#

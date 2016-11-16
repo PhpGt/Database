@@ -2,6 +2,7 @@
 namespace Gt\Database\Query;
 
 use Gt\Database\Connection\DefaultSettings;
+use Gt\Database\Connection\Driver;
 
 class QueryFactoryTest extends \PHPUnit_Framework_TestCase {
 
@@ -12,7 +13,7 @@ public function testFindQueryFilePathExists(
 string $queryName, string $directoryOfQueries) {
 	$queryFactory = new QueryFactory(
 		$directoryOfQueries,
-		new DefaultSettings()
+		new Driver(new DefaultSettings())
 	);
 	$queryFilePath = $queryFactory->findQueryFilePath($queryName);
 	$this->assertFileExists($queryFilePath);
@@ -26,7 +27,7 @@ public function testFindQueryFilePathNotExists(
 string $queryName, string $directoryOfQueries) {
 	$queryFactory = new QueryFactory(
 		$directoryOfQueries,
-		new DefaultSettings()
+		new Driver(new DefaultSettings())
 	);
 	$queryFilePath = $queryFactory->findQueryFilePath($queryName);
 }
@@ -39,19 +40,20 @@ public function testFindQueryFilePathWithInvalidExtension(
 string $queryName, string $directoryOfQueries) {
 	$queryFactory = new QueryFactory(
 		$directoryOfQueries,
-		new DefaultSettings()
+		new Driver(new DefaultSettings())
 	);
 	$queryFilePath = $queryFactory->findQueryFilePath($queryName);
 }
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
+ * @expectedException \Gt\Database\Connection\ConnectionNotConfiguredException
  */
-public function testQueryCreated(
+public function testQueryNotCreatedWhenNoDatabase(
 string $queryName, string $directoryOfQueries) {
 	$queryFactory = new QueryFactory(
 		$directoryOfQueries,
-		new DefaultSettings()
+		new Driver(new DefaultSettings())
 	);
 	$query = $queryFactory->create($queryName);
 	$this->assertInstanceOf(

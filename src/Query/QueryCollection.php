@@ -2,7 +2,7 @@
 namespace Gt\Database\Query;
 
 use DirectoryIterator;
-use Gt\Database\Connection\SettingsInterface;
+use Gt\Database\Connection\DriverInterface;
 
 class QueryCollection implements QueryCollectionInterface {
 
@@ -12,10 +12,10 @@ private $directoryPath;
 private $queryFactory;
 
 public function __construct(
-string $directoryPath, SettingsInterface $settings,
+string $directoryPath, DriverInterface $driver,
 QueryFactoryInterface $queryFactory = null) {
 	if(is_null($queryFactory)) {
-		$queryFactory = new QueryFactory($directoryPath, $settings);
+		$queryFactory = new QueryFactory($directoryPath, $driver);
 	}
 
 	$this->directoryPath = $directoryPath;

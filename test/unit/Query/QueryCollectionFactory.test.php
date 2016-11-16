@@ -2,6 +2,7 @@
 namespace Gt\Database\Query;
 
 use Gt\Database\Connection\DefaultSettings;
+use Gt\Database\Connection\Driver;
 use Gt\Database\Test\Helper;
 
 class QueryCollectionFactoryTest extends \PHPUnit_Framework_TestCase {
@@ -16,7 +17,7 @@ public function testCurrentWorkingDirectoryDefault() {
 	$queryCollectionFactory = new QueryCollectionFactory();
 	$queryCollection = $queryCollectionFactory->create(
 		$queryCollectionName,
-		new DefaultSettings()
+		new Driver(new DefaultSettings())
 	);
 
 	$this->assertEquals(

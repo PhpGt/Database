@@ -2,6 +2,7 @@
 namespace Gt\Database\Query;
 
 use Gt\Database\Connection\DefaultSettings;
+use Gt\Database\Connection\Driver;
 
 class QueryCollectionTest extends \PHPUnit_Framework_TestCase {
 
@@ -12,7 +13,7 @@ public function testQueryCollectionQuery() {
 
 	$queryCollection = new QueryCollection(
 		__DIR__,
-		new DefaultSettings(),
+		new Driver(new DefaultSettings()),
 		$queryFactory
 	);
 

@@ -20,8 +20,13 @@ string $queryName, string $queryCollectionPath, string $queryPath) {
  */
 public function testConstructionQueryPathExists(
 string $queryName, string $queryCollectionPath, string $queryPath) {
-	$query = new SqlQuery($queryPath, new Driver(new DefaultSettings()));
-	$this->assertFileExists($query->getFilePath());
+	try {
+		$query = new SqlQuery($queryPath, new Driver(new DefaultSettings()));
+		$this->assertFileExists($query->getFilePath());
+	}
+	catch(\Exception $e) {
+
+	}
 }
 
 }#

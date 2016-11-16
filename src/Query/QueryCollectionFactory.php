@@ -2,7 +2,7 @@
 namespace Gt\Database\Query;
 
 use DirectoryIterator;
-use Gt\Database\Connection\SettingsInterface;
+use Gt\Database\Connection\DriverInterface;
 
 class QueryCollectionFactory {
 
@@ -17,7 +17,7 @@ public function __construct(string $basePath = null) {
 	$this->basePath = $basePath;
 }
 
-public function create(string $name, SettingsInterface $settings)
+public function create(string $name, DriverInterface $driver)
 :QueryCollectionInterface {
 	$directoryPath = $this->locateDirectory($name);
 
@@ -25,7 +25,7 @@ public function create(string $name, SettingsInterface $settings)
 		throw new QueryCollectionNotFoundException($name);
 	}
 
-	return new QueryCollection($directoryPath, $settings);
+	return new QueryCollection($directoryPath, $driver);
 }
 
 public function directoryExists(string $name):bool {
