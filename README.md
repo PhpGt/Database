@@ -32,14 +32,23 @@ $db = new Client($settings);
 // Prepare statement.
 // Query is physically located at src/query/blog/retrieveCommentsForBlog.sql
 // Named placeholders are within SQL file.
-$query = $db["blog"]->query("retrieveCommentsForBlog", [
+$resultSet = $db["blog"]->query("retrieveCommentsForBlog", [
 	"id_blog" => 123,
 ]);
 
 // Iterate over all rows.
-foreach($query->fetchAll() as $comment) {
-	// ...
+foreach($resultSet->fetchAll() as $comment) {
+// ...
 }
+
+// Alternativaly...
+$firstComment = $db["blog"]->queryFetch("retrieveCommentsForBlog", [
+	"id_blog" => 123,
+]);
+
+$allComments = $db["blog"]->queryFetchAll("retrieveCommentsForBlog", [
+	"id_blog" => 123,
+]);
 
 ```
 

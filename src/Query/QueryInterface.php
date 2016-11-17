@@ -2,6 +2,7 @@
 namespace Gt\Database\Query;
 
 use Gt\Database\Connection\DriverInterface;
+use Gt\Database\Result\ResultSetInterface;
 
 /**
  * Represents either an SQL file containing the raw query, or PHP file
@@ -15,6 +16,6 @@ use Gt\Database\Connection\DriverInterface;
  */
 interface QueryInterface {
 
-public function prepare():QueryInterface;
+public function execute():ResultSetInterface;
 
 }#

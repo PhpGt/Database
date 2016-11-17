@@ -7,8 +7,8 @@ abstract class Query implements QueryInterface {
 
 /** @var string Absolute path to query file on disk */
 private $filePath;
-/** @var \Gt\Database\Connection\DriverInterface */
-private $driver;
+/** @var \Illuminate\Database\Connection */
+private $connection;
 
 public function __construct(string $filePath, DriverInterface $driver) {
 	if(!is_file($filePath)) {
@@ -16,7 +16,7 @@ public function __construct(string $filePath, DriverInterface $driver) {
 	}
 
 	$this->filePath = $filePath;
-	$this->driver = $driver;
+	$this->connection = $driver->getConnection;
 }
 
 public function getFilePath():string {

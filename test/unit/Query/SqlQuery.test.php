@@ -31,11 +31,11 @@ string $queryName, string $queryCollectionPath, string $queryPath) {
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
  * @expectedException \Gt\Database\Query\PreparedQueryException
  */
-// public function testQueryPrepares(
-// string $queryName, string $queryCollectionPath, string $queryPath) {
-// 	$query = new SqlQuery($queryPath, $this->getDriver());
-// 	$query->prepare();
-// }
+public function testQueryPrepares(
+string $queryName, string $queryCollectionPath, string $queryPath) {
+	$query = new SqlQuery($queryPath, $this->getDriver());
+	$query->prepare();
+}
 
 private function getDriver():DriverInterface {
 	$settings = new Settings(
