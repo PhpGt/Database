@@ -5,11 +5,11 @@ use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Query\QueryCollection;
 use Gt\Database\Query\QueryCollectionFactory;
 
-class DatabaseClientTest extends \PHPUnit_Framework_TestCase {
+class ClientTest extends \PHPUnit_Framework_TestCase {
 
 public function testInterface() {
-	$db = new DatabaseClient();
-	$this->assertInstanceOf("\Gt\Database\DatabaseClient", $db);
+	$db = new Client();
+	$this->assertInstanceOf("\Gt\Database\Client", $db);
 }
 
 public function testQueryCollectionMethod() {
@@ -20,7 +20,7 @@ public function testQueryCollectionMethod() {
 	->willReturn($queryCollection);
 
 	// $settings = new DefaultSettings();
-	$db = new DatabaseClient($queryCollectionFactory);
+	$db = new Client($queryCollectionFactory);
 
 	$this->assertSame(
 		$db->queryCollection("example"),
@@ -33,7 +33,7 @@ public function testQueryCollectionMethod() {
  */
 public function testQueryCollectionPathExists(string $name, string $path) {
 	$queryCollectionFactory = new QueryCollectionFactory(dirname($path));
-	$db = new DatabaseClient($queryCollectionFactory);
+	$db = new Client($queryCollectionFactory);
 
 	$this->assertTrue(isset($db[$name]));
 	$queryCollection = $db->queryCollection($name);
@@ -48,7 +48,7 @@ public function testQueryCollectionPathExists(string $name, string $path) {
  */
 public function testOffsetGet(string $name, string $path) {
 	$queryCollectionFactory = new QueryCollectionFactory(dirname($path));
-	$db = new DatabaseClient($queryCollectionFactory);
+	$db = new Client($queryCollectionFactory);
 
 	$offsetGot = $db->offsetGet($name);
 	$arrayAccessed = $db[$name];
@@ -65,7 +65,7 @@ public function testOffsetGet(string $name, string $path) {
  */
 public function testQueryCollectionPathNotExists(string $name, string $path) {
 	$queryCollectionFactory = new QueryCollectionFactory(dirname($path));
-	$db = new DatabaseClient($queryCollectionFactory);
+	$db = new Client($queryCollectionFactory);
 
 	$this->assertFalse(isset($db[$name]));
 	$queryCollection = $db->queryCollection($name);
@@ -75,7 +75,7 @@ public function testQueryCollectionPathNotExists(string $name, string $path) {
  * @expectedException \Gt\Database\ReadOnlyArrayAccessException
  */
 public function testOffsetSet() {
-	$db = new DatabaseClient();
+	$db = new Client();
 	$db["test"] = "qwerty";
 }
 
@@ -83,7 +83,7 @@ public function testOffsetSet() {
  * @expectedException \Gt\Database\ReadOnlyArrayAccessException
  */
 public function testOffsetUnset() {
-	$db = new DatabaseClient();
+	$db = new Client();
 	unset($db["test"]);
 }
 
