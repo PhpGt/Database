@@ -2,7 +2,6 @@
 namespace Gt\Database\Test;
 
 use Gt\Database\Connection\Driver;
-use Gt\Database\Connection\DriverInterface;
 use Gt\Database\Connection\Settings;
 use Gt\Database\Connection\SettingsInterface;
 use Gt\Database\Query\SqlQuery;
@@ -29,15 +28,16 @@ string $queryName, string $queryCollectionPath, string $queryPath) {
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
- * @expectedException \Gt\Database\Query\PreparedQueryException
+ * @expectedException \Gt\Database\Query\PreparedStatementException
  */
-public function testQueryPrepares(
+public function testPreparedStatementThrowsException(
 string $queryName, string $queryCollectionPath, string $queryPath) {
+	file_put_contents($queryPath, "insert blahblah into nothing");
 	$query = new SqlQuery($queryPath, $this->getDriver());
-	$query->prepare();
+	$query->execute();
 }
 
-private function getDriver():DriverInterface {
+private function getDriver():Driver {
 	$settings = new Settings(
 		Settings::DRIVER_SQLITE,
 		Settings::DATABASE_IN_MEMORY,

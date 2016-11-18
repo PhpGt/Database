@@ -1,22 +1,22 @@
 <?php
 namespace Gt\Database\Query;
 
-use Gt\Database\Connection\DriverInterface;
+use Gt\Database\Connection\Driver;
 
-abstract class Query implements QueryInterface {
+abstract class Query {
 
 /** @var string Absolute path to query file on disk */
-private $filePath;
+protected $filePath;
 /** @var \Illuminate\Database\Connection */
-private $connection;
+protected $connection;
 
-public function __construct(string $filePath, DriverInterface $driver) {
+public function __construct(string $filePath, Driver $driver) {
 	if(!is_file($filePath)) {
 		throw new QueryNotFoundException($filePath);
 	}
 
 	$this->filePath = $filePath;
-	$this->connection = $driver->getConnection;
+	$this->connection = $driver->getConnection();
 }
 
 public function getFilePath():string {

@@ -16,7 +16,7 @@ public function getSql():string {
 public function execute(array $bindings = []):PDOStatement {
 	$pdo = $this->preparePdo();
 	$statement = $this->prepareStatement($pdo, $this->getSql());
-	$preparedBindings = $connection->prepareBindings($bindings);
+	$preparedBindings = $this->connection->prepareBindings($bindings);
 
 	try {
 		$statement->execute($preparedBindings);

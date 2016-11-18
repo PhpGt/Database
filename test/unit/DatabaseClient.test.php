@@ -9,7 +9,7 @@ class DatabaseClientTest extends \PHPUnit_Framework_TestCase {
 
 public function testInterface() {
 	$db = new DatabaseClient();
-	$this->assertInstanceOf("\Gt\Database\DatabaseClientInterface", $db);
+	$this->assertInstanceOf("\Gt\Database\DatabaseClient", $db);
 }
 
 public function testQueryCollectionMethod() {
@@ -38,7 +38,7 @@ public function testQueryCollectionPathExists(string $name, string $path) {
 	$this->assertTrue(isset($db[$name]));
 	$queryCollection = $db->queryCollection($name);
 
-	$this->assertInstanceOf("\\Gt\\Database\\Query\\QueryCollectionInterface",
+	$this->assertInstanceOf("\\Gt\\Database\\Query\\QueryCollection",
 		$queryCollection
 	);
 }

@@ -2,18 +2,17 @@
 namespace Gt\Database\Query;
 
 use DirectoryIterator;
-use Gt\Database\Connection\DriverInterface;
+use Gt\Database\Connection\Driver;
 
-class QueryCollection implements QueryCollectionInterface {
+class QueryCollection {
 
 /** @var string */
 private $directoryPath;
-/** @var QueryFactoryInterface */
+/** @var QueryFactory */
 private $queryFactory;
 
 public function __construct(
-string $directoryPath, DriverInterface $driver,
-QueryFactoryInterface $queryFactory = null) {
+string $directoryPath, Driver $driver, QueryFactory $queryFactory = null) {
 	if(is_null($queryFactory)) {
 		$queryFactory = new QueryFactory($directoryPath, $driver);
 	}
@@ -24,7 +23,7 @@ QueryFactoryInterface $queryFactory = null) {
 
 // TODO: PHP 7.1 iterable, to allow Gt\Database\Gt\Database\PlaceholderMap
 public function query(
-string $name, /*iterable*/array $placeholderMap = []):QueryInterface {
+string $name, /*iterable*/array $placeholderMap = []):Query {
 	$query = $this->queryFactory->create($name, $placeholderMap);
 	return $query;
 }

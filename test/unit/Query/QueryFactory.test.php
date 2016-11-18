@@ -56,7 +56,7 @@ string $queryName, string $directoryOfQueries) {
 	);
 	$query = $queryFactory->create($queryName);
 	$this->assertInstanceOf(
-		"\Gt\Database\Query\QueryInterface",
+		"\Gt\Database\Query\Query",
 		$query
 	);
 }

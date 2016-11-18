@@ -1,12 +1,13 @@
 <?php
 namespace Gt\Database;
 
+use ArrayAccess;
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
 use Gt\Database\Connection\Settings;
 use Gt\Database\Connection\SettingsInterface;
+use Gt\Database\Query\QueryCollection;
 use Gt\Database\Query\QueryCollectionFactory;
-use Gt\Database\Query\QueryCollectionInterface;
 
 /**
  * The DatabaseClient stores the factory for creating QueryCollections, and an
@@ -14,7 +15,7 @@ use Gt\Database\Query\QueryCollectionInterface;
  * connections. If only one database connection is required, a name is not
  * required as the default name will be used.
  */
-class DatabaseClient implements DatabaseClientInterface {
+class DatabaseClient implements ArrayAccess {
 
 /** @var QueryCollectionFactory */
 private $queryCollectionFactory;
@@ -51,7 +52,7 @@ private function storeConnectionDriversFromSettings(array $settingsArray) {
 public function queryCollection(
 string $queryCollectionName,
 string $connectionName = DefaultSettings::DEFAULT_NAME)
-:QueryCollectionInterface {
+:QueryCollection {
 	$driver = $this->driverArray[$connectionName];
 
 	return $this->queryCollectionFactory->create(

@@ -6,10 +6,9 @@ use DirectoryIterator;
 use Exception;
 use InvalidArgumentException;
 use Gt\Database\Connection\Driver;
-use Gt\Database\Connection\DriverInterface;
 use Gt\Database\Connection\ConnectionNotConfiguredException;
 
-class QueryFactory implements QueryFactoryInterface {
+class QueryFactory {
 
 const CLASS_FOR_EXTENSION = [
 	"sql" => "\Gt\Database\Query\SqlQuery",
@@ -18,11 +17,11 @@ const CLASS_FOR_EXTENSION = [
 
 /** @var string Absolute path to directory on disk containing query files */
 private $directoryOfQueries;
-/** @var \Gt\Database\Connection\DriverInterface */
+/** @var \Gt\Database\Connection\Driver */
 private $driver;
 
 public function __construct(
-string $directoryOfQueries, DriverInterface $driver) {
+string $directoryOfQueries, Driver $driver) {
 	$this->directoryOfQueries = $directoryOfQueries;
 	$this->driver = $driver;
 }
@@ -43,12 +42,12 @@ public function findQueryFilePath(string $name):string {
 
 // TODO: PHP 7.1 iterable, to allow Gt\Database\Gt\Database\PlaceholderMap
 public function create(
-string $name, /*iterable*/array $placeholderMap = []):QueryInterface {
+string $name, /*iterable*/array $placeholderMap = []):Query {
 	try {
 		$queryFilePath = $this->findQueryFilePath($name);
 		$queryClass = $this->getQueryClassForFilePath($queryFilePath);
 		$query = new $queryClass($queryFilePath, $this->driver);
-		$query->prepare($placeholderMap);
+		$query->execute($placeholderMap);
 		return $query;
 	}
 	catch(InvalidArgumentException $exception) {
