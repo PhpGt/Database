@@ -18,7 +18,7 @@ public function testQueryCollectionQuery() {
 	);
 
 	$this->assertInstanceOf(
-		QueryInterface::class,
+		Query::class,
 		$queryCollection->query("something")
 	);
 }

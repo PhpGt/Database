@@ -5,7 +5,7 @@ use PDO;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Capsule\Manager as CapsuleManager;
 
-class Driver implements DriverInterface {
+class Driver {
 
 /** @var \Gt\Database\Connection\SettingsInterface */
 private $settings;
