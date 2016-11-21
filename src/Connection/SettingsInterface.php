@@ -3,6 +3,7 @@ namespace Gt\Database\Connection;
 
 interface SettingsInterface {
 
+public function getBaseDirectory():string;
 public function getDataSource():string;
 public function getDatabase():string;
 public function getHostname():string;

@@ -21,9 +21,7 @@ private $queryCollectionFactory;
 /** @var \Gt\Database\Connection\Driver[] */
 private $driverArray;
 
-public function __construct(
-QueryCollectionFactory $queryCollectionFactory = null,
-SettingsInterface...$connectionSettings) {
+public function __construct(SettingsInterface...$connectionSettings) {
 	if(empty($connectionSettings)) {
 		$connectionSettings[DefaultSettings::DEFAULT_NAME]
 			= new DefaultSettings();
@@ -31,11 +29,8 @@ SettingsInterface...$connectionSettings) {
 
 	$this->storeConnectionDriversFromSettings($connectionSettings);
 
-	if(is_null($queryCollectionFactory)) {
-		$queryCollectionFactory = new QueryCollectionFactory();
-	}
-
-	$this->queryCollectionFactory = $queryCollectionFactory;
+	$this->queryCollectionFactory = new QueryCollectionFactory(
+		$connectionSettings->getBaseDirectory());
 }
 
 private function storeConnectionDriversFromSettings(array $settingsArray) {

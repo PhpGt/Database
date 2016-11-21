@@ -14,6 +14,8 @@ const DRIVER_SQLSERVER = "dblib";
 const DATABASE_IN_MEMORY = ":memory:";
 
 /** @var string */
+private $baseDirectory;
+/** @var string */
 private $dataSource;
 /** @var string */
 private $database;
@@ -29,6 +31,7 @@ private $tablePrefix;
 private $connectionName;
 
 public function __construct(
+string $baseDirectory,
 string $dataSource,
 string $database,
 string $hostname = "localhost",
