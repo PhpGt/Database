@@ -67,6 +67,10 @@ public function offsetExists($offset) {
 		$offset);
 }
 
+/**
+ * @param  string $offset
+ * @return QueryCollection
+ */
 public function offsetGet($offset) {
 	$connectionName = $this->getFirstConnectionName();
 	return $this->queryCollection($offset, $connectionName);
