@@ -39,6 +39,7 @@ string $queryName, string $queryCollectionPath, string $queryPath) {
 
 private function getDriver():Driver {
 	$settings = new Settings(
+		"/tmp",
 		Settings::DRIVER_SQLITE,
 		Settings::DATABASE_IN_MEMORY,
 		"localhost",

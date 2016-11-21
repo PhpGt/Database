@@ -5,6 +5,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase {
 
 public function testPropertiesSet() {
 	$details = [
+		"baseDirectory" => "/tmp",
 		"dataSource" => "test-data-source",
 		"database" => "test-database",
 		"hostname" => "test-hostname",
@@ -15,6 +16,7 @@ public function testPropertiesSet() {
 	];
 
 	$settings = new Settings(
+		$details["baseDirectory"],
 		$details["dataSource"],
 		$details["database"],
 		$details["hostname"],
@@ -24,6 +26,8 @@ public function testPropertiesSet() {
 		$details["connectionName"]
 	);
 
+	$this->assertEquals(
+		$details["baseDirectory"], $settings->getBaseDirectory());
 	$this->assertEquals($details["dataSource"], $settings->getDataSource());
 	$this->assertEquals($details["database"], $settings->getDatabase());
 	$this->assertEquals($details["hostname"], $settings->getHostname());

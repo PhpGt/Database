@@ -39,6 +39,7 @@ string $username = "",
 string $password = "",
 string $tablePrefix = "",
 string $connectionName = DefaultSettings::DEFAULT_NAME) {
+	$this->baseDirectory = $baseDirectory;
 	$this->dataSource = $dataSource;
 	$this->database = $database;
 	$this->hostname = $hostname;
@@ -46,6 +47,10 @@ string $connectionName = DefaultSettings::DEFAULT_NAME) {
 	$this->password = $password;
 	$this->tablePrefix = $tablePrefix;
 	$this->connectionName = $connectionName;
+}
+
+public function getBaseDirectory():string {
+	return $this->baseDirectory;
 }
 
 public function getDataSource():string {

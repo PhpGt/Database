@@ -17,8 +17,8 @@ use Gt\Database\Query\QueryCollectionFactory;
  */
 class DatabaseClient implements ArrayAccess {
 
-/** @var QueryCollectionFactory */
-private $queryCollectionFactory;
+/** @var QueryCollectionFactory[] */
+private $queryCollectionFactoryArray;
 /** @var \Gt\Database\Connection\Driver[] */
 private $driverArray;
 
@@ -28,16 +28,22 @@ public function __construct(SettingsInterface...$connectionSettings) {
 			= new DefaultSettings();
 	}
 
-	$this->storeConnectionDriversFromSettings($connectionSettings);
-
-	$this->queryCollectionFactory = new QueryCollectionFactory(
-		$connectionSettings->getBaseDirectory());
+	$this->storeConnectionDriverFromSettings($connectionSettings);
+	$this->storeQueryCollectionFactoryFromSettings($connectionSettings);
 }
 
-private function storeConnectionDriversFromSettings(array $settingsArray) {
+private function storeConnectionDriverFromSettings(array $settingsArray) {
 	foreach ($settingsArray as $settings) {
 		$connectionName = $settings->getConnectionName();
 		$this->driverArray[$connectionName] = new Driver($settings);
+	}
+}
+
+private function storeQueryCollectionFactoryFromSettings(array $settingsArray) {
+	foreach ($settingsArray as $settings) {
+		$connectionName = $settings->getConnectionName();
+		$this->queryCollectionFactoryArray[$connectionName] =
+			new QueryCollectionFactory($this->driverArray[$connectionName]);
 	}
 }
 
@@ -49,19 +55,21 @@ string $queryCollectionName,
 string $connectionName = DefaultSettings::DEFAULT_NAME)
 :QueryCollection {
 	$driver = $this->driverArray[$connectionName];
-
-	return $this->queryCollectionFactory->create(
+	return $this->queryCollectionFactoryArray[$connectionName]->create(
 		$queryCollectionName,
 		$driver
 	);
 }
 
 public function offsetExists($offset) {
-	return $this->queryCollectionFactory->directoryExists($offset);
+	$connectionName = $this->getFirstConnectionName();
+	return $this->queryCollectionFactoryArray[$connectionName]->directoryExists(
+		$offset);
 }
 
 public function offsetGet($offset) {
-	return $this->queryCollection($offset);
+	$connectionName = $this->getFirstConnectionName();
+	return $this->queryCollection($offset, $connectionName);
 }
 
 public function offsetSet($offset, $value) {
@@ -70,6 +78,11 @@ public function offsetSet($offset, $value) {
 
 public function offsetUnset($offset) {
 	throw new ReadOnlyArrayAccessException(self::class);
+}
+
+private function getFirstConnectionName():string {
+	reset($this->driverArray);
+	return key($this->driverArray);
 }
 
 }#
