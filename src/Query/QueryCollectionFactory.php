@@ -6,18 +6,17 @@ use Gt\Database\Connection\Driver;
 
 class QueryCollectionFactory {
 
-/** @var string Path to directory containing QueryCollection directories */
+/** @var Driver */
+private $driver;
+/** @var string */
 private $basePath;
 
-public function __construct(string $basePath = null) {
-	if(is_null($basePath)) {
-		$basePath = $this->getDefaultBasePath();
-	}
-
-	$this->basePath = $basePath;
+public function __construct(Driver $driver) {
+	$this->driver = $driver;
+	$this->basePath = $this->driver->getBaseDirectory();
 }
 
-public function create(string $name, Driver $driver)
+public function create(string $name)
 :QueryCollection {
 	$directoryPath = $this->locateDirectory($name);
 
@@ -25,11 +24,10 @@ public function create(string $name, Driver $driver)
 		throw new QueryCollectionNotFoundException($name);
 	}
 
-	return new QueryCollection($directoryPath, $driver);
+	return new QueryCollection($directoryPath, $this->driver);
 }
 
 public function directoryExists(string $name):bool {
-	$thing = !is_null($this->locateDirectory($name));
 	return !is_null($this->locateDirectory($name));
 }
 

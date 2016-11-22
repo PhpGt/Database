@@ -17,6 +17,14 @@ public function __construct(SettingsInterface $settings) {
 	$this->connect();
 }
 
+public function getBaseDirectory():string {
+	return $this->settings->getBaseDirectory();
+}
+
+public function getConnectionName():string {
+	return $this->settings->getConnectionName();
+}
+
 public function getConnection():Connection {
 	return $this->connection;
 }

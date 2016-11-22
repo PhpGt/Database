@@ -13,6 +13,10 @@ const DEFAULT_HOSTNAME = "localhost";
 const DEFAULT_USERNAME = "admin";
 const DEFAULT_PASSWORD = "";
 
+public function getBaseDirectory():string {
+	return sys_get_temp_dir();
+}
+
 public function getDataSource():string {
 	return self::DEFAULT_DATASOURCE;
 }

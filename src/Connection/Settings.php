@@ -14,6 +14,8 @@ const DRIVER_SQLSERVER = "dblib";
 const DATABASE_IN_MEMORY = ":memory:";
 
 /** @var string */
+private $baseDirectory;
+/** @var string */
 private $dataSource;
 /** @var string */
 private $database;
@@ -29,6 +31,7 @@ private $tablePrefix;
 private $connectionName;
 
 public function __construct(
+string $baseDirectory,
 string $dataSource,
 string $database,
 string $hostname = "localhost",
@@ -36,6 +39,7 @@ string $username = "",
 string $password = "",
 string $tablePrefix = "",
 string $connectionName = DefaultSettings::DEFAULT_NAME) {
+	$this->baseDirectory = $baseDirectory;
 	$this->dataSource = $dataSource;
 	$this->database = $database;
 	$this->hostname = $hostname;
@@ -43,6 +47,10 @@ string $connectionName = DefaultSettings::DEFAULT_NAME) {
 	$this->password = $password;
 	$this->tablePrefix = $tablePrefix;
 	$this->connectionName = $connectionName;
+}
+
+public function getBaseDirectory():string {
+	return $this->baseDirectory;
 }
 
 public function getDataSource():string {

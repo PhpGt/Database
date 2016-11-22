@@ -21,6 +21,10 @@ string $directoryPath, Driver $driver, QueryFactory $queryFactory = null) {
 	$this->queryFactory = $queryFactory;
 }
 
+public function __call($name, $args) {
+	return call_user_func_array([$this, $name], $args);
+}
+
 // TODO: PHP 7.1 iterable, to allow Gt\Database\Gt\Database\PlaceholderMap
 public function query(
 string $name, /*iterable*/array $placeholderMap = []):Query {

@@ -78,6 +78,7 @@ string $queryName, string $queryCollectionPath, string $queryPath) {
 private function driverSingleton():Driver {
 	if(is_null($this->driver)) {
 		$settings = new Settings(
+			Helper::getTmpDir(),
 			Settings::DRIVER_SQLITE,
 			Settings::DATABASE_IN_MEMORY,
 			"localhost",

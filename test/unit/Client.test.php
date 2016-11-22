@@ -2,6 +2,7 @@
 namespace Gt\Database;
 
 use Gt\Database\Connection\DefaultSettings;
+use Gt\Database\Connection\Settings;
 use Gt\Database\Query\QueryCollection;
 use Gt\Database\Query\QueryCollectionFactory;
 
@@ -12,28 +13,14 @@ public function testInterface() {
 	$this->assertInstanceOf("\Gt\Database\Client", $db);
 }
 
-public function testQueryCollectionMethod() {
-	$queryCollection = $this->createMock(QueryCollection::class);
-
-	$queryCollectionFactory = $this->createMock(QueryCollectionFactory::class);
-	$queryCollectionFactory->method("create")
-	->willReturn($queryCollection);
-
-	// $settings = new DefaultSettings();
-	$db = new Client($queryCollectionFactory);
-
-	$this->assertSame(
-		$db->queryCollection("example"),
-		$queryCollection
-	);
-}
-
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryCollectionPathExistsProvider
  */
 public function testQueryCollectionPathExists(string $name, string $path) {
-	$queryCollectionFactory = new QueryCollectionFactory(dirname($path));
-	$db = new Client($queryCollectionFactory);
+	$basePath = dirname($path);
+	$settings = new Settings(
+		$basePath, Settings::DRIVER_SQLITE, Settings::DATABASE_IN_MEMORY);
+	$db = new Client($settings);
 
 	$this->assertTrue(isset($db[$name]));
 	$queryCollection = $db->queryCollection($name);
@@ -44,11 +31,26 @@ public function testQueryCollectionPathExists(string $name, string $path) {
 }
 
 /**
+ * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
+ * @expectedException \Gt\Database\Query\QueryCollectionNotFoundException
+ */
+public function testQueryCollectionPathNotExists(string $name, string $path) {
+	$basePath = dirname($path);
+
+	$settings = new Settings(
+		$basePath, Settings::DRIVER_SQLITE, Settings::DATABASE_IN_MEMORY);
+	$db = new Client($settings);
+	$this->assertFalse(isset($db[$name]));
+	$queryCollection = $db->queryCollection($name);
+}
+
+/**
  * @dataProvider \Gt\Database\Test\Helper::queryCollectionPathExistsProvider
  */
 public function testOffsetGet(string $name, string $path) {
-	$queryCollectionFactory = new QueryCollectionFactory(dirname($path));
-	$db = new Client($queryCollectionFactory);
+	$settings = new Settings(dirname($path),
+		Settings::DRIVER_SQLITE, Settings::DATABASE_IN_MEMORY);
+	$db = new Client($settings);
 
 	$offsetGot = $db->offsetGet($name);
 	$arrayAccessed = $db[$name];
@@ -57,18 +59,6 @@ public function testOffsetGet(string $name, string $path) {
 		$offsetGot->getDirectoryPath(),
 		$arrayAccessed->getDirectoryPath()
 	);
-}
-
-/**
- * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
- * @expectedException \Gt\Database\Query\QueryCollectionNotFoundException
- */
-public function testQueryCollectionPathNotExists(string $name, string $path) {
-	$queryCollectionFactory = new QueryCollectionFactory(dirname($path));
-	$db = new Client($queryCollectionFactory);
-
-	$this->assertFalse(isset($db[$name]));
-	$queryCollection = $db->queryCollection($name);
 }
 
 /**
