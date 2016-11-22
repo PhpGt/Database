@@ -3,6 +3,7 @@ namespace Gt\Database\Query;
 
 use DirectoryIterator;
 use Gt\Database\Connection\Driver;
+use Gt\Database\Result\ResultSet;
 
 class QueryCollection {
 
@@ -28,9 +29,9 @@ public function __call($name, $args) {
 
 // TODO: PHP 7.1 iterable, to allow Gt\Database\Gt\Database\PlaceholderMap
 public function query(
-string $name, /*iterable*/array $placeholderMap = []):Query {
-	$query = $this->queryFactory->create($name, $placeholderMap);
-	return $query;
+string $name, /*iterable*/array $placeholderMap = []):ResultSet {
+	$query = $this->queryFactory->create($name);
+	return $query->execute($placeholderMap);
 }
 
 public function getDirectoryPath():string {
