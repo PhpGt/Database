@@ -116,7 +116,6 @@ public function rewind() {
 
 public function current() {
 	$this->ensureFirstRowFetched();
-	var_dump($this->currentRow);
 	return $this->currentRow;
 }
 
