@@ -2,20 +2,23 @@
 namespace Gt\Database\Result;
 
 use Gt\Database\ReadOnlyArrayAccessException;
+use ArrayAccess;
+use Iterator;
+use Countable;
 use PDOStatement;
 
 /**
  * @property int $length Number of rows represented, synonym of
  * count and getLength
  */
-class ResultSet implements ArrayAccess, Iterator, Countable {
+class ResultSet implements ArrayAccess, /*Iterator,*/ Countable {
 
 /** @var \PDOStatement */
 private $statement;
 /** @var \Gt\Database\Result\Row */
 private $currentRow;
 /** @var array */
-private $allRows;
+private $allRows = [];
 /** @var int */
 private $index = 0;
 
