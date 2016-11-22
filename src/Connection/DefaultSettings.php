@@ -3,7 +3,7 @@ namespace Gt\Database\Connection;
 
 class DefaultSettings implements SettingsInterface {
 
-const CHARSET = "utf-8";
+const CHARSET = "utf8";
 const COLLATION = "utf8_unicode_ci";
 
 const DEFAULT_NAME = "default";
