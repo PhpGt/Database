@@ -3,6 +3,7 @@ namespace Gt\Database\Query;
 
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
+use Gt\Database\Result\ResultSet;
 
 class QueryCollectionTest extends \PHPUnit_Framework_TestCase {
 
@@ -18,7 +19,7 @@ public function testQueryCollectionQuery() {
 	);
 
 	$this->assertInstanceOf(
-		Query::class,
+		ResultSet::class,
 		$queryCollection->query("something")
 	);
 }
