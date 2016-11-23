@@ -9,13 +9,22 @@ use Illuminate\Database\Connection;
 
 class SqlQuery extends Query {
 
-public function getSql():string {
-	return file_get_contents($this->getFilePath());
+const SPECIAL_BINDINGS = [
+	"limit",
+	"offset",
+	"groupBy",
+	"orderBy",
+];
+
+public function getSql(array $bindings = []):string {
+	$sql = file_get_contents($this->getFilePath());
+	$sql = $this->injectSpecialBindings($sql, $bindings);
+	return $sql;
 }
 
 public function execute(array $bindings = []):ResultSet {
 	$pdo = $this->preparePdo();
-	$statement = $this->prepareStatement($pdo, $this->getSql());
+	$statement = $this->prepareStatement($pdo, $this->getSql($bindings));
 	$preparedBindings = $this->connection->prepareBindings($bindings);
 
 	try {
@@ -43,6 +52,20 @@ private function preparePdo() {
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 	return $pdo;
+}
+
+private function injectSpecialBindings(string $sql, array $bindings) {
+	foreach(self::SPECIAL_BINDINGS as $special) {
+		$specialPlaceholder = ":" . $special;
+
+		if(!array_key_exists($special, $bindings)) {
+			continue;
+		}
+		$sql = str_replace($specialPlaceholder, $bindings[$special], $sql);
+		unset($bindings[$special]);
+	}
+
+	return $sql;
 }
 
 }#
