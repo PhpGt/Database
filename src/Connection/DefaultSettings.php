@@ -1,6 +1,8 @@
 <?php
 namespace Gt\Database\Connection;
 
+use PDO;
+
 class DefaultSettings implements SettingsInterface {
 
 const CHARSET = "utf8";
@@ -12,6 +14,13 @@ const DEFAULT_DATABASE = Settings::DATABASE_IN_MEMORY;
 const DEFAULT_HOSTNAME = "localhost";
 const DEFAULT_USERNAME = "admin";
 const DEFAULT_PASSWORD = "";
+
+const DEFAULT_CONFIG = [
+	"options" => [
+		PDO::ATTR_EMULATE_PREPARES => true,
+		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+	]
+];
 
 public function getBaseDirectory():string {
 	return sys_get_temp_dir();

@@ -30,7 +30,7 @@ private $tablePrefix;
 /** @var string */
 private $connectionName;
 /** @var array */
-private $config;
+private $config = [];
 
 public function __construct(
 string $baseDirectory,
@@ -99,7 +99,11 @@ public function getConnectionSettings():array {
 		"prefix" => $this->getTablePrefix(),
 	];
 
-	return array_merge($currentSettings, $this->config);
+	return array_merge(
+		DefaultSettings::DEFAULT_CONFIG,
+		$currentSettings,
+		$this->config
+	);
 }
 
 }#
