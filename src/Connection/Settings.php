@@ -29,6 +29,8 @@ private $password;
 private $tablePrefix;
 /** @var string */
 private $connectionName;
+/** @var array */
+private $config;
 
 public function __construct(
 string $baseDirectory,
@@ -47,6 +49,10 @@ string $connectionName = DefaultSettings::DEFAULT_NAME) {
 	$this->password = $password;
 	$this->tablePrefix = $tablePrefix;
 	$this->connectionName = $connectionName;
+}
+
+public function setConfig(array $config) {
+	$this->config = $config;
 }
 
 public function getBaseDirectory():string {
@@ -82,7 +88,7 @@ public function getTablePrefix():string {
 }
 
 public function getConnectionSettings():array {
-	return [
+	$currentSettings = [
 		"driver" => $this->getDataSource(),
 		"host" => $this->getHostname(),
 		"database" => $this->getDatabase(),
@@ -92,6 +98,8 @@ public function getConnectionSettings():array {
 		"collation" => self::COLLATION,
 		"prefix" => $this->getTablePrefix(),
 	];
+
+	return array_merge($currentSettings, $this->config);
 }
 
 }#
