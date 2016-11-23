@@ -2,6 +2,7 @@
 namespace Gt\Database\Query;
 
 use Gt\Database\Connection\Driver;
+use Gt\Database\Result\ResultSet;
 
 abstract class Query {
 
@@ -22,5 +23,7 @@ public function __construct(string $filePath, Driver $driver) {
 public function getFilePath():string {
 	return $this->filePath;
 }
+
+abstract public function execute(array $bindings = []):ResultSet;
 
 }#

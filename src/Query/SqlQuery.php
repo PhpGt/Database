@@ -13,7 +13,7 @@ public function getSql():string {
 	return file_get_contents($this->getFilePath());
 }
 
-public function execute(array $bindings = []):PDOStatement {
+public function execute(array $bindings = []):ResultSet {
 	$pdo = $this->preparePdo();
 	$statement = $this->prepareStatement($pdo, $this->getSql());
 	$preparedBindings = $this->connection->prepareBindings($bindings);
@@ -25,10 +25,6 @@ public function execute(array $bindings = []):PDOStatement {
 		throw new PreparedStatementException(null, 0, $exception);
 	}
 
-	return $statement;
-}
-
-public function getResultSet(PDOStatement $statement):ResultSetInterface {
 	return new ResultSet($statement);
 }
 

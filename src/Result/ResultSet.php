@@ -2,6 +2,10 @@
 namespace Gt\Database\Result;
 
 use Gt\Database\ReadOnlyArrayAccessException;
+use PDO;
+use ArrayAccess;
+use Iterator;
+use Countable;
 use PDOStatement;
 
 /**
@@ -14,12 +18,10 @@ class ResultSet implements ArrayAccess, Iterator, Countable {
 private $statement;
 /** @var \Gt\Database\Result\Row */
 private $currentRow;
-/** @var array */
-private $allRows;
 /** @var int */
 private $index = 0;
 
-public function __construct(\PDOStatement $statement) {
+public function __construct(PDOStatement $statement) {
 	$this->statement = $statement;
 }
 
@@ -41,21 +43,53 @@ public function getLength():int {
 }
 
 public function count() {
-	$this->allRows = $this->statement->fetchAll();
-	return count($this->allRows);
+	return count($this->fetchAll());
 }
 
-public function fetch():Row {
-	$this->currentRow = new Row(
-		$this->statement->fetch()
-	);
-
-	return $this->currentRow;
+public function getAffectedRows():int {
+	return $this->affectedRows();
 }
 
 public function affectedRows():int {
 	return $this->statement->rowCount();
 }
+
+public function fetch(bool $skipIndexIncrement = false)/*:?Row*/ {
+	$record = $this->statement->fetch(
+		PDO::FETCH_ASSOC,
+		PDO::FETCH_ORI_NEXT,
+		$this->index
+	);
+
+	if(is_null($record)) {
+		$this->currentRow = null;
+		return null;
+	}
+	else {
+		$this->currentRow = new Row($record);
+	}
+
+	if(!$skipIndexIncrement) {
+		$this->index ++;
+	}
+
+	return $this->currentRow;
+}
+
+/**
+ * @return Row[]
+ */
+public function fetchAll():array {
+	$resultArray = [];
+
+	foreach($this->statement->fetchAll() as $record) {
+		$resultArray []= new Row($record);
+	}
+
+	return $resultArray;
+}
+
+// ArrayAccess /////////////////////////////////////////////////////////////////
 
 public function offsetExists($offset) {
 	$this->ensureFirstRowFetched();
@@ -75,9 +109,32 @@ public function offsetUnset($offset) {
 	throw new ReadOnlyArrayAccessException($offset);
 }
 
+// Iterator ////////////////////////////////////////////////////////////////////
+public function rewind() {
+	$this->index = 0;
+}
+
+public function current() {
+	$this->ensureFirstRowFetched();
+	return $this->currentRow;
+}
+
+public function key() {
+	return $this->index;
+}
+
+public function next() {
+	$this->fetch();
+}
+
+public function valid():bool {
+	return !empty($this->current());
+}
+
+
 private function ensureFirstRowFetched() {
 	if(is_null($this->currentRow)) {
-		$this->fetch();
+		$this->fetch(true);
 	}
 }
 

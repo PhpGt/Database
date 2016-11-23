@@ -10,12 +10,12 @@ use Gt\Database\Query\QueryCollection;
 use Gt\Database\Query\QueryCollectionFactory;
 
 /**
- * The DatabaseClient stores the factory for creating QueryCollections, and an
+ * The Database Client stores the factory for creating QueryCollections, and an
  * associative array of connection settings, allowing for multiple database
  * connections. If only one database connection is required, a name is not
  * required as the default name will be used.
  */
-class DatabaseClient implements ArrayAccess {
+class Client implements ArrayAccess {
 
 /** @var QueryCollectionFactory[] */
 private $queryCollectionFactoryArray;

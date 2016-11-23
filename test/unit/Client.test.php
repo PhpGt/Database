@@ -6,11 +6,11 @@ use Gt\Database\Connection\Settings;
 use Gt\Database\Query\QueryCollection;
 use Gt\Database\Query\QueryCollectionFactory;
 
-class DatabaseClientTest extends \PHPUnit_Framework_TestCase {
+class ClientTest extends \PHPUnit_Framework_TestCase {
 
 public function testInterface() {
-	$db = new DatabaseClient();
-	$this->assertInstanceOf("\Gt\Database\DatabaseClient", $db);
+	$db = new Client();
+	$this->assertInstanceOf("\Gt\Database\Client", $db);
 }
 
 /**
@@ -20,7 +20,7 @@ public function testQueryCollectionPathExists(string $name, string $path) {
 	$basePath = dirname($path);
 	$settings = new Settings(
 		$basePath, Settings::DRIVER_SQLITE, Settings::DATABASE_IN_MEMORY);
-	$db = new DatabaseClient($settings);
+	$db = new Client($settings);
 
 	$this->assertTrue(isset($db[$name]));
 	$queryCollection = $db->queryCollection($name);
@@ -39,7 +39,7 @@ public function testQueryCollectionPathNotExists(string $name, string $path) {
 
 	$settings = new Settings(
 		$basePath, Settings::DRIVER_SQLITE, Settings::DATABASE_IN_MEMORY);
-	$db = new DatabaseClient($settings);
+	$db = new Client($settings);
 	$this->assertFalse(isset($db[$name]));
 	$queryCollection = $db->queryCollection($name);
 }
@@ -50,7 +50,7 @@ public function testQueryCollectionPathNotExists(string $name, string $path) {
 public function testOffsetGet(string $name, string $path) {
 	$settings = new Settings(dirname($path),
 		Settings::DRIVER_SQLITE, Settings::DATABASE_IN_MEMORY);
-	$db = new DatabaseClient($settings);
+	$db = new Client($settings);
 
 	$offsetGot = $db->offsetGet($name);
 	$arrayAccessed = $db[$name];
@@ -65,7 +65,7 @@ public function testOffsetGet(string $name, string $path) {
  * @expectedException \Gt\Database\ReadOnlyArrayAccessException
  */
 public function testOffsetSet() {
-	$db = new DatabaseClient();
+	$db = new Client();
 	$db["test"] = "qwerty";
 }
 
@@ -73,7 +73,7 @@ public function testOffsetSet() {
  * @expectedException \Gt\Database\ReadOnlyArrayAccessException
  */
 public function testOffsetUnset() {
-	$db = new DatabaseClient();
+	$db = new Client();
 	unset($db["test"]);
 }
 
