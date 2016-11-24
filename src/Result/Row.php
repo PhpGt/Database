@@ -5,27 +5,20 @@ use ArrayAccess;
 
 class Row implements ArrayAccess {
 
-/** @var array */
-private $data;
-
-public function __construct(array $data) {
-	$this->data = $data;
-}
-
-public function offsetExists($offset) {
-	return isset($this->data[$offset]);
-}
-
 public function offsetGet($offset) {
-	return $this->data[$offset];
+	return $this->$offset;
 }
 
 public function offsetSet($offset, $value) {
-	$this->data[$offset] = $value;
+	$this->$offset = $value;
 }
 
 public function offsetUnset($offset) {
-	unset($this->data[$offset]);
+	unset($this->$offset);
+}
+
+public function offsetExists($offset) {
+	return isset($this->$offset);
 }
 
 }#

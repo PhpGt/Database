@@ -7,12 +7,13 @@ use ArrayAccess;
 use Iterator;
 use Countable;
 use PDOStatement;
+use JsonSerializable;
 
 /**
  * @property int $length Number of rows represented, synonym of
  * count and getLength
  */
-class ResultSet implements ArrayAccess, Iterator, Countable {
+class ResultSet implements ArrayAccess, Iterator, Countable, JsonSerializable {
 
 /** @var \PDOStatement */
 private $statement;
@@ -56,18 +57,18 @@ public function affectedRows():int {
 }
 
 public function fetch(bool $skipIndexIncrement = false)/*:?Row*/ {
-	$record = $this->statement->fetch(
-		PDO::FETCH_ASSOC,
+	$row = $this->statement->fetch(
+		PDO::FETCH_CLASS,
 		PDO::FETCH_ORI_NEXT,
 		$this->index
 	);
 
-	if(is_null($record)) {
+	if(is_null($row)) {
 		$this->currentRow = null;
 		return null;
 	}
 	else {
-		$this->currentRow = new Row($record);
+		$this->currentRow = $row;
 	}
 
 	if(!$skipIndexIncrement) {
@@ -83,8 +84,8 @@ public function fetch(bool $skipIndexIncrement = false)/*:?Row*/ {
 public function fetchAll():array {
 	$resultArray = [];
 
-	foreach($this->statement->fetchAll() as $record) {
-		$resultArray []= new Row($record);
+	foreach($this->statement->fetchAll() as $row) {
+		$resultArray []= $row;
 	}
 
 	return $resultArray;
@@ -137,6 +138,12 @@ private function ensureFirstRowFetched() {
 	if(is_null($this->currentRow)) {
 		$this->fetch(true);
 	}
+}
+
+// JsonSerializable ////////////////////////////////////////////////////////////
+
+public function jsonSerialize() {
+	return $this->fetchAll();
 }
 
 }#
