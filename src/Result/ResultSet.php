@@ -22,6 +22,7 @@ private $currentRow;
 private $index = 0;
 
 public function __construct(PDOStatement $statement) {
+	$statement->setFetchMode(PDO::FETCH_CLASS, Row::class);
 	$this->statement = $statement;
 }
 
