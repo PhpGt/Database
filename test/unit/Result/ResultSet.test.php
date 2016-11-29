@@ -43,6 +43,12 @@ public function testIteration() {
 	$this->assertEquals(3, $iterationCount);
 }
 
+public function testLastInsertId() {
+	$resultSet = new ResultSet($this->getStatementMock(), "123");
+	$this->assertEquals(123, $resultSet->lastInsertId);
+	$this->assertEquals(123, $resultSet->getLastInsertId());
+}
+
 private function getStatementMock():PDOStatement {
 	$statement = $this->createMock(PDOStatement::class);
 	$statement->method("fetch")
