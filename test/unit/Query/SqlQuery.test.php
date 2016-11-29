@@ -63,16 +63,42 @@ string $queryName, string $queryCollectionPath, string $queryPath) {
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
  */
 public function testPreparedStatement(
-string $queryName, string $queryCollectionPath, string $queryPath) {
+	string $queryName,
+	string $queryCollectionPath,
+	string $queryPath
+) {
 	file_put_contents($queryPath, "select * from test_table");
 	$query = new SqlQuery($queryPath, $this->driverSingleton());
-	$statement = $query->execute();
+	$resultSet = $query->execute();
 
 	foreach(["one", "two", "three"] as $i => $name) {
-		$row = $statement->fetch();
+		$row = $resultSet->fetch();
 		$this->assertEquals($i + 1, $row["id"]);
 		$this->assertEquals($name, $row["name"]);
 	}
+}
+
+/**
+ * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
+ */
+public function testLastInsertId(
+	string $queryName,
+	string $queryCollectionPath,
+	string $queryPath
+) {
+	$uuid = uniqid("test-");
+	file_put_contents(
+		$queryPath, "insert into test_table (name) values ('$uuid')");
+	$query = new SqlQuery($queryPath, $this->driverSingleton());
+	$resultSet = $query->execute();
+	$id = $resultSet->lastInsertId;
+	$this->assertNotEmpty($id);
+
+	file_put_contents($queryPath, "select * from test_table where id = $id");
+	$query = new SqlQuery($queryPath, $this->driverSingleton());
+	$resultSet = $query->execute();
+
+	$this->assertEquals($uuid, $resultSet["name"]);
 }
 
 private function driverSingleton():Driver {

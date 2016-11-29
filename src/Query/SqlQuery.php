@@ -26,15 +26,17 @@ public function execute(array $bindings = []):ResultSet {
 	$pdo = $this->preparePdo();
 	$statement = $this->prepareStatement($pdo, $this->getSql($bindings));
 	$preparedBindings = $this->connection->prepareBindings($bindings);
+	$lastInsertId = null;
 
 	try {
 		$statement->execute($preparedBindings);
+		$lastInsertId = $pdo->lastInsertId();
 	}
 	catch(PDOException $exception) {
 		throw new PreparedStatementException(null, 0, $exception);
 	}
 
-	return new ResultSet($statement);
+	return new ResultSet($statement, $lastInsertId);
 }
 
 public function prepareStatement(PDO $pdo, string $sql):PDOStatement {
