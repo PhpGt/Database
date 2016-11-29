@@ -21,10 +21,13 @@ private $statement;
 private $currentRow;
 /** @var int */
 private $index = 0;
+/** @var string */
+private $insertId = null;
 
-public function __construct(PDOStatement $statement) {
+public function __construct(PDOStatement $statement, string $insertId = null) {
 	$statement->setFetchMode(PDO::FETCH_CLASS, Row::class);
 	$this->statement = $statement;
+	$this->insertId = $insertId;
 }
 
 public function __get($name) {
@@ -54,6 +57,14 @@ public function getAffectedRows():int {
 
 public function affectedRows():int {
 	return $this->statement->rowCount();
+}
+
+public function getLastInsertId():string {
+	return $this->lastInsertId();
+}
+
+public function lastInsertId():string {
+	return $this->insertId;
 }
 
 public function fetch(bool $skipIndexIncrement = false)/*:?Row*/ {
