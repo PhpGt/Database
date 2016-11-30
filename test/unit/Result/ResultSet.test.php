@@ -49,6 +49,12 @@ public function testLastInsertId() {
 	$this->assertEquals(123, $resultSet->getLastInsertId());
 }
 
+public function testCountTwice() {
+	$resultSet = new ResultSet($this->getStatementMock());
+	$affectedRows = count($resultSet);
+	$this->assertCount($affectedRows, $resultSet);
+}
+
 private function getStatementMock():PDOStatement {
 	$statement = $this->createMock(PDOStatement::class);
 	$statement->method("fetch")
