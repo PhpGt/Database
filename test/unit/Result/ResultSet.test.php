@@ -51,8 +51,8 @@ public function testLastInsertId() {
 
 public function testCountTwice() {
 	$resultSet = new ResultSet($this->getStatementMock());
-	$affectedRows = count($resultSet);
-	$this->assertCount($affectedRows, $resultSet);
+	$count = count($resultSet);
+	$this->assertCount($count, $resultSet);
 }
 
 private function getStatementMock():PDOStatement {
