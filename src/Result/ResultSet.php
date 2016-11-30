@@ -23,6 +23,8 @@ private $currentRow;
 private $index = 0;
 /** @var string */
 private $insertId = null;
+/** @var Row[] */
+private $fetchAllCache = null;
 
 public function __construct(PDOStatement $statement, string $insertId = null) {
 	$statement->setFetchMode(PDO::FETCH_CLASS, Row::class);
@@ -93,13 +95,17 @@ public function fetch(bool $skipIndexIncrement = false)/*:?Row*/ {
  * @return Row[]
  */
 public function fetchAll():array {
-	$resultArray = [];
-
-	foreach($this->statement->fetchAll() as $row) {
-		$resultArray []= $row;
+	if(!is_null($this->fetchAllCache)) {
+		return $this->fetchAllCache;
 	}
 
-	return $resultArray;
+	$this->fetchAllCache = [];
+
+	foreach($this->statement->fetchAll() as $row) {
+		$this->fetchAllCache []= $row;
+	}
+
+	return $this->fetchAllCache;
 }
 
 // ArrayAccess /////////////////////////////////////////////////////////////////
