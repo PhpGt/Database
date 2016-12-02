@@ -69,6 +69,11 @@ public function lastInsertId():string {
 	return $this->insertId;
 }
 
+public function hasResult():bool {
+	$this->ensureFirstRowFetched();
+	return !is_null($this->currentRow);
+}
+
 public function fetch(bool $skipIndexIncrement = false)/*:?Row*/ {
 	$row = $this->statement->fetch(
 		PDO::FETCH_CLASS,
