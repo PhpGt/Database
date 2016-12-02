@@ -27,7 +27,6 @@ private $insertId = null;
 private $fetchAllCache = null;
 
 public function __construct(PDOStatement $statement, string $insertId = null) {
-	$statement->setFetchMode(PDO::FETCH_CLASS, Row::class);
 	$this->statement = $statement;
 	$this->insertId = $insertId;
 }
@@ -75,17 +74,18 @@ public function hasResult():bool {
 }
 
 public function fetch(bool $skipIndexIncrement = false)/*:?Row*/ {
-	$row = $this->statement->fetch(
-		PDO::FETCH_CLASS,
+	$data = $this->statement->fetch(
+		PDO::FETCH_ASSOC,
 		PDO::FETCH_ORI_NEXT,
 		$this->index
 	);
 
-	if(is_null($row)) {
+	if(empty($data)) {
 		$this->currentRow = null;
 		return null;
 	}
 	else {
+		$row = new Row($data);
 		$this->currentRow = $row;
 	}
 
