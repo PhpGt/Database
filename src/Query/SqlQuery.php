@@ -26,6 +26,7 @@ public function execute(array $bindings = []):ResultSet {
 	$pdo = $this->preparePdo();
 	$statement = $this->prepareStatement($pdo, $this->getSql($bindings));
 	$preparedBindings = $this->connection->prepareBindings($bindings);
+	$preparedBindings = $this->ensureParameterCharacter($preparedBindings);
 	$lastInsertId = null;
 
 	try {
@@ -68,6 +69,17 @@ private function injectSpecialBindings(string $sql, array $bindings) {
 	}
 
 	return $sql;
+}
+
+private function ensureParameterCharacter(array $bindings) {
+	foreach($bindings as $key => $value) {
+		if(substr($key, 0, 1) !== ":") {
+			$bindings[":" . $key] = $value;
+			unset($bindings[$key]);
+		}
+	}
+
+	return $bindings;
 }
 
 }#
