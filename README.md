@@ -65,6 +65,8 @@ user=admin
 pass=
 ```
 
+Within the `_migration` directory, prefix the queries numerically so they are [natrually ordered](http://php.net/manual/en/function.natsort.php). A `_migration` table will be created on the database to store the last-executed migration number.
+
 ## Compatible database engines.
 Compatibility is provided for the following database providers:
 
