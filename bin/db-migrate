@@ -1,20 +1,17 @@
 #!/usr/bin/env php
 <?php
-$parentAutoLoadPath = __DIR__ . "/../autoload.php";
-$siblingAutoLoadPath = __DIR__ . "/../vendor/autoload.php";
+$autoloadPath = "";
+$autoloadScriptName = "autoload.php";
+$autoloadTryDir = __DIR__;
+do {
+	$autoloadTryDir = realpath($autoloadTryDir . "/..");
+	if(is_dir($autoloadTryDir . "/vendor")) {
+		$autoloadTryDir = $autoloadTryDir . "/vendor";
+	}
+	$autoloadPath = $autoloadTryDir . "/" . $autoloadScriptName;
+} while(!file_exists($autoloadPath) && $autoloadTryDir !== "/");
 
-if(file_exists($parentAutoLoadPath)) {
-	require($parentAutoLoadPath);
-}
-else if(file_exists($siblingAutoLoadPath)) {
-	require($siblingAutoLoadPath);
-}
-else {
-	echo "Error loading autoloader - have you performed `composer install`?";
-	echo PHP_EOL;
-	var_dump($parentAutoLoadPath, $siblingAutoLoadPath);
-	exit(1);
-}
+require($autoloadPath);
 
 $defaultConfig = [
 	"source" => "mysql",
