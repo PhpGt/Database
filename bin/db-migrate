@@ -47,5 +47,9 @@ $settings = new Gt\Database\Connection\Settings(
 	$config["pass"]
 );
 
+$table = $config["migration_table"];
+
 $db = new Gt\Database\Client($settings);
-var_dump($db);die();
+$result = $db->rawQuery(
+	"select migration_count from $table order by 1 desc limit 1");
+var_dump($result);
