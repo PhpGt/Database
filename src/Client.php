@@ -8,6 +8,7 @@ use Gt\Database\Connection\Settings;
 use Gt\Database\Connection\SettingsInterface;
 use Gt\Database\Query\QueryCollection;
 use Gt\Database\Query\QueryCollectionFactory;
+use Gt\Database\Result\ResultSet;
 
 /**
  * The Database Client stores the factory for creating QueryCollections, and an
@@ -51,14 +52,25 @@ private function storeQueryCollectionFactoryFromSettings(array $settingsArray) {
  * Synonym for ArrayAccess::offsetGet
  */
 public function queryCollection(
-string $queryCollectionName,
-string $connectionName = DefaultSettings::DEFAULT_NAME)
-:QueryCollection {
+	string $queryCollectionName,
+	string $connectionName = DefaultSettings::DEFAULT_NAME
+):QueryCollection {
 	$driver = $this->driverArray[$connectionName];
 	return $this->queryCollectionFactoryArray[$connectionName]->create(
 		$queryCollectionName,
 		$driver
 	);
+}
+
+public function rawQuery(
+	string $query,
+	string $connectionName = DefaultSettings::DEFAULT_NAME
+):ResultSet {
+	$driver = $this->driverArray[$connectionName];
+	$connection = $driver->getConnection();
+	$pdo = $connection->getPdo();
+	$statement = $pdo->query($query);
+	return new ResultSet($statement, $pdo->lastInsertId());
 }
 
 public function offsetExists($offset) {
