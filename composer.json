@@ -2,19 +2,24 @@
     "name": "phpgt/database",
     "description": "Separates database logic through a simple interface.",
     "type": "library",
+
     "require": {
         "illuminate/database": "^5.0"
     },
+
     "require-dev": {
         "phpunit/phpunit": "^5.0"
     },
+
     "license": "MIT",
+
     "authors": [
         {
             "name": "Greg Bowler",
             "email": "greg.bowler@g105b.com"
         }
     ],
+
     "autoload": {
         "psr-4": {
             "Gt\\Database\\": "./src"
