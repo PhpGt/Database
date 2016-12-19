@@ -1,6 +1,18 @@
 #!/usr/bin/env php
 <?php
-require __DIR__ . "/../vendor/autoload.php";
+$parentAutoLoadPath = __DIR__ . "/../autoload.php";
+$siblingAutoLoadPath = __DIR__ . "/../vendor/autoload.php";
+
+if(file_exists($parentAutoLoadPath)) {
+	require($parentAutoLoadPath);
+}
+else if(file_exists($siblingAutoLoadPath)) {
+	require($siblingAutoLoadPath);
+}
+else {
+	echo "Error loading autoloader - have you performed `composer install`?";
+	exit(1);
+}
 
 $defaultConfig = [
 	"migration_path" => "src/query/_migration",
