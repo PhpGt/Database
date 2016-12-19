@@ -15,7 +15,10 @@ else {
 }
 
 $defaultConfig = [
-	"migration_path" => "src/query/_migration",
+	"source" => "mysql",
+	"base_path" => "src/query",
+	"migration_path" => "_migration",
+	"migration_table" => "_migration",
 	"host" => "localhost",
 	"user" => "admin",
 	"pass" => "",
@@ -33,4 +36,15 @@ if(file_exists($configFilePath)) {
 }
 
 $config = array_merge($defaultConfig, $config);
-var_dump($config);
+
+$settings = new Gt\Database\Connection\Settings(
+	$config["base_path"],
+	$config["source"],
+	$config["database_name"],
+	$config["host"],
+	$config["user"],
+	$config["pass"]
+);
+
+$db = new Gt\Database\Client($settings);
+var_dump($db);die();
