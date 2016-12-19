@@ -50,6 +50,21 @@ $this->doSomethingWithCommentContent(
 
 ```
 
+## Database migrations.
+
+This repository can be used to perform database migrations whether or not other database access layers are used.
+
+In the `[database]` section of the project's `config.ini`, set the relative path to the directory containing your migrations, along with the connection settings:
+
+```ini
+[database]
+migration_path=src/query/_migration
+database_name=my_database
+host=localhost
+user=admin
+pass=
+```
+
 ## Compatible database engines.
 Compatibility is provided for the following database providers:
 
