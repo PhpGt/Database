@@ -1,5 +1,9 @@
 #!/usr/bin/env php
 <?php
+/**
+ * Database migration iterates over a set of incremental schema changes and
+ * stores the currently-migrated schema version within the database itself.
+ */
 $autoloadPath = "";
 $repoBasePath = "";
 $currentDir = __DIR__;
@@ -17,7 +21,7 @@ require($autoloadPath);
 
 $defaultConfig = [
 	"source" => "mysql",
-	"base_path" => "src/query",
+	"query_path" => "src/query",
 	"migration_path" => "_migration",
 	"migration_table" => "_migration",
 	"host" => "localhost",
@@ -40,19 +44,31 @@ if(file_exists($configFilePath)) {
 
 $config = array_merge($defaultConfig, $config);
 
+// Environment variables override config variables which override defaults.
 $settings = new Gt\Database\Connection\Settings(
-	$config["base_path"],
-	$config["source"],
-	$config["database_name"],
-	$config["host"],
-	$config["user"],
-	$config["pass"]
+	getenv("database_query_path") ?: $config["query_path"],
+	getenv("database_dsn") ?: $config["dsn"],
+// Do not specify schema, as this may need deploying as part of the migration.
+	"",
+	getenv("database_host") ?: $config["host"],
+	getenv("database_username") ?: $config["username"],
+	getenv("database_password") ?: $config["password"]
 );
 
+$schema = getenv("database_schema") ?: $config["schema"];
 $migrationCount = 0;
-
 $table = $config["migration_table"];
+
 $db = new Gt\Database\Client($settings);
+
+try {
+	$db->rawQuery("create database if not exists `$schema`");
+}
+catch(\Exception $exception) {
+	echo "Error creating schema `$schema`." . PHP_EOL;
+	echo $exception->getMessage();
+	exit(1);
+}
 
 try {
 	$result = $db->rawQuery(
