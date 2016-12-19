@@ -26,7 +26,7 @@
         }
     },
 
-    "bin": {
+    "bin": [
         "bin/db-migrate"
-    }
+    ]
 }
