@@ -1,16 +1,18 @@
 #!/usr/bin/env php
 <?php
 $autoloadPath = "";
-$autoloadScriptName = "autoload.php";
-$autoloadTryDir = __DIR__;
-do {
-	$autoloadTryDir = realpath($autoloadTryDir . "/..");
-	if(is_dir($autoloadTryDir . "/vendor")) {
-		$autoloadTryDir = $autoloadTryDir . "/vendor";
-	}
-	$autoloadPath = $autoloadTryDir . "/" . $autoloadScriptName;
-} while(!file_exists($autoloadPath) && $autoloadTryDir !== "/");
+$repoBasePath = "";
+$currentDir = __DIR__;
 
+while(empty($autoloadPath) && empty($repoBasePath) && $currentDir !== "/") {
+	$currentDir = realpath(__DIR__ . "/..");
+	if(is_file("$currentDir/autoload.php")) {
+		$autoloadPath = "$currentDir/autoload.php";
+	}
+	else if(is_dir("$currentDir/vendor")) {
+		$repoBasePath = $currentDir;
+	}
+}
 require($autoloadPath);
 
 $defaultConfig = [
