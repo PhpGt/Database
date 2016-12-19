@@ -9,7 +9,7 @@ while(empty($autoloadPath) && empty($repoBasePath) && $currentDir !== "/") {
 	if(is_file("$currentDir/autoload.php")) {
 		$autoloadPath = "$currentDir/autoload.php";
 	}
-	else if(is_dir("$currentDir/vendor")) {
+	if(is_dir("$currentDir/vendor")) {
 		$repoBasePath = $currentDir;
 	}
 }
