@@ -4,7 +4,7 @@ $autoloadPath = "";
 $repoBasePath = "";
 $currentDir = __DIR__;
 
-while(empty($autoloadPath) && empty($repoBasePath) && $currentDir !== "/") {
+while((empty($autoloadPath) || empty($repoBasePath)) && $currentDir !== "/") {
 	$currentDir = realpath($currentDir . "/..");
 	if(is_file("$currentDir/autoload.php")) {
 		$autoloadPath = "$currentDir/autoload.php";
