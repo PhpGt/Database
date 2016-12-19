@@ -11,6 +11,8 @@ else if(file_exists($siblingAutoLoadPath)) {
 }
 else {
 	echo "Error loading autoloader - have you performed `composer install`?";
+	echo PHP_EOL;
+	var_dump($parentAutoLoadPath, $siblingAutoLoadPath);
 	exit(1);
 }
 
