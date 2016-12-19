@@ -23,9 +23,10 @@ private $currentRow;
 private $index = 0;
 /** @var string */
 private $insertId = null;
+/** @var Row[] */
+private $fetchAllCache = null;
 
 public function __construct(PDOStatement $statement, string $insertId = null) {
-	$statement->setFetchMode(PDO::FETCH_CLASS, Row::class);
 	$this->statement = $statement;
 	$this->insertId = $insertId;
 }
@@ -67,18 +68,24 @@ public function lastInsertId():string {
 	return $this->insertId;
 }
 
+public function hasResult():bool {
+	$this->ensureFirstRowFetched();
+	return !is_null($this->currentRow);
+}
+
 public function fetch(bool $skipIndexIncrement = false)/*:?Row*/ {
-	$row = $this->statement->fetch(
-		PDO::FETCH_CLASS,
+	$data = $this->statement->fetch(
+		PDO::FETCH_ASSOC,
 		PDO::FETCH_ORI_NEXT,
 		$this->index
 	);
 
-	if(is_null($row)) {
+	if(empty($data)) {
 		$this->currentRow = null;
 		return null;
 	}
 	else {
+		$row = new Row($data);
 		$this->currentRow = $row;
 	}
 
@@ -93,13 +100,17 @@ public function fetch(bool $skipIndexIncrement = false)/*:?Row*/ {
  * @return Row[]
  */
 public function fetchAll():array {
-	$resultArray = [];
-
-	foreach($this->statement->fetchAll() as $row) {
-		$resultArray []= $row;
+	if(!is_null($this->fetchAllCache)) {
+		return $this->fetchAllCache;
 	}
 
-	return $resultArray;
+	$this->fetchAllCache = [];
+
+	foreach($this->statement->fetchAll() as $row) {
+		$this->fetchAllCache []= $row;
+	}
+
+	return $this->fetchAllCache;
 }
 
 // ArrayAccess /////////////////////////////////////////////////////////////////

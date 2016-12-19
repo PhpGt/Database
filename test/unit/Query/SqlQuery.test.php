@@ -101,6 +101,17 @@ public function testLastInsertId(
 	$this->assertEquals($uuid, $resultSet["name"]);
 }
 
+public function testSubsequentCounts() {
+	$testData = Helper::queryPathExistsProvider();
+	$queryPath = $testData[0][2];
+	file_put_contents($queryPath, "select * from test_table");
+	$query = new SqlQuery($queryPath, $this->driverSingleton());
+	$resultSet = $query->execute();
+	$count = count($resultSet);
+	$this->assertGreaterThan(0, $count);
+	$this->assertCount($count, $resultSet);
+}
+
 private function driverSingleton():Driver {
 	if(is_null($this->driver)) {
 		$settings = new Settings(
