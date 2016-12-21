@@ -59,11 +59,19 @@ In the `[database]` section of the project's `config.ini`, set the relative path
 ```ini
 [database]
 migration_path=src/query/_migration
-database_name=my_database
+schema_name=my_database
 host=localhost
-user=admin
-pass=
+username=admin
+password=
 ```
+
+Alternatively, set the following environment variables:
+
++ `database_migration_path`
++ `database_schema_name`
++ `database_host`
++ `database_username`
++ `database_password`
 
 Within the `_migration` directory, prefix the queries numerically so they are [natrually ordered](http://php.net/manual/en/function.natsort.php). A `_migration` table will be created on the database to store the last-executed migration number.
 
