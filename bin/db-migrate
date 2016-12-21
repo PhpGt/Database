@@ -25,8 +25,8 @@ $defaultConfig = [
 	"migration_path" => "_migration",
 	"migration_table" => "_migration",
 	"host" => "localhost",
-	"user" => "admin",
-	"pass" => "",
+	"username" => "admin",
+	"password" => "",
 ];
 
 $configFilePath = "$repoBasePath/config.ini";
