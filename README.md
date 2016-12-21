@@ -59,6 +59,7 @@ In the `[database]` section of the project's `config.ini`, set the relative path
 ```ini
 [database]
 migration_path=src/query/_migration
+dsn=mysql
 schema_name=my_database
 host=localhost
 username=admin
@@ -69,6 +70,7 @@ Alternatively, set the following environment variables:
 
 + `database_migration_path`
 + `database_schema_name`
++ `database_dsn`
 + `database_host`
 + `database_username`
 + `database_password`

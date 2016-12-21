@@ -20,7 +20,7 @@ while((empty($autoloadPath) || empty($repoBasePath)) && $currentDir !== "/") {
 require($autoloadPath);
 
 $defaultConfig = [
-	"source" => "mysql",
+	"dsn" => "mysql",
 	"query_path" => "src/query",
 	"migration_path" => "_migration",
 	"migration_table" => "_migration",
