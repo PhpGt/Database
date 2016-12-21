@@ -63,6 +63,7 @@ $db = new Gt\Database\Client($settings);
 
 try {
 	$db->rawQuery("create database if not exists `$schema`");
+	$db->rawQuery("use `$schema`");
 }
 catch(\Exception $exception) {
 	echo "Error creating schema `$schema`." . PHP_EOL;
