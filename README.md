@@ -78,14 +78,15 @@ Alternatively, set the following environment variables:
 Within the `_migration` directory, prefix the queries numerically so they are [natrually ordered](http://php.net/manual/en/function.natsort.php). A `_migration` table will be created on the database to store the last-executed migration number.
 
 ## Compatible database engines
+
 Compatibility is provided for the following database providers:
 
-* MySQL.
-* Postgres.
-* SQLite.
-* SQL Server.
-* Mongo (planned).
-* CouchDB (planned).
+* MySQL
+* Postgres
+* SQLite
+* SQL Server
+* Mongo (planned)
+* CouchDB (planned)
 
 Contains your application's database scripts within a simple and standardised interface, separating database access from your page logic.
 
@@ -134,18 +135,6 @@ and
 order by
 	`last_name`
 ```
-
-## Database engine compatibility
-
-Compatibility is provided for the following database providers:
-
-+ MySQL
-+ Test
-+ Postgres
-+ SQLite
-+ SQL Server
-+ Mongo (planned)
-+ CouchDB (planned)
 
 # Building queries in PHP
 
