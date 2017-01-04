@@ -117,7 +117,6 @@ foreach($migrationFileList as $file) {
 
 	$fileNumber = (int)substr($file, 0, strpos($file, "-"));
 	if($fileNumber <= $migrationCount) {
-		echo "Skipping $fileNumber, already migrated." . PHP_EOL;
 		continue;
 	}
 
