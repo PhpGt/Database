@@ -6,9 +6,9 @@ Encloses your application's database scripts within a simple and standardised in
 
 // TODO: Add Shields.io badges.
 
-## Example usage.
+## Example usage
 
-### Calling an SQL query.
+### Calling an SQL query
 
 From within an example page, the following PHP code can be used to call the `getInCourse.sql` file, safely injecting the parameters into the SQL, returning the result as an array for outputting to the page.
 
@@ -50,7 +50,7 @@ $this->doSomethingWithCommentContent(
 
 ```
 
-## Database migrations.
+## Database migrations
 
 This repository can be used to perform database migrations whether or not other database access layers are used.
 
@@ -77,7 +77,7 @@ Alternatively, set the following environment variables:
 
 Within the `_migration` directory, prefix the queries numerically so they are [natrually ordered](http://php.net/manual/en/function.natsort.php). A `_migration` table will be created on the database to store the last-executed migration number.
 
-## Compatible database engines.
+## Compatible database engines
 Compatibility is provided for the following database providers:
 
 * MySQL.
@@ -89,9 +89,9 @@ Compatibility is provided for the following database providers:
 
 Contains your application's database scripts within a simple and standardised interface, separating database access from your page logic.
 
-## Examples.
+## Examples
 
-### Calling an SQL query directly.
+### Calling an SQL query directly
 
 From within an example page, the following PHP code can be used to call the `getInCourse.sql` file, safely injecting the parameters into the SQL, returning the result as an array for outputting to the page.
 
@@ -135,7 +135,7 @@ order by
 	`last_name`
 ```
 
-## Database engine compatibility.
+## Database engine compatibility
 
 Compatibility is provided for the following database providers:
 
@@ -146,7 +146,7 @@ Compatibility is provided for the following database providers:
 + Mongo (planned)
 + CouchDB (planned)
 
-# Building queries in PHP.
+# Building queries in PHP
 
 Instead of having a raw SQL query to inject parameters into, the query can be built in PHP. As an example, we will replace `src/query/student/getInCourse.sql` with `src/query/student/getInCourse.php`.
 
@@ -168,7 +168,7 @@ public function go() {
 
 }#
 ```
-## Manipulating SQL results in PHP.
+## Manipulating SQL results in PHP
 
 A combination of the two methods of data access can be used to extend existing SQL queries. Using the SQL query from the first example above, the query result can be manipulated further by chained methods as follows:
 
