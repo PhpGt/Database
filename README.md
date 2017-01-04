@@ -77,6 +77,8 @@ Alternatively, set the following environment variables:
 
 Within the `_migration` directory, prefix the queries numerically so they are [natrually ordered](http://php.net/manual/en/function.natsort.php). A `_migration` table will be created on the database to store the last-executed migration number.
 
+To initiate a migration, such as during your build process or each time a database change is made locally, run the `vendor/bin/db-migration` script.
+
 ## Compatible database engines
 
 Compatibility is provided for the following database providers:
