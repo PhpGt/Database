@@ -140,6 +140,7 @@ order by
 Compatibility is provided for the following database providers:
 
 + MySQL
++ Test
 + Postgres
 + SQLite
 + SQL Server
