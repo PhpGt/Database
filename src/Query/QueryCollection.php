@@ -30,6 +30,7 @@ public function __call($name, $args) {
 // TODO: PHP 7.1 iterable, to allow Gt\Database\Gt\Database\PlaceholderMap
 public function query(
 string $name, /*iterable*/array $placeholderMap = []):ResultSet {
+	/** @var Query */
 	$query = $this->queryFactory->create($name);
 	return $query->execute($placeholderMap);
 }
