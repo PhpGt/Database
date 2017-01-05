@@ -10,6 +10,8 @@ class QueryCollectionFactory {
 private $driver;
 /** @var string */
 private $basePath;
+/** @var array */
+private $queryCollectionCache = [];
 
 public function __construct(Driver $driver) {
 	$this->driver = $driver;
@@ -18,13 +20,21 @@ public function __construct(Driver $driver) {
 
 public function create(string $name)
 :QueryCollection {
-	$directoryPath = $this->locateDirectory($name);
+	if(!isset($this->queryCollectionCache[$name])) {
+		$directoryPath = $this->locateDirectory($name);
 
-	if(is_null($directoryPath)) {
-		throw new QueryCollectionNotFoundException($name);
+		if(is_null($directoryPath)) {
+			throw new QueryCollectionNotFoundException($name);
+		}
+
+		$this->queryCollectionCache[$name] = new QueryCollection(
+			$directoryPath,
+			$this->driver
+		);
 	}
 
-	return new QueryCollection($directoryPath, $this->driver);
+	return $this->queryCollectionCache[$name];
+
 }
 
 public function directoryExists(string $name):bool {
