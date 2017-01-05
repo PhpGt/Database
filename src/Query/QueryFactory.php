@@ -33,7 +33,11 @@ public function findQueryFilePath(string $name):string {
 			continue;
 		}
 
-		$this->getExtensionIfValid($fileInfo);
+		$fileNameNoExtension = strtok($fileInfo->getFilename(), ".");
+		if($fileNameNoExtension !== $name) {
+			continue;
+		}
+
 		return $fileInfo->getRealPath();
 	}
 

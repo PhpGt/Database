@@ -3,6 +3,7 @@ namespace Gt\Database\Query;
 
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
+use Gt\Database\Test\Helper;
 
 class QueryFactoryTest extends \PHPUnit_Framework_TestCase {
 
@@ -49,7 +50,9 @@ string $queryName, string $directoryOfQueries) {
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
  */
 public function testQueryCreated(
-string $queryName, string $directoryOfQueries) {
+	string $queryName,
+	string $directoryOfQueries
+) {
 	$queryFactory = new QueryFactory(
 		$directoryOfQueries,
 		new Driver(new DefaultSettings())
@@ -59,6 +62,28 @@ string $queryName, string $directoryOfQueries) {
 		"\Gt\Database\Query\Query",
 		$query
 	);
+}
+
+public function testSelectsCorrectFile() {
+	$queryCollectionData = Helper::queryCollectionPathExistsProvider();
+	$queryCollectionName = $queryCollectionData[0][0];
+	$queryCollectionPath = $queryCollectionData[0][1];
+
+	$queryFactory = new QueryFactory(
+		$queryCollectionPath,
+		new Driver(new DefaultSettings())
+	);
+
+	$queryNames = [uniqid("q1-"), uniqid("q2-"), uniqid("q3-"), uniqid("q4-")];
+	$queryFileList = [];
+	foreach($queryNames as $queryName) {
+		$queryPath = $queryCollectionPath . "/$queryName.sql";
+		touch($queryPath);
+
+		$query = $queryFactory->create($queryName);
+		$this->assertNotContains($query->getFilePath(), $queryFileList);
+		$queryFileList[$queryName] = $query->getFilePath();
+	}
 }
 
 }#
