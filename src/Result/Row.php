@@ -2,9 +2,10 @@
 namespace Gt\Database\Result;
 
 use ArrayAccess;
+use Countable;
 use Iterator;
 
-class Row implements ArrayAccess, Iterator {
+class Row implements ArrayAccess, Countable, Iterator {
 
 /** @var array */
 private $data;
@@ -31,6 +32,12 @@ public function offsetUnset($offset) {
 
 public function offsetExists($offset) {
 	return isset($this->data[$offset]);
+}
+
+// Countable ///////////////////////////////////////////////////////////////////
+
+public function count() {
+	return count($this->data);
 }
 
 // Iterator ////////////////////////////////////////////////////////////////////
