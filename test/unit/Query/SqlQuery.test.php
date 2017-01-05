@@ -112,6 +112,28 @@ public function testSubsequentCounts() {
 	$this->assertCount($count, $resultSet);
 }
 
+public function testSubsequentCalls() {
+	$testData = [
+		Helper::queryPathExistsProvider(),
+		Helper::queryPathExistsProvider(),
+	];
+	$queryPath = [
+		$testData[0][0][2],
+		$testData[1][0][2],
+	];
+
+	$lastTestWord = "";
+
+	foreach(["Hello","Goodbye"] as $i => $testWord) {
+		$this->assertNotEquals($testWord, $lastTestWord);
+		file_put_contents($queryPath[$i], "select '$testWord' as test");
+		$query = new SqlQuery($queryPath[$i], $this->driverSingleton());
+		$resultSet = $query->execute();
+		$this->assertEquals($testWord, $resultSet["test"]);
+		$lastTestWord = $testWord;
+	}
+}
+
 private function driverSingleton():Driver {
 	if(is_null($this->driver)) {
 		$settings = new Settings(
