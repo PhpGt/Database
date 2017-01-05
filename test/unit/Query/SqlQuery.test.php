@@ -134,6 +134,62 @@ public function testSubsequentCalls() {
 	}
 }
 
+/**
+ * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
+ */
+public function testPlaceholderReplacement(
+	string $queryName,
+	string $queryCollectionPath,
+	string $queryPath
+) {
+	$uuid = uniqid("test-");
+	file_put_contents($queryPath, "select :testPlaceholder as `testValue`");
+	$query = new SqlQuery($queryPath, $this->driverSingleton());
+	$resultSet = $query->execute([
+		"testPlaceholder" => $uuid,
+	]);
+
+	$this->assertEquals($uuid, $resultSet["testValue"]);
+}
+
+public function testPlaceholderReplacementSubsequentCalls() {
+	$pathDataList = Helper::queryPathExistsProvider();
+
+	$testQueryList = [
+		"select :testPlaceholder as `testPlaceholder`",
+		"select :firstPlaceholder as `firstPlaceholder`, :secondPlaceholder as `secondPlaceholder`",
+	];
+	$placeholderList = [
+		[
+			"testPlaceholder" => uniqid()
+		], [
+			"firstPlaceholder" => uniqid("first"),
+			"secondPlaceholder" => uniqid("second"),
+		]
+	];
+
+	foreach([$pathDataList[0], $pathDataList[1]] as $i => $pathData) {
+		$queryName = $pathData[0];
+		$queryCollectionPath = $pathData[1];
+		$queryPath = $pathData[2];
+
+		file_put_contents($queryPath, $testQueryList[$i]);
+		$query = new SqlQuery($queryPath, $this->driverSingleton());
+		$resultSet = $query->execute($placeholderList[$i]);
+		$row = $resultSet->fetch();
+
+		$this->assertCount(
+			count($placeholderList[$i]),
+			$row,
+			"Iteration $i"
+		);
+
+		foreach($placeholderList[$i] as $key => $value) {
+			$this->assertEquals($value, $row[$key], "Iteration $i");
+		}
+	}
+}
+
 private function driverSingleton():Driver {
 	if(is_null($this->driver)) {
 		$settings = new Settings(
