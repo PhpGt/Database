@@ -73,8 +73,8 @@ catch(\Exception $exception) {
 
 try {
 	$result = $db->rawQuery(
-		"select `migrationCount` from `$table` order by 1 desc limit 1");
-	$migrationCount = (int)$result["migrationCount"];
+		"select `queryNumber` from `$table` order by 1 desc limit 1");
+	$migrationCount = (int)$result["queryNumber"];
 	echo "Found existing migration count: `$migrationCount`." . PHP_EOL;
 }
 catch(\Exception $exception) {
@@ -88,13 +88,9 @@ catch(\Exception $exception) {
 		echo "Migration table not found, attempting to create." . PHP_EOL;
 		$db->rawQuery(
 			"create table `$table` ("
-			. "`migrationCount` int primary key,"
+			. "`queryNumber` int primary key, "
+			. "`queryHash` varchar(32) not null, "
 			. "`migratedAt` datetime not null )"
-		);
-		$db->rawQuery(
-			"insert into `$table`"
-			. "(`migrationCount`, `migratedAt`)"
-			. "values (0, now())"
 		);
 		echo "Created table `$table`." . PHP_EOL;
 	}
@@ -115,17 +111,40 @@ foreach($migrationFileList as $file) {
 		continue;
 	}
 
+	$sql = file_get_contents("$migrationPath/$file");
+	$md5 = md5(trim($sql));
+
 	$fileNumber = (int)substr($file, 0, strpos($file, "-"));
 	if($fileNumber <= $migrationCount) {
+// check that the already-applied migration hasn't changed on disk.
+		$result = $db->rawQuery(
+			"select `queryHash` "
+			. "from `$table` "
+			. "where `queryNumber` = $fileNumber "
+			. "limit 1"
+		);
+
+		if($result["queryHash"] !== $md5) {
+			echo PHP_EOL;
+			echo "Migration query doesn't match what's already been migrated!";
+			echo PHP_EOL;
+			echo "Please check $file against your version control system.";
+			echo PHP_EOL;
+			exit(1);
+		}
 		continue;
 	}
 
 	try {
 // Execute the migrations, advance $migrationCount only on success.
 		echo "Migration $fileNumber: `$file`." . PHP_EOL;
-		$sql = file_get_contents("$migrationPath/$file");
 		$db->rawQuery($sql);
 		$migrationCount = $fileNumber;
+		$db->rawQuery(
+			"insert into `$table` "
+			. "(`queryNumber`, `queryHash`, `migratedAt`) "
+			. "values ($fileNumber, '$md5', now())"
+		);
 	}
 	catch(\Exception $exception) {
 		echo "An unexpected error occurred. " . $exception->getMessage();
@@ -136,17 +155,4 @@ foreach($migrationFileList as $file) {
 
 if($previousMigrationCount === $migrationCount) {
 	echo "Nothing new to migrate." . PHP_EOL;
-}
-else {
-	try {
-		$db->rawQuery(
-			"update `$table` set `migrationCount` = $migrationCount");
-		echo "Updated `migrationCount` to `$migrationCount`." . PHP_EOL;
-	}
-	catch (\Exception $exception) {
-		echo "Error updating the migration count." . PHP_EOL;
-		echo "Tried setting to `$migrationCount`." . PHP_EOL;
-		echo $exception->getMessage();
-		exit(1);
-	}
 }
