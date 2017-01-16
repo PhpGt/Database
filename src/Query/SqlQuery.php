@@ -24,9 +24,11 @@ public function getSql(array $bindings = []):string {
 
 public function execute(array $bindings = []):ResultSet {
 	$pdo = $this->preparePdo();
-	$statement = $this->prepareStatement($pdo, $this->getSql($bindings));
+	$sql = $this->getSql($bindings);
+	$statement = $this->prepareStatement($pdo, $sql);
 	$preparedBindings = $this->connection->prepareBindings($bindings);
 	$preparedBindings = $this->ensureParameterCharacter($preparedBindings);
+	$preparedBindings = $this->removeUnusedBindings($preparedBindings, $sql);
 	$lastInsertId = null;
 
 	try {
@@ -57,7 +59,7 @@ private function preparePdo() {
 	return $pdo;
 }
 
-private function injectSpecialBindings(string $sql, array $bindings) {
+private function injectSpecialBindings(string $sql, array $bindings):string {
 	foreach(self::SPECIAL_BINDINGS as $special) {
 		$specialPlaceholder = ":" . $special;
 
@@ -71,10 +73,20 @@ private function injectSpecialBindings(string $sql, array $bindings) {
 	return $sql;
 }
 
-private function ensureParameterCharacter(array $bindings) {
+private function ensureParameterCharacter(array $bindings):array {
 	foreach($bindings as $key => $value) {
 		if(substr($key, 0, 1) !== ":") {
 			$bindings[":" . $key] = $value;
+			unset($bindings[$key]);
+		}
+	}
+
+	return $bindings;
+}
+
+private function removeUnusedBindings(array $bindings, string $sql):array {
+	foreach($bindings as $key => $value) {
+		if(!preg_match("/{$key}(\W|\$)/", $sql)) {
 			unset($bindings[$key]);
 		}
 	}
