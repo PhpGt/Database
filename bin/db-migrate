@@ -62,9 +62,10 @@ $table = $config["migration_table"];
 $db = new Gt\Database\Client($settings);
 
 try {
-	if($argv[1] === "--drop") {
+	if($argv[1] === "--force" || $argv[1] === "-f") {
 		$db->rawQuery("drop database if exists `$schema`");
 	}
+
 	$db->rawQuery("create database if not exists `$schema`");
 	$db->rawQuery("use `$schema`");
 }
