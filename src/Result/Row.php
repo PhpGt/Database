@@ -43,19 +43,19 @@ public function count() {
 // Iterator ////////////////////////////////////////////////////////////////////
 
 public function current() {
-	return $this->data[$this->iteratorIndex];
+	return current($this->data);
 }
 public function key() {
-	return $this->iteratorIndex;
+	return key($this->data);
 }
 public function next() {
-	++ $this->iteratorIndex;
+	next($this->data);
 }
 public function rewind() {
-	$this->iteratorIndex = 0;
+	reset($this->data);
 }
 public function valid() {
-	return isset($this->data[$this->iteratorIndex]);
+	return array_key_exists($this->key(), $this->data);
 }
 
 }#
