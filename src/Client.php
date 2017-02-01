@@ -73,6 +73,14 @@ public function rawQuery(
 	return new ResultSet($statement, $pdo->lastInsertId());
 }
 
+public function getDriver(
+	string $connectionName = DefaultSettings::DEFAULT_NAME
+):Driver {
+	return $this->driverArray[$connectionName];
+}
+
+// ArrayAccess ////////////////////////////////////////////////////////////////
+
 public function offsetExists($offset) {
 	$connectionName = $this->getFirstConnectionName();
 	return $this->queryCollectionFactoryArray[$connectionName]->directoryExists(
