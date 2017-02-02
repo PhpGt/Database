@@ -22,8 +22,8 @@ public function testDefaults() {
 		$settings->getDatabase()
 	);
 	$this->assertEquals(
-		DefaultSettings::DEFAULT_HOSTNAME,
-		$settings->getHostname()
+		DefaultSettings::DEFAULT_HOST,
+		$settings->getHost()
 	);
 	$this->assertEquals(
 		DefaultSettings::DEFAULT_USERNAME,

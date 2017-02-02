@@ -8,7 +8,7 @@ public function testPropertiesSet() {
 		"baseDirectory" => "/tmp",
 		"dataSource" => "test-data-source",
 		"database" => "test-database",
-		"hostname" => "test-hostname",
+		"host" => "test-host",
 		"username" => "test-username",
 		"password" => "test-password",
 		"tablePrefix" => "test_",
@@ -19,7 +19,7 @@ public function testPropertiesSet() {
 		$details["baseDirectory"],
 		$details["dataSource"],
 		$details["database"],
-		$details["hostname"],
+		$details["host"],
 		$details["username"],
 		$details["password"],
 		$details["tablePrefix"],
@@ -30,7 +30,7 @@ public function testPropertiesSet() {
 		$details["baseDirectory"], $settings->getBaseDirectory());
 	$this->assertEquals($details["dataSource"], $settings->getDataSource());
 	$this->assertEquals($details["database"], $settings->getDatabase());
-	$this->assertEquals($details["hostname"], $settings->getHostname());
+	$this->assertEquals($details["host"], $settings->getHost());
 	$this->assertEquals($details["username"], $settings->getUsername());
 	$this->assertEquals($details["password"], $settings->getPassword());
 	$this->assertEquals($details["tablePrefix"], $settings->getTablePrefix());
@@ -42,7 +42,7 @@ public function testDefaultConnectionName() {
 	$details = [
 		"dataSource" => "test-data-source",
 		"database" => "test-database",
-		"hostname" => "test-hostname",
+		"host" => "test-host",
 		"username" => "test-username",
 		"password" => "test-password",
 	];
@@ -50,7 +50,7 @@ public function testDefaultConnectionName() {
 	$settings = new Settings(
 		$details["dataSource"],
 		$details["database"],
-		$details["hostname"],
+		$details["host"],
 		$details["username"],
 		$details["password"]
 	);

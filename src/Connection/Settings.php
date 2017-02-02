@@ -20,7 +20,7 @@ private $dataSource;
 /** @var string */
 private $database;
 /** @var string */
-private $hostname;
+private $host;
 /** @var string */
 private $username;
 /** @var string */
@@ -36,7 +36,7 @@ public function __construct(
 string $baseDirectory,
 string $dataSource,
 string $database,
-string $hostname = "localhost",
+string $host = "localhost",
 string $username = "",
 string $password = "",
 string $tablePrefix = "",
@@ -44,7 +44,7 @@ string $connectionName = DefaultSettings::DEFAULT_NAME) {
 	$this->baseDirectory = $baseDirectory;
 	$this->dataSource = $dataSource;
 	$this->database = $database;
-	$this->hostname = $hostname;
+	$this->host = $host;
 	$this->username = $username;
 	$this->password = $password;
 	$this->tablePrefix = $tablePrefix;
@@ -67,8 +67,8 @@ public function getDatabase():string {
 	return $this->database;
 }
 
-public function getHostname():string {
-	return $this->hostname;
+public function getHost():string {
+	return $this->host;
 }
 
 public function getUsername():string {
@@ -90,7 +90,7 @@ public function getTablePrefix():string {
 public function getConnectionSettings():array {
 	$currentSettings = [
 		"driver" => $this->getDataSource(),
-		"host" => $this->getHostname(),
+		"host" => $this->getHost(),
 		"database" => $this->getDatabase(),
 		"username" => $this->getUsername(),
 		"password" => $this->getPassword(),

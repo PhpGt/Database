@@ -11,7 +11,7 @@ const COLLATION = "utf8_unicode_ci";
 const DEFAULT_NAME = "default";
 const DEFAULT_DATASOURCE = Settings::DRIVER_SQLITE;
 const DEFAULT_DATABASE = Settings::DATABASE_IN_MEMORY;
-const DEFAULT_HOSTNAME = "localhost";
+const DEFAULT_HOST = "localhost";
 const DEFAULT_USERNAME = "admin";
 const DEFAULT_PASSWORD = "";
 
@@ -35,8 +35,8 @@ public function getDatabase():string {
 	return self::DEFAULT_DATABASE;
 }
 
-public function getHostname():string {
-	return self::DEFAULT_HOSTNAME;
+public function getHost():string {
+	return self::DEFAULT_HOST;
 }
 
 public function getUsername():string {
@@ -58,7 +58,7 @@ public function getTablePrefix():string {
 public function getConnectionSettings():array {
 	return [
 		"driver" => $this->getDataSource(),
-		"host" => $this->getHostname(),
+		"host" => $this->getHost(),
 		"database" => $this->getDatabase(),
 		"username" => $this->getUsername(),
 		"password" => $this->getPassword(),

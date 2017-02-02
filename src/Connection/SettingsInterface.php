@@ -6,7 +6,7 @@ interface SettingsInterface {
 public function getBaseDirectory():string;
 public function getDataSource():string;
 public function getDatabase():string;
-public function getHostname():string;
+public function getHost():string;
 public function getUsername():string;
 public function getPassword():string;
 public function getConnectionName():string;
