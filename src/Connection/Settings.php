@@ -33,14 +33,15 @@ private $connectionName;
 private $config = [];
 
 public function __construct(
-string $baseDirectory,
-string $dataSource,
-string $database,
-string $host = "localhost",
-string $username = "",
-string $password = "",
-string $tablePrefix = "",
-string $connectionName = DefaultSettings::DEFAULT_NAME) {
+	string $baseDirectory,
+	string $dataSource,
+	string $database,
+	string $host = "localhost",
+	string $username = "",
+	string $password = "",
+	string $tablePrefix = "",
+	string $connectionName = DefaultSettings::DEFAULT_NAME
+) {
 	$this->baseDirectory = $baseDirectory;
 	$this->dataSource = $dataSource;
 	$this->database = $database;
