@@ -152,6 +152,25 @@ public function testPlaceholderReplacement(
 	$this->assertEquals($uuid, $resultSet["testValue"]);
 }
 
+/**
+ * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
+ */
+public function testPlaceholderReplacementInComments(
+	string $queryName,
+	string $queryCollectionPath,
+	string $queryPath
+) {
+	$uuid = uniqid("test-");
+// The question mark can cause problems with preparing queries.
+	file_put_contents($queryPath, "select :test as `test` -- does this test work?");
+	$query = new SqlQuery($queryPath, $this->driverSingleton());
+	$resultSet = $query->execute([
+		"test" => $uuid,
+	]);
+
+	$this->assertEquals($uuid, $resultSet["test"]);
+}
+
 public function testPlaceholderReplacementSubsequentCalls() {
 	$pathDataList = Helper::queryPathExistsProvider();
 
