@@ -12,6 +12,12 @@ const DEFAULT_NAME = "default";
 const DEFAULT_DATASOURCE = Settings::DRIVER_SQLITE;
 const DEFAULT_DATABASE = Settings::DATABASE_IN_MEMORY;
 const DEFAULT_HOST = "localhost";
+const DEFAULT_PORT = [
+	Settings::DRIVER_MYSQL => 3306,
+	Settings::DRIVER_POSTGRES => 5432,
+	Settings::DRIVER_SQLSERVER => 1433,
+	Settings::DRIVER_SQLITE => 0,
+];
 const DEFAULT_USERNAME = "admin";
 const DEFAULT_PASSWORD = "";
 
@@ -37,6 +43,10 @@ public function getDatabase():string {
 
 public function getHost():string {
 	return self::DEFAULT_HOST;
+}
+
+public function getPort():int {
+	return self::DEFAULT_PORT[self::getHost()];
 }
 
 public function getUsername():string {
