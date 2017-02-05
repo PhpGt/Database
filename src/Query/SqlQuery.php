@@ -59,6 +59,12 @@ private function preparePdo() {
 	return $pdo;
 }
 
+/**
+ * Certain words are reserved for use by different SQL engines, such as "limit"
+ * and "offset", and can't be used by the driver as bound parameters. This
+ * function returns the SQL for the query after replacing the bound parameters
+ * manually using string replacement.
+ */
 private function injectSpecialBindings(string $sql, array $bindings):string {
 	foreach(self::SPECIAL_BINDINGS as $special) {
 		$specialPlaceholder = ":" . $special;
@@ -74,6 +80,10 @@ private function injectSpecialBindings(string $sql, array $bindings):string {
 }
 
 private function ensureParameterCharacter(array $bindings):array {
+	if($this->bindingsEmptyOrNonAssociative($bindings)) {
+		return $bindings;
+	}
+
 	foreach($bindings as $key => $value) {
 		if(substr($key, 0, 1) !== ":") {
 			$bindings[":" . $key] = $value;
@@ -85,6 +95,10 @@ private function ensureParameterCharacter(array $bindings):array {
 }
 
 private function removeUnusedBindings(array $bindings, string $sql):array {
+	if($this->bindingsEmptyOrNonAssociative($bindings)) {
+		return $bindings;
+	}
+
 	foreach($bindings as $key => $value) {
 		if(!preg_match("/{$key}(\W|\$)/", $sql)) {
 			unset($bindings[$key]);
@@ -92,6 +106,12 @@ private function removeUnusedBindings(array $bindings, string $sql):array {
 	}
 
 	return $bindings;
+}
+
+private function bindingsEmptyOrNonAssociative(array $bindings):bool {
+	return
+		$bindings === []
+		|| array_keys($bindings) === range(0, count($bindings) - 1);
 }
 
 }#

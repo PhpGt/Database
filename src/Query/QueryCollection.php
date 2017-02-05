@@ -23,7 +23,15 @@ string $directoryPath, Driver $driver, QueryFactory $queryFactory = null) {
 }
 
 public function __call($name, $args) {
-	$queryArgs = array_merge([$name], $args);
+	$queryArgs = [];
+
+	if(is_array($args[0])) {
+		$queryArgs = array_merge([$name], $args);
+	}
+	else {
+		$queryArgs = array_merge([$name], [$args]);
+	}
+
 	return call_user_func_array([$this, "query"], $queryArgs);
 }
 
