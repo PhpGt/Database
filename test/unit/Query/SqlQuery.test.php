@@ -214,10 +214,7 @@ private function driverSingleton():Driver {
 		$settings = new Settings(
 			Helper::getTmpDir(),
 			Settings::DRIVER_SQLITE,
-			Settings::DATABASE_IN_MEMORY,
-			"localhost",
-			"root",
-			""
+			Settings::DATABASE_IN_MEMORY
 		);
 		$this->driver = new Driver($settings);
 	}
