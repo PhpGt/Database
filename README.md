@@ -24,6 +24,10 @@ Documentation: https://php.gt/docs/database
 This library provides database access via raw SQL or using a PHP Query Builder, both interoperable through the same API, shown below:
 
 ```php
+// Consistent API for all database operations.
+Example: execute src/query/collectionName/exampleQueryName.sql,
+$result = $db["collectionName"]->exampleQueryName($parameters)
+
 // "Retrieve" or "get" methods always return a ResultSet.
 $shopItems = $db["shop"]->getItemsInCategory("books");
 
