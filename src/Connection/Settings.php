@@ -37,15 +37,21 @@ public function __construct(
 	string $dataSource,
 	string $database,
 	string $host = "localhost",
+	int $port = null,
 	string $username = "",
 	string $password = "",
 	string $tablePrefix = "",
 	string $connectionName = DefaultSettings::DEFAULT_NAME
 ) {
+	if(is_null($port)) {
+		$port = DefaultSettings::DEFAULT_PORT[$dataSource];
+	}
+
 	$this->baseDirectory = $baseDirectory;
 	$this->dataSource = $dataSource;
 	$this->database = $database;
 	$this->host = $host;
+	$this->port = $port;
 	$this->username = $username;
 	$this->password = $password;
 	$this->tablePrefix = $tablePrefix;
@@ -70,6 +76,10 @@ public function getDatabase():string {
 
 public function getHost():string {
 	return $this->host;
+}
+
+public function getPort():int {
+	return $this->port;
 }
 
 public function getUsername():string {
