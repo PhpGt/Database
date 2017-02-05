@@ -78,3 +78,9 @@ Compatibility is provided for the following database providers:
 * SQL Server
 * Mongo (planned)
 * CouchDB (planned)
+
+[wiki-query-collections]: https://github.com/PhpGt/Database/wiki
+[wiki-parameters]: https://github.com/PhpGt/Database/wiki
+[wiki-migrations]: https://github.com/PhpGt/Database/wiki
+[wiki-sql-php]: https://github.com/PhpGt/Database/wiki
+[wiki-config]: https://github.com/PhpGt/Database/wiki
