@@ -25,7 +25,7 @@ This library provides database access via raw SQL or using a PHP Query Builder, 
 
 ```php
 // Consistent API for all database operations.
-Example: execute src/query/collectionName/exampleQueryName.sql,
+// Example: execute src/query/collectionName/exampleQueryName.sql
 $result = $db["collectionName"]->exampleQueryName($parameters)
 
 // "Retrieve" or "get" methods always return a ResultSet.
