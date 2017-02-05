@@ -4,20 +4,17 @@ Encloses your application's database scripts within a simple and standardised in
 
 ***
 
-<a href="https://gitter.im/phpgt/database" target="_blank">
-    <img src="https://img.shields.io/gitter/room/phpgt/database.svg?style=flat-square" alt="Gitter chat" />
-</a>
 <a href="https://circleci.com/gh/phpgt/database" target="_blank">
-    <img src="https://img.shields.io/circleci/project/phpgt/database/master.svg?style=flat-square" alt="Build status" />
+	<img src="https://img.shields.io/circleci/project/phpgt/database/master.svg?style=flat-square" alt="Build status" />
 </a>
 <a href="https://scrutinizer-ci.com/g/phpgt/database" target="_blank">
-    <img src="https://img.shields.io/scrutinizer/g/phpgt/database/master.svg?style=flat-square" alt="Code quality" />
+	<img src="https://img.shields.io/scrutinizer/g/phpgt/database/master.svg?style=flat-square" alt="Code quality" />
 </a>
 <a href="https://scrutinizer-ci.com/g/phpgt/database" target="_blank">
-    <img src="https://img.shields.io/scrutinizer/coverage/g/phpgt/database/master.svg?style=flat-square" alt="Code coverage" />
+	<img src="https://img.shields.io/scrutinizer/coverage/g/phpgt/database/master.svg?style=flat-square" alt="Code coverage" />
 </a>
 <a href="https://packagist.org/packages/phpgt/database" target="_blank">
-    <img src="https://img.shields.io/packagist/v/phpgt/database.svg?style=flat-square" alt="Current version" />
+	<img src="https://img.shields.io/packagist/v/phpgt/database.svg?style=flat-square" alt="Current version" />
 </a>
 
 ## Example usage
