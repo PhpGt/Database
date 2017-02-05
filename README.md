@@ -4,17 +4,17 @@ Encloses your application's database scripts within a simple and standardised in
 
 ***
 
-<a href="https://circleci.com/gh/phpgt/database" target="_blank">
-	<img src="https://img.shields.io/circleci/project/phpgt/database/master.svg?style=flat-square" alt="Build status" />
+<a href="https://circleci.com/gh/PhpGt/Database" target="_blank">
+	<img src="https://img.shields.io/circleci/project/PhpGt/Database/master.svg?style=flat-square" alt="Build status" />
 </a>
-<a href="https://scrutinizer-ci.com/g/phpgt/database" target="_blank">
-	<img src="https://img.shields.io/scrutinizer/g/phpgt/database/master.svg?style=flat-square" alt="Code quality" />
+<a href="https://scrutinizer-ci.com/g/PhpGt/Database" target="_blank">
+	<img src="https://img.shields.io/scrutinizer/g/PhpGt/Database/master.svg?style=flat-square" alt="Code quality" />
 </a>
-<a href="https://scrutinizer-ci.com/g/phpgt/database" target="_blank">
-	<img src="https://img.shields.io/scrutinizer/coverage/g/phpgt/database/master.svg?style=flat-square" alt="Code coverage" />
+<a href="https://scrutinizer-ci.com/g/PhpGt/Database" target="_blank">
+	<img src="https://img.shields.io/scrutinizer/coverage/g/PhpGt/Database/master.svg?style=flat-square" alt="Code coverage" />
 </a>
-<a href="https://packagist.org/packages/phpgt/database" target="_blank">
-	<img src="https://img.shields.io/packagist/v/phpgt/database.svg?style=flat-square" alt="Current version" />
+<a href="https://packagist.org/packages/PhpGt/Database" target="_blank">
+	<img src="https://img.shields.io/packagist/v/PhpGt/Database.svg?style=flat-square" alt="Current version" />
 </a>
 
 ## Example usage
