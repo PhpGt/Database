@@ -95,6 +95,26 @@ public function testSubsequentSqlQueries() {
 	$this->assertEquals($uuid2, $result2["name"]);
 }
 
+public function testQuestionMarkParameter() {
+	$uuid = uniqid();
+	$queryCollectionPath = $this->queryBase . "/exampleCollection";
+	$getByIdQueryPath = $queryCollectionPath . "/getById.sql";
+
+	mkdir($queryCollectionPath, 0775, true);
+	file_put_contents(
+		$getByIdQueryPath,
+		"select id, name from test_table where id = ?"
+	);
+
+	$result2 = $this->db["exampleCollection"]->getById(2);
+	$result1 = $this->db["exampleCollection"]->getById(1);
+
+	$rqr = $this->db->rawQuery("select id, name from test_table");
+
+	$this->assertEquals(1, $result1["id"]);
+	$this->assertEquals(2, $result2["id"]);
+}
+
 private function settingsSingleton():Settings {
 	if(is_null($this->settings)) {
 		$this->settings = new Settings(
