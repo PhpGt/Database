@@ -19,15 +19,19 @@ Documentation: https://php.gt/docs/database
 	<img src="https://img.shields.io/packagist/v/PhpGt/Database.svg?style=flat-square" alt="Current version" />
 </a>
 
-## Example usage: CRUD operations
+## Example usage
 
-This library provides database access via raw SQL or using a PHP Query Builder, both interoperable through the same API, shown below:
+This library provides database access via raw SQL or using a PHP Query Builder, both interoperable through the same API.
+
+The API is consistent for all database operations. To execute an example query located at `src/query/collectionName/exampleQueryName.sql`, the following pattern is used:
 
 ```php
-// Consistent API for all database operations.
-// Example: execute src/query/collectionName/exampleQueryName.sql
 $result = $db["collectionName"]->exampleQueryName($parameters)
+```
 
+Examples of CRUD operations:
+
+```php
 // "Retrieve" or "get" methods always return a ResultSet.
 $shopItems = $db["shop"]->getItemsInCategory("books");
 
