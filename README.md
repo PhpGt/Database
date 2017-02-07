@@ -1,6 +1,6 @@
 <img src="logo.png" alt="Database logic organisation for PHP 7 projects." align="right" />
 
-# Database logic organisation for PHP 7 projects.
+# Database API organisation for PHP 7 projects.
 
 Encloses your application's database scripts within a simple and standardised interface, separating database access from your page logic.
 
