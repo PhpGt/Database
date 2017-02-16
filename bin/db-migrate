@@ -8,6 +8,9 @@ $autoloadPath = "";
 $repoBasePath = "";
 $currentDir = __DIR__;
 
+// The bin directory may be in multiple places, depending on how this library
+// was installed. Iterate up the tree until either the autoloader or the root
+// directory is found:
 while((empty($autoloadPath) || empty($repoBasePath)) && $currentDir !== "/") {
 	$currentDir = realpath($currentDir . "/..");
 	if(is_file("$currentDir/autoload.php")) {
@@ -19,6 +22,26 @@ while((empty($autoloadPath) || empty($repoBasePath)) && $currentDir !== "/") {
 }
 require($autoloadPath);
 
+// TODO: Better way of loading repo base path?
+
+$forced = false;
+if(!empty($argv[1])
+&& ($argv[1] === "--force" || $argv[1] === "-f")) {
+	$forced = true;
+}
+
+// TODO: Extract logic from here into Migration class.
+// Perform logic in class, echo output here.
+
+$migration = new Migration($forced);
+$migration->stepOne();
+$migration->stepTwo();
+$migration->stepThree();
+	// etc....
+
+// TODO: unit test all of this!
+
+/*
 $defaultConfig = [
 	"dsn" => "mysql",
 	"query_path" => "src/query",
@@ -161,3 +184,4 @@ foreach($migrationFileList as $file) {
 if($previousMigrationCount === $migrationCount) {
 	echo "Nothing new to migrate." . PHP_EOL;
 }
+*/
