@@ -7,6 +7,7 @@ public function getBaseDirectory():string;
 public function getDataSource():string;
 public function getDatabase():string;
 public function getHost():string;
+public function getPort():int;
 public function getUsername():string;
 public function getPassword():string;
 public function getConnectionName():string;

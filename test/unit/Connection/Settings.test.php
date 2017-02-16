@@ -9,6 +9,7 @@ public function testPropertiesSet() {
 		"dataSource" => "test-data-source",
 		"database" => "test-database",
 		"host" => "test-host",
+		"port" => 1234,
 		"username" => "test-username",
 		"password" => "test-password",
 		"tablePrefix" => "test_",
@@ -20,6 +21,7 @@ public function testPropertiesSet() {
 		$details["dataSource"],
 		$details["database"],
 		$details["host"],
+		$details["port"],
 		$details["username"],
 		$details["password"],
 		$details["tablePrefix"],
@@ -31,6 +33,7 @@ public function testPropertiesSet() {
 	$this->assertEquals($details["dataSource"], $settings->getDataSource());
 	$this->assertEquals($details["database"], $settings->getDatabase());
 	$this->assertEquals($details["host"], $settings->getHost());
+	$this->assertEquals($details["port"], $settings->getPort());
 	$this->assertEquals($details["username"], $settings->getUsername());
 	$this->assertEquals($details["password"], $settings->getPassword());
 	$this->assertEquals($details["tablePrefix"], $settings->getTablePrefix());
@@ -43,14 +46,17 @@ public function testDefaultConnectionName() {
 		"dataSource" => "test-data-source",
 		"database" => "test-database",
 		"host" => "test-host",
+		"port" => 4321,
 		"username" => "test-username",
 		"password" => "test-password",
 	];
 
 	$settings = new Settings(
+		"/tmp",
 		$details["dataSource"],
 		$details["database"],
 		$details["host"],
+		$details["port"],
 		$details["username"],
 		$details["password"]
 	);
