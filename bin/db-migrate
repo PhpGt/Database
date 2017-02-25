@@ -1,28 +1,30 @@
 #!/usr/bin/env php
 <?php
+use Gt\Database\Migration\Config;
+use Gt\Database\Migration\Migrator;
 /**
  * Database migration iterates over a set of incremental schema changes and
  * stores the currently-migrated schema version within the database itself.
  */
 $autoloadPath = "";
-$repoBasePath = "";
 $currentDir = __DIR__;
 
 // The bin directory may be in multiple places, depending on how this library
 // was installed. Iterate up the tree until either the autoloader or the root
 // directory is found:
-while((empty($autoloadPath) || empty($repoBasePath)) && $currentDir !== "/") {
+while((empty($autoloadPath)) && $currentDir !== "/") {
 	$currentDir = realpath($currentDir . "/..");
 	if(is_file("$currentDir/autoload.php")) {
 		$autoloadPath = "$currentDir/autoload.php";
 	}
-	if(is_dir("$currentDir/vendor")) {
-		$repoBasePath = $currentDir;
-	}
+}
+if(empty($autoloadPath)) {
+	$autoloadPath = realpath(__DIR__ . "/../vendor/autoload.php");
 }
 require($autoloadPath);
 
-// TODO: Better way of loading repo base path?
+// Repository will always be the parent directory above autoload.php.
+$repoBasePath = dirname(dirname($autoloadPath));
 
 $forced = false;
 if(!empty($argv[1])
@@ -30,158 +32,16 @@ if(!empty($argv[1])
 	$forced = true;
 }
 
-// TODO: Extract logic from here into Migration class.
-// Perform logic in class, echo output here.
-
-$migration = new Migration($forced);
-$migration->stepOne();
-$migration->stepTwo();
-$migration->stepThree();
-	// etc....
-
-// TODO: unit test all of this!
-
-/*
-$defaultConfig = [
-	"dsn" => "mysql",
-	"query_path" => "src/query",
-	"migration_path" => "_migration",
-	"migration_table" => "_migration",
-	"host" => "localhost",
-	"username" => "admin",
-	"password" => "",
-];
-
-$configFilePath = "$repoBasePath/config.ini";
-
-$config = [];
-
-if(file_exists($configFilePath)) {
-	echo "Loading config from `$repoBasePath/config.ini`." . PHP_EOL;
-
-	$fullConfig = parse_ini_file($configFilePath, true);
-	if(!empty($fullConfig["database"])) {
-		$config = $fullConfig["database"];
-	}
-}
-
-$config = array_merge($defaultConfig, $config);
-
-// Environment variables override config variables which override defaults.
-$settings = new Gt\Database\Connection\Settings(
-	getenv("database_query_path") ?: $config["query_path"],
-	getenv("database_dsn") ?: $config["dsn"],
-// Do not specify schema, as this may need deploying as part of the migration.
-	"",
-	getenv("database_host") ?: $config["host"],
-	getenv("database_username") ?: $config["username"],
-	getenv("database_password") ?: $config["password"]
+$config = new Gt\Database\Migration\Config("$repoBasePath/config.ini", [
+		"dsn" => "mysql",
+		"query_path" => "src/query",
+		"migration_path" => "_migration",
+		"migration_table" => "_migration",
+		"host" => "localhost",
+		"username" => "admin",
+		"password" => "",
+	],
+	"database"
 );
 
-$schema = getenv("database_schema") ?: $config["schema"];
-$migrationCount = 0;
-$table = $config["migration_table"];
-
-$db = new Gt\Database\Client($settings);
-
-try {
-	if(!empty($argv[1])
-	&& ($argv[1] === "--force" || $argv[1] === "-f")) {
-		$db->rawQuery("drop database if exists `$schema`");
-	}
-
-	$db->rawQuery("create database if not exists `$schema`");
-	$db->rawQuery("use `$schema`");
-}
-catch(\Exception $exception) {
-	echo "Error creating schema `$schema`." . PHP_EOL;
-	echo $exception->getMessage();
-	exit(1);
-}
-
-try {
-	$result = $db->rawQuery(
-		"select `queryNumber` from `$table` order by 1 desc limit 1");
-	$migrationCount = (int)$result["queryNumber"];
-	echo "Found existing migration count: `$migrationCount`." . PHP_EOL;
-}
-catch(\Exception $exception) {
-	$message = $exception->getMessage();
-	$tableNotFoundError = preg_match(
-		"/(SQLSTATE\[42S02\])|(Base table or view not found)/",
-		$message
-	);
-
-	if($tableNotFoundError) {
-		echo "Migration table not found, attempting to create." . PHP_EOL;
-		$db->rawQuery(
-			"create table `$table` ("
-			. "`queryNumber` int primary key, "
-			. "`queryHash` varchar(32) not null, "
-			. "`migratedAt` datetime not null )"
-		);
-		echo "Created table `$table`." . PHP_EOL;
-	}
-}
-
-$previousMigrationCount = $migrationCount;
-$migrationPath = implode("/", [
-	$repoBasePath,
-	$config["migration_path"],
-]);
-
-echo "Performing migrations within `$migrationPath`." . PHP_EOL;
-$migrationFileList = scandir($migrationPath);
-natsort($migrationFileList);
-
-foreach($migrationFileList as $file) {
-	if($file[0] === ".") {
-		continue;
-	}
-
-	$sql = file_get_contents("$migrationPath/$file");
-	$md5 = md5(trim($sql));
-
-	$fileNumber = (int)substr($file, 0, strpos($file, "-"));
-	if($fileNumber <= $migrationCount) {
-// check that the already-applied migration hasn't changed on disk.
-		$result = $db->rawQuery(
-			"select `queryHash` "
-			. "from `$table` "
-			. "where `queryNumber` = $fileNumber "
-			. "limit 1"
-		);
-
-		if($result["queryHash"] !== $md5) {
-			echo PHP_EOL;
-			echo "Migration query doesn't match what's already been migrated!";
-			echo PHP_EOL;
-			echo "Please check $file against your version control system.";
-			echo PHP_EOL;
-			exit(1);
-		}
-		continue;
-	}
-
-	try {
-// Execute the migrations, advance $migrationCount only on success.
-		echo "Migration $fileNumber: `$file`." . PHP_EOL;
-		$db->rawQuery($sql);
-		$migrationCount = $fileNumber;
-		$db->rawQuery(
-			"insert into `$table` "
-			. "(`queryNumber`, `queryHash`, `migratedAt`) "
-			. "values ($fileNumber, '$md5', now())"
-		);
-	}
-	catch(\Exception $exception) {
-		echo "An unexpected error occurred. " . $exception->getMessage();
-		echo PHP_EOL;
-		exit(1);
-	}
-}
-
-if($previousMigrationCount === $migrationCount) {
-	echo "Nothing new to migrate." . PHP_EOL;
-}
-*/
+$migration = new Migrator($repoBasePath, $config, $forced);
