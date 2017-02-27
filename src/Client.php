@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Database;
 
+use PDO;
 use ArrayAccess;
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
@@ -62,14 +63,14 @@ public function queryCollection(
 	);
 }
 
-public function rawQuery(
+public function rawStatement(
 	string $query,
+	array $bindings = [],
 	string $connectionName = DefaultSettings::DEFAULT_NAME
 ):ResultSet {
-	$driver = $this->driverArray[$connectionName];
-	$connection = $driver->getConnection();
-	$pdo = $connection->getPdo();
-	$statement = $pdo->query($query);
+	$pdo = $this->getPdo($connectionName);
+	$statement = $pdo->prepare($query);
+	$statement->execute($bindings);
 	return new ResultSet($statement, $pdo->lastInsertId());
 }
 
@@ -77,6 +78,13 @@ public function getDriver(
 	string $connectionName = DefaultSettings::DEFAULT_NAME
 ):Driver {
 	return $this->driverArray[$connectionName];
+}
+
+private function getPdo(string $connectionName):PDO {
+	$driver = $this->driverArray[$connectionName];
+	$connection = $driver->getConnection();
+	$pdo = $connection->getPdo();
+	return $pdo;
 }
 
 // ArrayAccess ////////////////////////////////////////////////////////////////

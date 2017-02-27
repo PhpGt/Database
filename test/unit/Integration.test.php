@@ -109,7 +109,7 @@ public function testQuestionMarkParameter() {
 	$result2 = $this->db["exampleCollection"]->getById(2);
 	$result1 = $this->db["exampleCollection"]->getById(1);
 
-	$rqr = $this->db->rawQuery("select id, name from test_table");
+	$rqr = $this->db->rawStatement("select id, name from test_table");
 
 	$this->assertEquals(1, $result1["id"]);
 	$this->assertEquals(2, $result2["id"]);
