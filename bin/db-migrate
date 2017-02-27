@@ -33,15 +33,16 @@ if(!empty($argv[1])
 }
 
 $config = new Gt\Database\Migration\Config("$repoBasePath/config.ini", [
-		"dsn" => "mysql",
-		"query_path" => "src/query",
-		"migration_path" => "_migration",
-		"migration_table" => "_migration",
-		"host" => "localhost",
-		"username" => "admin",
-		"password" => "",
-	],
-	"database"
+		"database" => [
+			"dsn" => "mysql",
+			"query_path" => "src/query",
+			"migration_path" => "_migration",
+			"migration_table" => "_migration",
+			"host" => "localhost",
+			"username" => "admin",
+			"password" => "",
+		]
+	]
 );
 
-$migration = new Migrator($repoBasePath, $config, $forced);
+$migration = new Migrator($repoBasePath, $config["database"], $forced);

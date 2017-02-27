@@ -13,22 +13,13 @@ private $config = [];
 
 public function __construct(
 	string $iniPath,
-	array $defaultConfig = [],
-	string $section = null
+	array $defaultConfig = []
 ) {
-	if(!is_null($section)) {
-		$defaultConfigWithSection = [
-			$section => $defaultConfig
-		];
-		$defaultConfig = $defaultConfigWithSection;
-	}
-
 	$iniConfig = $this->loadIniConfig($iniPath);
 	$iniConfigWithDefaults = array_merge_recursive($defaultConfig, $iniConfig);
 	$envConfig = $this->loadEnvConfig($iniConfigWithDefaults);
 	$config = array_merge_recursive($iniConfigWithDefaults, $envConfig);
-
-	$this->storeConfig($config, $section);
+	$this->storeConfig($config);
 }
 
 public function loadIniConfig(string $iniPath):array {
@@ -64,15 +55,8 @@ public function getConfigArray():array {
 	return $this->config;
 }
 
-private function storeConfig(array $config, string $section = null) {
-	$this->config = [];
-
-	if(is_null($section)) {
-		$this->config = $config;
-	}
-	else {
-		$this->config = $config[$section];
-	}
+private function storeConfig(array $config) {
+	$this->config = $config;
 }
 
 // ArrayAccess /////////////////////////////////////////////////////////////////
