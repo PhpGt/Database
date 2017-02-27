@@ -4,7 +4,7 @@
     "type": "library",
 
     "require": {
-        "illuminate/database": "^5.0"
+        "illuminate/database": "5.*"
     },
 
     "require-dev": {
