@@ -1,5 +1,7 @@
 #!/usr/bin/env php
 <?php
+use Gt\Database\Connection\Settings;
+use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Migration\Config;
 use Gt\Database\Migration\Migrator;
 /**
@@ -32,17 +34,32 @@ if(!empty($argv[1])
 	$forced = true;
 }
 
-$config = new Gt\Database\Migration\Config("$repoBasePath/config.ini", [
+$config = new Config("$repoBasePath/config.ini", [
 		"database" => [
-			"dsn" => "mysql",
 			"query_path" => "src/query",
 			"migration_path" => "_migration",
 			"migration_table" => "_migration",
-			"host" => "localhost",
-			"username" => "admin",
-			"password" => "",
 		]
 	]
 );
 
-$migration = new Migrator($repoBasePath, $config["database"], $forced);
+$settings = new Settings(
+	implode("/", [
+		$repoBasePath,
+		$config["database"]["query_path"]
+	]),
+	$config["database"]["dsn"],
+	$config["database"]["schema"],
+	$config["database"]["host"],
+	$config["database"]["port"],
+	$config["database"]["username"],
+	$config["database"]["password"]
+);
+
+$migrationPath = implode("/", [
+	$config["database"]["query_path"],
+	$config["database"]["migration_path"],
+]);
+$migrationTable = $config["database"]["migration_table"];
+
+$migrator = new Migrator($settings, $migrationPath, $migrationTable, $forced);

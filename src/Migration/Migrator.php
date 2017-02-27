@@ -6,19 +6,66 @@ use Gt\Database\Connection\Settings;
 
 class Migrator {
 
-private $dbClient;
 private $schema;
-private $count = 0;
+private $dbClient;
 private $path;
-private $table;
+private $tableName;
+private $count;
 
-public function __construct(Settings $settings) {
+public function __construct(
+	Settings $settings,
+	string $path,
+	string $tableName,
+	bool $forced
+) {
 	$this->schema = $settings->getDatabase();
-	$this->dbClient = new Client($settings);
+	$this->path = $path;
+	$this->tableName = $tableName;
+
+	$settingsWithoutSchema = new Settings(
+		$settings->getBaseDirectory(),
+		$settings->getDataSource(),
+		// Schema may not exist yet.
+		"",
+		$settings->getHost(),
+		$settings->getPort(),
+		$settings->getUsername(),
+		$settings->getPassword()
+	);
+
+	$this->dbClient = new Client($settingsWithoutSchema);
+	$this->selectSchema($forced);
 }
 
-public function dropExistingSchema() {
-	$this->dbClient->rawStatement("drop database if exists `{$schema}`");
+private function selectSchema(bool $deleteAndRecreateSchema = false) {
+	if($deleteAndRecreateSchema) {
+		$this->deleteAndRecreateSchema();
+	}
+
+	$schema = $this->schema;
+
+	try {
+		$this->dbClient->rawStatement("use `$schema`");
+	}
+	catch(\Exception $exception) {
+		echo "Error selecting `$schema`." . PHP_EOL;
+		echo $exception->getMessage() . PHP_EOL;
+		exit(1);
+	}
+}
+
+private function deleteAndRecreateSchema() {
+	$schema = $this->schema;
+
+	try {
+		$this->dbClient->rawStatement("drop schema if exists `$schema`");
+		$this->dbClient->rawStatement("create schema if not exists `$schema`");
+	}
+	catch(\Exception $exception) {
+		echo "Error recreating schema `$schema`." . PHP_EOL;
+		echo $exception->getMessage() . PHP_EOL;
+		exit(1);
+	}
 }
 
 }#
