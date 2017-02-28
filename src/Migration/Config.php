@@ -16,9 +16,9 @@ public function __construct(
 	array $defaultConfig = []
 ) {
 	$iniConfig = $this->loadIniConfig($iniPath);
-	$iniConfigWithDefaults = array_merge_recursive($defaultConfig, $iniConfig);
+	$iniConfigWithDefaults = $this->mergeArrays($defaultConfig, $iniConfig);
 	$envConfig = $this->loadEnvConfig($iniConfigWithDefaults);
-	$config = array_merge_recursive($iniConfigWithDefaults, $envConfig);
+	$config = $this->mergeArrays($iniConfigWithDefaults, $envConfig);
 	$this->storeConfig($config);
 }
 
@@ -57,6 +57,23 @@ public function getConfigArray():array {
 
 private function storeConfig(array $config) {
 	$this->config = $config;
+}
+
+private function mergeArrays(array $array1, array $array2):array {
+	$merged = $array1;
+
+	foreach($array2 as $key => $value) {
+		if(is_array($value)
+		&& isset($merged[$key])
+		&& is_array($merged[$key])) {
+			$merged[$key] = $this->mergeArrays($merged[$key], $value);
+		}
+		else {
+			$merged[$key] = $value;
+		}
+	}
+
+	return $merged;
 }
 
 // ArrayAccess /////////////////////////////////////////////////////////////////

@@ -57,9 +57,14 @@ $settings = new Settings(
 );
 
 $migrationPath = implode("/", [
+	$repoBasePath,
 	$config["database"]["query_path"],
 	$config["database"]["migration_path"],
 ]);
 $migrationTable = $config["database"]["migration_table"];
 
 $migrator = new Migrator($settings, $migrationPath, $migrationTable, $forced);
+$migrationCount = $migrator->getMigrationCount();
+$migrationFileList = $migrator->getMigrationFileList();
+$migrator->checkIntegrity($migrationCount, $migrationFileList);
+$migrator->performMigration($migrationFileList, $migrationCount);
