@@ -37,11 +37,8 @@ public function __get($name) {
 		return $this->$methodName();
 	}
 
-	trigger_error(
-		"Undefined property: "
-		. self::class
-		. "::$name"
-	);
+	$this->ensureFirstRowFetched();
+	return $this->currentRow->$name;
 }
 
 public function getLength():int {
@@ -107,7 +104,7 @@ public function fetchAll():array {
 	$this->fetchAllCache = [];
 
 	foreach($this->statement->fetchAll() as $row) {
-		$this->fetchAllCache []= $row;
+		$this->fetchAllCache []= new Row($row);
 	}
 
 	return $this->fetchAllCache;
@@ -116,13 +113,13 @@ public function fetchAll():array {
 // ArrayAccess /////////////////////////////////////////////////////////////////
 
 public function offsetExists($offset) {
-	$this->ensureFirstRowFetched();
-	return isset($this->currentRow[$offset]);
+	$allRows = $this->fetchAll();
+	return isset($allRows[$offset]);
 }
 
 public function offsetGet($offset) {
-	$this->ensureFirstRowFetched();
-	return $this->currentRow[$offset];
+	$allRows = $this->fetchAll();
+	return $allRows[$offset];
 }
 
 public function offsetSet($offset, $value) {
