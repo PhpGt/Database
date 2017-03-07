@@ -73,8 +73,8 @@ public function testPreparedStatement(
 
 	foreach(["one", "two", "three"] as $i => $name) {
 		$row = $resultSet->fetch();
-		$this->assertEquals($i + 1, $row["id"]);
-		$this->assertEquals($name, $row["name"]);
+		$this->assertEquals($i + 1, $row->id);
+		$this->assertEquals($name, $row->name);
 	}
 }
 
@@ -98,7 +98,7 @@ public function testLastInsertId(
 	$query = new SqlQuery($queryPath, $this->driverSingleton());
 	$resultSet = $query->execute();
 
-	$this->assertEquals($uuid, $resultSet["name"]);
+	$this->assertEquals($uuid, $resultSet->name);
 }
 
 public function testSubsequentCounts() {
@@ -129,7 +129,7 @@ public function testSubsequentCalls() {
 		file_put_contents($queryPath[$i], "select '$testWord' as test");
 		$query = new SqlQuery($queryPath[$i], $this->driverSingleton());
 		$resultSet = $query->execute();
-		$this->assertEquals($testWord, $resultSet["test"]);
+		$this->assertEquals($testWord, $resultSet->test);
 		$lastTestWord = $testWord;
 	}
 }
@@ -149,7 +149,7 @@ public function testPlaceholderReplacement(
 		"testPlaceholder" => $uuid,
 	]);
 
-	$this->assertEquals($uuid, $resultSet["testValue"]);
+	$this->assertEquals($uuid, $resultSet->testValue);
 }
 
 /**
@@ -168,7 +168,7 @@ public function testPlaceholderReplacementInComments(
 		"test" => $uuid,
 	]);
 
-	$this->assertEquals($uuid, $resultSet["test"]);
+	$this->assertEquals($uuid, $resultSet->test);
 }
 
 public function testPlaceholderReplacementSubsequentCalls() {
@@ -204,7 +204,7 @@ public function testPlaceholderReplacementSubsequentCalls() {
 		);
 
 		foreach($placeholderList[$i] as $key => $value) {
-			$this->assertEquals($value, $row[$key], "Iteration $i");
+			$this->assertEquals($value, $row->$key, "Iteration $i");
 		}
 	}
 }

@@ -77,7 +77,7 @@ public function testSubsequentSqlQueries() {
 		"rowName" => $uuid,
 	]);
 
-	$this->assertEquals($uuid, $result["name"]);
+	$this->assertEquals($uuid, $result->name);
 
 // perform an insert and select again:
 	$uuid2 = uniqid();
@@ -91,8 +91,8 @@ public function testSubsequentSqlQueries() {
 		"rowName" => $uuid2,
 	]);
 
-	$this->assertEquals($uuid, $result1["name"]);
-	$this->assertEquals($uuid2, $result2["name"]);
+	$this->assertEquals($uuid, $result1->name);
+	$this->assertEquals($uuid2, $result2->name);
 }
 
 public function testQuestionMarkParameter() {
@@ -111,8 +111,8 @@ public function testQuestionMarkParameter() {
 
 	$rqr = $this->db->rawStatement("select id, name from test_table");
 
-	$this->assertEquals(1, $result1["id"]);
-	$this->assertEquals(2, $result2["id"]);
+	$this->assertEquals(1, $result1->id);
+	$this->assertEquals(2, $result2->id);
 }
 
 private function settingsSingleton():Settings {
