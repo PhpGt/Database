@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Database\Test;
 
+use Gt\Database\Result\Row;
 use PDOStatement;
 use Gt\Database\Result\ResultSet;
 
@@ -22,8 +23,8 @@ public function testLengthAndCount() {
 public function testFirstRowArrayAccess() {
 	$resultSet = new ResultSet($this->getStatementMock());
 	$firstRow = self::FAKE_DATA[0];
-	$this->assertEquals($firstRow["id"], $resultSet["id"]);
-	$this->assertEquals($firstRow["name"], $resultSet["name"]);
+	$this->assertEquals($firstRow["id"], $resultSet->id);
+	$this->assertEquals($firstRow["name"], $resultSet->name);
 }
 
 public function testIteration() {
@@ -53,6 +54,27 @@ public function testCountTwice() {
 	$resultSet = new ResultSet($this->getStatementMock());
 	$count = count($resultSet);
 	$this->assertCount($count, $resultSet);
+}
+
+public function testAccessByRowIndex() {
+	$resultSet = new ResultSet($this->getStatementMock());
+	self::FAKE_DATA[1]["name"];
+	$this->assertEquals(self::FAKE_DATA[1]["name"], $resultSet[1]->name);
+	$this->assertEquals(self::FAKE_DATA[0]["name"], $resultSet[0]->name);
+	$this->assertEquals(self::FAKE_DATA[2]["name"], $resultSet[2]->name);
+}
+
+public function testFetchAll() {
+	$resultSet = new ResultSet($this->getStatementMock());
+	$rows = $resultSet->fetchAll();
+
+	foreach(self::FAKE_DATA as $index => $fakeValue) {
+		$this->assertArrayHasKey($index, $rows);
+		$row = $rows[$index];
+		$this->assertInstanceOf(Row::class, $row);
+		$this->assertEquals($fakeValue["id"], $row->id);
+		$this->assertEquals($fakeValue["name"], $row->name);
+	}
 }
 
 private function getStatementMock():PDOStatement {
