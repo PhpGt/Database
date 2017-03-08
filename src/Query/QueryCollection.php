@@ -1,7 +1,6 @@
 <?php
 namespace Gt\Database\Query;
 
-use DirectoryIterator;
 use Gt\Database\Connection\Driver;
 use Gt\Database\Result\ResultSet;
 
@@ -25,7 +24,7 @@ string $directoryPath, Driver $driver, QueryFactory $queryFactory = null) {
 public function __call($name, $args) {
 	$queryArgs = [];
 
-	if(is_array($args[0])) {
+	if(isset($args[0]) && is_array($args[0])) {
 		$queryArgs = array_merge([$name], $args);
 	}
 	else {
