@@ -3,6 +3,7 @@ namespace Gt\Database\Query;
 
 use Gt\Database\Connection\Driver;
 use Gt\Database\Result\ResultSet;
+use Gt\Database\Result\Row;
 
 class QueryCollection {
 
@@ -40,6 +41,32 @@ string $name, /*iterable*/array $placeholderMap = []):ResultSet {
 	/** @var Query */
 	$query = $this->queryFactory->create($name);
 	return $query->execute($placeholderMap);
+}
+
+public function create(
+    string $name, /*iterable*/array $placeholderMap = []):string {
+    return $this->query($name, $placeholderMap)->getLastInsertId();
+}
+
+/** @return Row|null */
+public function retrieve(
+    string $name, /*iterable*/array $placeholderMap = []) {
+    return $this->query($name, $placeholderMap)->fetch();
+}
+
+public function retrieveAll(
+    string $name, /*iterable*/array $placeholderMap = []) {
+    return $this->query($name, $placeholderMap)->fetchAll();
+}
+
+public function update(
+    string $name, /*iterable*/array $placeholderMap = []):int {
+    return $this->query($name, $placeholderMap)->getAffectedRows();
+}
+
+public function delete(
+    string $name, /*iterable*/array $placeholderMap = []):int {
+    return $this->query($name, $placeholderMap)->getAffectedRows();
 }
 
 public function getDirectoryPath():string {
