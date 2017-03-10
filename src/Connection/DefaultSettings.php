@@ -46,7 +46,7 @@ public function getHost():string {
 }
 
 public function getPort():int {
-	return self::DEFAULT_PORT[self::getHost()];
+	return self::DEFAULT_PORT[self::getDataSource()];
 }
 
 public function getUsername():string {
@@ -66,16 +66,20 @@ public function getTablePrefix():string {
 }
 
 public function getConnectionSettings():array {
-	return [
-		"driver" => $this->getDataSource(),
-		"host" => $this->getHost(),
-		"database" => $this->getDatabase(),
-		"username" => $this->getUsername(),
-		"password" => $this->getPassword(),
-		"charset" => self::CHARSET,
-		"collation" => self::COLLATION,
-		"prefix" => $this->getTablePrefix(),
-	];
+    // NOTE: It's not possible to test the 'port' values returned by this method
+    // because the DefaultSettings can only ever return the DEFAULT_DATASOURCE port
+    return array_merge(
+        DefaultSettings::DEFAULT_CONFIG,
+	    [
+            "driver" => $this->getDataSource(),
+            "host" => $this->getHost(),
+            "port" => $this->getPort(),
+            "database" => $this->getDatabase(),
+            "username" => $this->getUsername(),
+            "password" => $this->getPassword(),
+            "charset" => self::CHARSET,
+            "collation" => self::COLLATION,
+            "prefix" => $this->getTablePrefix(),
+        ]);
 }
-
 }#
