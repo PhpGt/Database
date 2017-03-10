@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Database\Test;
 
+use Gt\Database\Result\EmptyResultSetException;
 use Gt\Database\Result\Row;
 use PDOStatement;
 use Gt\Database\Result\ResultSet;
@@ -62,6 +63,18 @@ public function testAccessByRowIndex() {
 	$this->assertEquals(self::FAKE_DATA[1]["name"], $resultSet[1]->name);
 	$this->assertEquals(self::FAKE_DATA[0]["name"], $resultSet[0]->name);
 	$this->assertEquals(self::FAKE_DATA[2]["name"], $resultSet[2]->name);
+}
+
+public function testNoRows() {
+    $statement = $this->createMock(PDOStatement::class);
+    $statement->method("fetch")->willReturn([]);
+    $statement->method("fetchAll")->willReturn([]);
+    $resultSet = new ResultSet($statement);
+
+    $this->assertNull($resultSet->fetch());
+
+    $this->expectException(EmptyResultSetException::class);
+    $resultSet->binky;
 }
 
 public function testFetchAll() {
