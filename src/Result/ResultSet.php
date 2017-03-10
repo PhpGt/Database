@@ -31,6 +31,8 @@ public function __construct(PDOStatement $statement, string $insertId = null) {
 	$this->insertId = $insertId;
 }
 
+/** @throws EmptyResultSetException If you try to access a column when no
+ * results were returned*/
 public function __get($name) {
 	$methodName = "get" . ucfirst($name);
 	if(method_exists($this, $methodName)) {
@@ -38,6 +40,10 @@ public function __get($name) {
 	}
 
 	$this->ensureFirstRowFetched();
+	if($this->currentRow === null) {
+	    throw new EmptyResultSetException();
+    }
+
 	return $this->currentRow->$name;
 }
 
