@@ -49,12 +49,17 @@ public function getMigrationCount():int {
 			. "` from `{$this->tableName}` "
 			. "order by 1 desc limit 1"
 		);
-		return (int)$result[self::COLUMN_QUERY_NUMBER];
+
+		if(!$result->hasResult()) {
+		    return 0;
+        }
+
+		return (int)$result->{self::COLUMN_QUERY_NUMBER};
 	}
 	catch(\Exception $exception) {
 		$message = $exception->getMessage();
 		$tableNotFoundError = preg_match(
-			"/(SQLSTATE\[42S02\])|(Base table or view not found)/",
+			"/(SQLSTATE\\[42S02\\])|(Base table or view not found)/",
 			$message
 		);
 
@@ -120,7 +125,7 @@ public function checkIntegrity(
 
 			echo "Migration $fileNumber OK" . PHP_EOL;
 
-			if($result[self::COLUMN_QUERY_HASH] !== $md5) {
+			if($result->{self::COLUMN_QUERY_HASH} !== $md5) {
 				echo PHP_EOL;
 				echo "Migration query doesn't match existing migration!";
 				echo PHP_EOL;
