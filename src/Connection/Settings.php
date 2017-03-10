@@ -21,6 +21,8 @@ private $dataSource;
 private $database;
 /** @var string */
 private $host;
+/** @var int */
+private $port;
 /** @var string */
 private $username;
 /** @var string */
@@ -36,10 +38,10 @@ public function __construct(
 	string $baseDirectory,
 	string $dataSource,
 	string $database,
-	string $host = "localhost",
+	string $host = DefaultSettings::DEFAULT_HOST,
 	int $port = null,
-	string $username = "",
-	string $password = "",
+	string $username = DefaultSettings::DEFAULT_USERNAME,
+	string $password = DefaultSettings::DEFAULT_PASSWORD,
 	string $tablePrefix = "",
 	string $connectionName = DefaultSettings::DEFAULT_NAME
 ) {
@@ -103,7 +105,8 @@ public function getConnectionSettings():array {
 		"driver" => $this->getDataSource(),
 		"host" => $this->getHost(),
 		"database" => $this->getDatabase(),
-		"username" => $this->getUsername(),
+        "port" => $this->getPort(),
+        "username" => $this->getUsername(),
 		"password" => $this->getPassword(),
 		"charset" => self::CHARSET,
 		"collation" => self::COLLATION,
