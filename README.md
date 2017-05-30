@@ -38,14 +38,14 @@ Examples of CRUD operations:
 $shopItems = $db["shop"]->getItemsInCategory("books");
 
 foreach($shopItems as $item) {
-	setItemName($item["name"]);
-	setItemPrice($item["price"]);
+	setItemName($item->name);
+	setItemPrice($item->price);
 }
 
 // The fields of the first (or only) Row of a ResultSet can be addressed on the
 // ResultSet itself:
 $customer = $db["customer"]->getById(105);
-outputGreeting("Hello, " . $customer["first_name"]);
+outputGreeting("Hello, " . $customer->first_name);
 
 // "Create" or "insert" methods always return the last inserted ID:
 $newCustomerId = $db["customer"]->create([
