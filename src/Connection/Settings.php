@@ -42,7 +42,7 @@ public function __construct(
 	int $port = null,
 	string $username = DefaultSettings::DEFAULT_USERNAME,
 	string $password = DefaultSettings::DEFAULT_PASSWORD,
-	string $tablePrefix = "",
+	string $tablePrefix = DefaultSettings::DEFAULT_TABLE_PREFIX,
 	string $connectionName = DefaultSettings::DEFAULT_NAME
 ) {
 	if(is_null($port)) {
