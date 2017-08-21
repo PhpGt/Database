@@ -1,16 +1,17 @@
 <?php
 namespace Gt\Database;
 
-use Gt\Database\Connection\DefaultSettings;
+use Gt\Database\Client;
 use Gt\Database\Connection\Settings;
 use Gt\Database\Query\QueryCollection;
-use Gt\Database\Query\QueryCollectionFactory;
+use Gt\Database\Query\QueryCollectionNotFoundException;
+use Gt\Database\ReadOnlyArrayAccessException;
 
 class ClientTest extends \PHPUnit_Framework_TestCase {
 
 public function testInterface() {
 	$db = new Client();
-	$this->assertInstanceOf("\Gt\Database\Client", $db);
+	$this->assertInstanceOf(Client::class, $db);
 }
 
 /**
@@ -25,20 +26,21 @@ public function testQueryCollectionPathExists(string $name, string $path) {
 	$this->assertTrue(isset($db[$name]));
 	$queryCollection = $db->queryCollection($name);
 
-	$this->assertInstanceOf("\\Gt\\Database\\Query\\QueryCollection",
-		$queryCollection
-	);
+	$this->assertInstanceOf(QueryCollection::class, $queryCollection);
 }
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
- * @expectedException \Gt\Database\Query\QueryCollectionNotFoundException
+ * @expectedException QueryCollectionNotFoundException
  */
 public function testQueryCollectionPathNotExists(string $name, string $path) {
 	$basePath = dirname($path);
 
 	$settings = new Settings(
-		$basePath, Settings::DRIVER_SQLITE, Settings::DATABASE_IN_MEMORY);
+		$basePath,
+		Settings::DRIVER_SQLITE,
+		Settings::DATABASE_IN_MEMORY
+	);
 	$db = new Client($settings);
 	$this->assertFalse(isset($db[$name]));
 	$queryCollection = $db->queryCollection($name);
@@ -48,8 +50,11 @@ public function testQueryCollectionPathNotExists(string $name, string $path) {
  * @dataProvider \Gt\Database\Test\Helper::queryCollectionPathExistsProvider
  */
 public function testOffsetGet(string $name, string $path) {
-	$settings = new Settings(dirname($path),
-		Settings::DRIVER_SQLITE, Settings::DATABASE_IN_MEMORY);
+	$settings = new Settings(
+		dirname($path),
+		Settings::DRIVER_SQLITE,
+		Settings::DATABASE_IN_MEMORY
+	);
 	$db = new Client($settings);
 
 	$offsetGot = $db->offsetGet($name);
@@ -62,7 +67,7 @@ public function testOffsetGet(string $name, string $path) {
 }
 
 /**
- * @expectedException \Gt\Database\ReadOnlyArrayAccessException
+ * @expectedException ReadOnlyArrayAccessException
  */
 public function testOffsetSet() {
 	$db = new Client();
@@ -70,7 +75,7 @@ public function testOffsetSet() {
 }
 
 /**
- * @expectedException \Gt\Database\ReadOnlyArrayAccessException
+ * @expectedException ReadOnlyArrayAccessException
  */
 public function testOffsetUnset() {
 	$db = new Client();
