@@ -5,7 +5,6 @@ use PDO;
 use ArrayAccess;
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
-use Gt\Database\Connection\Settings;
 use Gt\Database\Connection\SettingsInterface;
 use Gt\Database\Query\QueryCollection;
 use Gt\Database\Query\QueryCollectionFactory;
