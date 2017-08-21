@@ -3,23 +3,28 @@ namespace Gt\Database\Query;
 
 use Gt\Database\Connection\Driver;
 use Gt\Database\Connection\DefaultSettings;
-use Gt\Database\Test\Helper;
 
 class QueryTest extends \PHPUnit_Framework_TestCase {
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
- * @expectedException \Gt\Database\Query\QueryNotFoundException
+ * @expectedException QueryNotFoundException
  */
 public function testConstructionQueryPathNotExists(
-string $queryName, string $queryCollectionPath, string $queryPath) {
+	string $queryName,
+	string $queryCollectionPath,
+	string $queryPath
+) {
 	$query = new SqlQuery($queryPath, new Driver(new DefaultSettings()));
 }
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
  */
 public function testConstructionQueryPathExists(
-string $queryName, string $queryCollectionPath, string $queryPath) {
+	string $queryName,
+	string $queryCollectionPath,
+	string $queryPath
+) {
 	try {
 		$query = new SqlQuery($queryPath, new Driver(new DefaultSettings()));
 		$this->assertFileExists($query->getFilePath());

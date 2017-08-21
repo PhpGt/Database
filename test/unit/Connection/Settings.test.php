@@ -33,8 +33,7 @@ public function testPropertiesSet() {
 		$this->properties["connectionName"]
 	);
 
-	$this->assertEquals(
-		$this->properties["baseDirectory"], $settings->getBaseDirectory());
+	$this->assertEquals($this->properties["baseDirectory"], $settings->getBaseDirectory());
 	$this->assertEquals($this->properties["dataSource"], $settings->getDataSource());
 	$this->assertEquals($this->properties["database"], $settings->getDatabase());
 	$this->assertEquals($this->properties["host"], $settings->getHost());
@@ -42,8 +41,7 @@ public function testPropertiesSet() {
 	$this->assertEquals($this->properties["username"], $settings->getUsername());
 	$this->assertEquals($this->properties["password"], $settings->getPassword());
 	$this->assertEquals($this->properties["tablePrefix"], $settings->getTablePrefix());
-	$this->assertEquals(
-		$this->properties["connectionName"], $settings->getConnectionName());
+	$this->assertEquals($this->properties["connectionName"], $settings->getConnectionName());
 }
 
 public function testDefaultConnectionName() {
@@ -66,8 +64,7 @@ public function testDefaultConnectionName() {
 		$details["password"]
 	);
 
-	$this->assertEquals(
-		DefaultSettings::DEFAULT_NAME, $settings->getConnectionName());
+	$this->assertEquals(DefaultSettings::DEFAULT_NAME, $settings->getConnectionName());
 }
 
 public function testGetConnectionSettings() {

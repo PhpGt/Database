@@ -1,14 +1,13 @@
 <?php
 namespace Gt\Database\Connection;
 
+use Gt\Database\Connection\SettingsInterface;
+
 class DefaultSettingsTest extends \PHPUnit_Framework_TestCase {
 
 public function testImplementation() {
 	$settings = new DefaultSettings();
-	$this->assertInstanceOf(
-		"\\Gt\\Database\\Connection\\SettingsInterface",
-		$settings
-	);
+	$this->assertInstanceOf(SettingsInterface::class, $settings);
 }
 
 public function testDefaults() {
@@ -72,4 +71,5 @@ public function getDatasources(): array
         [ Settings::DRIVER_SQLITE, 0],
     ];
 }
+
 }#

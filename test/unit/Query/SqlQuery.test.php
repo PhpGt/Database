@@ -3,12 +3,13 @@ namespace Gt\Database\Test;
 
 use Gt\Database\Connection\Driver;
 use Gt\Database\Connection\Settings;
-use Gt\Database\Connection\SettingsInterface;
+use Gt\Database\Query\PreparedStatementException;
+use Gt\Database\Query\QueryNotFoundException;
 use Gt\Database\Query\SqlQuery;
 
 class SqlQueryTest extends \PHPUnit_Framework_TestCase {
 
-/** @var \Gt\Database\Connection\Driver */
+/** @var Driver */
 private $driver;
 
 public function setUp() {
@@ -32,28 +33,37 @@ public function setUp() {
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
- * @expectedException \Gt\Database\Query\QueryNotFoundException
+ * @expectedException QueryNotFoundException
  */
 public function testQueryNotFound(
-string $queryName, string $queryCollectionPath, string $queryPath) {
-	$query = new SqlQuery($queryPath, $this->driverSingleton());
+	string $queryName,
+	string $queryCollectionPath,
+	string $queryPath
+) {
+	new SqlQuery($queryPath, $this->driverSingleton());
 }
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
  */
 public function testQueryFound(
-string $queryName, string $queryCollectionPath, string $queryPath) {
+	string $queryName,
+	string $queryCollectionPath,
+	string $queryPath
+) {
 	$query = new SqlQuery($queryPath, $this->driverSingleton());
 	$this->assertFileExists($query->getFilePath());
 }
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
- * @expectedException \Gt\Database\Query\PreparedStatementException
+ * @expectedException PreparedStatementException
  */
 public function testBadPreparedStatementThrowsException(
-string $queryName, string $queryCollectionPath, string $queryPath) {
+	string $queryName,
+	string $queryCollectionPath,
+	string $queryPath
+) {
 	file_put_contents($queryPath, "insert blahblah into nothing");
 	$query = new SqlQuery($queryPath, $this->driverSingleton());
 	$query->execute();
@@ -87,8 +97,7 @@ public function testLastInsertId(
 	string $queryPath
 ) {
 	$uuid = uniqid("test-");
-	file_put_contents(
-		$queryPath, "insert into test_table (name) values ('$uuid')");
+	file_put_contents($queryPath, "insert into test_table (name) values ('$uuid')");
 	$query = new SqlQuery($queryPath, $this->driverSingleton());
 	$resultSet = $query->execute();
 	$id = $resultSet->lastInsertId;
@@ -161,7 +170,7 @@ public function testPlaceholderReplacementInComments(
 	string $queryPath
 ) {
 	$uuid = uniqid("test-");
-// The question mark can cause problems with preparing queries.
+// The question mark could cause problems with preparing queries.
 	file_put_contents($queryPath, "select :test as `test` -- does this test work?");
 	$query = new SqlQuery($queryPath, $this->driverSingleton());
 	$resultSet = $query->execute([

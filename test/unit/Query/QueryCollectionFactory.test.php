@@ -15,8 +15,11 @@ public function testCurrentWorkingDirectoryDefault() {
 	mkdir($queryCollectionDirectoryPath, 0775, true);
 	chdir($baseDir);
 
-	$driver = new Driver(new Settings($baseDir,
-		Settings::DRIVER_SQLITE, Settings::DATABASE_IN_MEMORY));
+	$driver = new Driver(new Settings(
+		$baseDir,
+		Settings::DRIVER_SQLITE,
+		Settings::DATABASE_IN_MEMORY)
+	);
 
 	$queryCollectionFactory = new QueryCollectionFactory($driver);
 	$queryCollection = $queryCollectionFactory->create(

@@ -3,6 +3,9 @@ namespace Gt\Database\Query;
 
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
+use Gt\Database\Query\Query;
+use Gt\Database\Query\QueryFileExtensionException;
+use Gt\Database\Query\QueryNotFoundException;
 use Gt\Database\Test\Helper;
 
 class QueryFactoryTest extends \PHPUnit_Framework_TestCase {
@@ -22,28 +25,34 @@ string $queryName, string $directoryOfQueries) {
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
- * @expectedException \Gt\Database\Query\QueryNotFoundException
+ * @expectedException QueryNotFoundException
  */
 public function testFindQueryFilePathNotExists(
-string $queryName, string $directoryOfQueries) {
+	string $queryName,
+	string $directoryOfQueries
+) {
 	$queryFactory = new QueryFactory(
 		$directoryOfQueries,
 		new Driver(new DefaultSettings())
 	);
-	$queryFilePath = $queryFactory->findQueryFilePath($queryName);
+
+	$queryFactory->findQueryFilePath($queryName);
 }
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExtensionNotValidProvider
- * @expectedException \Gt\Database\Query\QueryFileExtensionException
+ * @expectedException QueryFileExtensionException
  */
 public function testFindQueryFilePathWithInvalidExtension(
-string $queryName, string $directoryOfQueries) {
+	string $queryName,
+	string $directoryOfQueries
+) {
 	$queryFactory = new QueryFactory(
 		$directoryOfQueries,
 		new Driver(new DefaultSettings())
 	);
-	$queryFilePath = $queryFactory->findQueryFilePath($queryName);
+
+	$queryFactory->findQueryFilePath($queryName);
 }
 
 /**
@@ -58,15 +67,12 @@ public function testQueryCreated(
 		new Driver(new DefaultSettings())
 	);
 	$query = $queryFactory->create($queryName);
-	$this->assertInstanceOf(
-		"\Gt\Database\Query\Query",
-		$query
-	);
+
+	$this->assertInstanceOf(Query::class, $query);
 }
 
 public function testSelectsCorrectFile() {
 	$queryCollectionData = Helper::queryCollectionPathExistsProvider();
-	$queryCollectionName = $queryCollectionData[0][0];
 	$queryCollectionPath = $queryCollectionData[0][1];
 
 	$queryFactory = new QueryFactory(
@@ -74,7 +80,12 @@ public function testSelectsCorrectFile() {
 		new Driver(new DefaultSettings())
 	);
 
-	$queryNames = [uniqid("q1-"), uniqid("q2-"), uniqid("q3-"), uniqid("q4-")];
+	$queryNames = [
+		uniqid("q1-"),
+		uniqid("q2-"),
+		uniqid("q3-"),
+		uniqid("q4-")
+	];
 	$queryFileList = [];
 	foreach($queryNames as $queryName) {
 		$queryPath = $queryCollectionPath . "/$queryName.sql";

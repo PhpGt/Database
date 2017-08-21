@@ -18,8 +18,7 @@ public function __construct(Driver $driver) {
 	$this->basePath = $this->driver->getBaseDirectory();
 }
 
-public function create(string $name)
-:QueryCollection {
+public function create(string $name):QueryCollection {
 	if(!isset($this->queryCollectionCache[$name])) {
 		$directoryPath = $this->locateDirectory($name);
 
