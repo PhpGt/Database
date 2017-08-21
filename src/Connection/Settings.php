@@ -14,25 +14,25 @@ const DRIVER_SQLSERVER = "dblib";
 const DATABASE_IN_MEMORY = ":memory:";
 
 /** @var string */
-private $baseDirectory;
+protected $baseDirectory;
 /** @var string */
-private $dataSource;
+protected $dataSource;
 /** @var string */
-private $database;
+protected $database;
 /** @var string */
-private $host;
+protected $host;
 /** @var int */
-private $port;
+protected $port;
 /** @var string */
-private $username;
+protected $username;
 /** @var string */
-private $password;
+protected $password;
 /** @var string */
-private $tablePrefix;
+protected $tablePrefix;
 /** @var string */
-private $connectionName;
+protected $connectionName;
 /** @var array */
-private $config = [];
+protected $config = [];
 
 public function __construct(
 	string $baseDirectory,
