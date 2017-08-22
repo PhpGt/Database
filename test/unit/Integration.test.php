@@ -37,11 +37,12 @@ public function setUp() {
 		$error = $connection->errorInfo();
 		throw new Exception($error[2]);
 	}
-	$this->assertTrue($success, "Success inserting fake data");
+
+	static::assertTrue($success, "Success inserting fake data");
 
 	$selectStatement = $connection->query("select * from test_table");
 	$result = $selectStatement->fetchAll();
-	$this->assertCount(3, $result);
+	static::assertCount(3, $result);
 }
 
 public function testSubsequentSqlQueries() {
@@ -68,7 +69,7 @@ public function testSubsequentSqlQueries() {
 		"rowName" => $uuid,
 	]);
 
-	$this->assertEquals($uuid, $result->name);
+	static::assertEquals($uuid, $result->name);
 
 // perform an insert and select again:
 	$uuid2 = uniqid();
@@ -82,8 +83,8 @@ public function testSubsequentSqlQueries() {
 		"rowName" => $uuid2,
 	]);
 
-	$this->assertEquals($uuid, $result1->name);
-	$this->assertEquals($uuid2, $result2->name);
+	static::assertEquals($uuid, $result1->name);
+	static::assertEquals($uuid2, $result2->name);
 }
 
 public function testQuestionMarkParameter() {
@@ -102,8 +103,8 @@ public function testQuestionMarkParameter() {
 
 	$rqr = $this->db->rawStatement("select id, name from test_table");
 
-	$this->assertEquals(1, $result1->id);
-	$this->assertEquals(2, $result2->id);
+	static::assertEquals(1, $result1->id);
+	static::assertEquals(2, $result2->id);
 }
 
 private function settingsSingleton():Settings {
