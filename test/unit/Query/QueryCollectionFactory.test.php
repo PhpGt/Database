@@ -27,7 +27,7 @@ public function testCurrentWorkingDirectoryDefault() {
 		$driver
 	);
 
-	$this->assertEquals(
+	static::assertEquals(
 		$queryCollectionDirectoryPath,
 		$queryCollection->getDirectoryPath()
 	);
