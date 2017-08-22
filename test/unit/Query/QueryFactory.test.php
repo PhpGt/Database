@@ -11,7 +11,9 @@ class QueryFactoryTest extends \PHPUnit_Framework_TestCase {
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
  */
 public function testFindQueryFilePathExists(
-string $queryName, string $directoryOfQueries) {
+	string $queryName,
+	string $directoryOfQueries
+) {
 	$queryFactory = new QueryFactory(
 		$directoryOfQueries,
 		new Driver(new DefaultSettings())
@@ -22,7 +24,7 @@ string $queryName, string $directoryOfQueries) {
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
- * @expectedException QueryNotFoundException
+ * @expectedException \Gt\Database\Query\QueryNotFoundException
  */
 public function testFindQueryFilePathNotExists(
 	string $queryName,
@@ -38,7 +40,7 @@ public function testFindQueryFilePathNotExists(
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExtensionNotValidProvider
- * @expectedException QueryFileExtensionException
+ * @expectedException \Gt\Database\Query\QueryFileExtensionException
  */
 public function testFindQueryFilePathWithInvalidExtension(
 	string $queryName,
@@ -64,7 +66,6 @@ public function testQueryCreated(
 		new Driver(new DefaultSettings())
 	);
 	$query = $queryFactory->create($queryName);
-
 	static::assertInstanceOf(Query::class, $query);
 }
 

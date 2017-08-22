@@ -15,25 +15,22 @@ private $driver;
 public function setUp() {
 	$driver = $this->driverSingleton();
 	$connection = $driver->getConnection();
-	$schemaBuilder = $connection->getSchemaBuilder();
-	$schemaBuilder->create("test_table", function($table) {
-		$table->increments("id");
-		$table->string("name")->unique();
-		$table->timestamps();
-	});
-	$insertStatement = $connection->getPdo()->prepare(
+	$output = $connection->exec("CREATE TABLE test_table ( id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(32), timestamp DATETIME DEFAULT current_timestamp); CREATE UNIQUE INDEX test_table_name_uindex ON test_table (name);");
+	static::assertNotFalse($output);
+
+	$insertStatement = $connection->prepare(
 		"insert into test_table (name) values
 		('one'),
 		('two'),
 		('three')"
 	);
 	$success = $insertStatement->execute();
-	$this->assertTrue($success, "Success inserting fake data");
+	static::assertTrue($success, "Success inserting fake data");
 }
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
- * @expectedException QueryNotFoundException
+ * @expectedException \Gt\Database\Query\QueryNotFoundException
  */
 public function testQueryNotFound(
 	string $queryName,
@@ -52,12 +49,12 @@ public function testQueryFound(
 	string $queryPath
 ) {
 	$query = new SqlQuery($queryPath, $this->driverSingleton());
-	$this->assertFileExists($query->getFilePath());
+	static::assertFileExists($query->getFilePath());
 }
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
- * @expectedException PreparedStatementException
+ * @expectedException \Gt\Database\Query\PreparedStatementException
  */
 public function testBadPreparedStatementThrowsException(
 	string $queryName,
@@ -83,8 +80,8 @@ public function testPreparedStatement(
 
 	foreach(["one", "two", "three"] as $i => $name) {
 		$row = $resultSet->fetch();
-		$this->assertEquals($i + 1, $row->id);
-		$this->assertEquals($name, $row->name);
+		static::assertEquals($i + 1, $row->id);
+		static::assertEquals($name, $row->name);
 	}
 }
 
@@ -101,13 +98,13 @@ public function testLastInsertId(
 	$query = new SqlQuery($queryPath, $this->driverSingleton());
 	$resultSet = $query->execute();
 	$id = $resultSet->lastInsertId;
-	$this->assertNotEmpty($id);
+	static::assertNotEmpty($id);
 
 	file_put_contents($queryPath, "select * from test_table where id = $id");
 	$query = new SqlQuery($queryPath, $this->driverSingleton());
 	$resultSet = $query->execute();
 
-	$this->assertEquals($uuid, $resultSet->name);
+	static::assertEquals($uuid, $resultSet->name);
 }
 
 public function testSubsequentCounts() {
@@ -117,8 +114,8 @@ public function testSubsequentCounts() {
 	$query = new SqlQuery($queryPath, $this->driverSingleton());
 	$resultSet = $query->execute();
 	$count = count($resultSet);
-	$this->assertGreaterThan(0, $count);
-	$this->assertCount($count, $resultSet);
+	static::assertGreaterThan(0, $count);
+	static::assertCount($count, $resultSet);
 }
 
 public function testSubsequentCalls() {
@@ -134,11 +131,11 @@ public function testSubsequentCalls() {
 	$lastTestWord = "";
 
 	foreach(["Hello","Goodbye"] as $i => $testWord) {
-		$this->assertNotEquals($testWord, $lastTestWord);
+		static::assertNotEquals($testWord, $lastTestWord);
 		file_put_contents($queryPath[$i], "select '$testWord' as test");
 		$query = new SqlQuery($queryPath[$i], $this->driverSingleton());
 		$resultSet = $query->execute();
-		$this->assertEquals($testWord, $resultSet->test);
+		static::assertEquals($testWord, $resultSet->test);
 		$lastTestWord = $testWord;
 	}
 }
@@ -158,7 +155,7 @@ public function testPlaceholderReplacement(
 		"testPlaceholder" => $uuid,
 	]);
 
-	$this->assertEquals($uuid, $resultSet->testValue);
+	static::assertEquals($uuid, $resultSet->testValue);
 }
 
 /**
@@ -177,7 +174,7 @@ public function testPlaceholderReplacementInComments(
 		"test" => $uuid,
 	]);
 
-	$this->assertEquals($uuid, $resultSet->test);
+	static::assertEquals($uuid, $resultSet->test);
 }
 
 public function testPlaceholderReplacementSubsequentCalls() {
@@ -206,14 +203,14 @@ public function testPlaceholderReplacementSubsequentCalls() {
 		$resultSet = $query->execute($placeholderList[$i]);
 		$row = $resultSet->fetch();
 
-		$this->assertCount(
+		static::assertCount(
 			count($placeholderList[$i]),
 			$row,
 			"Iteration $i"
 		);
 
 		foreach($placeholderList[$i] as $key => $value) {
-			$this->assertEquals($value, $row->$key, "Iteration $i");
+			static::assertEquals($value, $row->$key, "Iteration $i");
 		}
 	}
 }
