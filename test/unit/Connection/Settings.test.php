@@ -33,15 +33,15 @@ public function testPropertiesSet() {
 		$this->properties["connectionName"]
 	);
 
-	$this->assertEquals($this->properties["baseDirectory"], $settings->getBaseDirectory());
-	$this->assertEquals($this->properties["dataSource"], $settings->getDataSource());
-	$this->assertEquals($this->properties["database"], $settings->getDatabase());
-	$this->assertEquals($this->properties["host"], $settings->getHost());
-	$this->assertEquals($this->properties["port"], $settings->getPort());
-	$this->assertEquals($this->properties["username"], $settings->getUsername());
-	$this->assertEquals($this->properties["password"], $settings->getPassword());
-	$this->assertEquals($this->properties["tablePrefix"], $settings->getTablePrefix());
-	$this->assertEquals($this->properties["connectionName"], $settings->getConnectionName());
+	static::assertEquals($this->properties["baseDirectory"], $settings->getBaseDirectory());
+	static::assertEquals($this->properties["dataSource"], $settings->getDataSource());
+	static::assertEquals($this->properties["database"], $settings->getDatabase());
+	static::assertEquals($this->properties["host"], $settings->getHost());
+	static::assertEquals($this->properties["port"], $settings->getPort());
+	static::assertEquals($this->properties["username"], $settings->getUsername());
+	static::assertEquals($this->properties["password"], $settings->getPassword());
+	static::assertEquals($this->properties["tablePrefix"], $settings->getTablePrefix());
+	static::assertEquals($this->properties["connectionName"], $settings->getConnectionName());
 }
 
 public function testDefaultConnectionName() {
@@ -64,7 +64,7 @@ public function testDefaultConnectionName() {
 		$details["password"]
 	);
 
-	$this->assertEquals(DefaultSettings::DEFAULT_NAME, $settings->getConnectionName());
+	static::assertEquals(DefaultSettings::DEFAULT_NAME, $settings->getConnectionName());
 }
 
 public function testGetConnectionSettings() {
@@ -94,7 +94,7 @@ public function testGetConnectionSettings() {
     ];
 
     $actual = $settings->getConnectionSettings();
-    $this->assertEquals($expected, $actual);
+    static::assertEquals($expected, $actual);
 }
 
 public function testSetConfig() {
@@ -118,7 +118,7 @@ public function testSetConfig() {
     ]);
 
     $actual = $settings->getConnectionSettings();
-    $this->assertArrayHasKey("options", $actual);
-    $this->assertEquals($expected, $actual["options"]);
+    static::assertArrayHasKey("options", $actual);
+    static::assertEquals($expected, $actual["options"]);
 }
 }#
