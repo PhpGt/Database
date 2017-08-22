@@ -7,38 +7,38 @@ class DefaultSettingsTest extends \PHPUnit_Framework_TestCase {
 
 public function testImplementation() {
 	$settings = new DefaultSettings();
-	$this->assertInstanceOf(SettingsInterface::class, $settings);
+	static::assertInstanceOf(SettingsInterface::class, $settings);
 }
 
 public function testDefaults() {
 	$settings = new DefaultSettings();
-	$this->assertEquals(
+	static::assertEquals(
 		DefaultSettings::DEFAULT_DATASOURCE,
 		$settings->getDataSource()
 	);
-	$this->assertEquals(
+	static::assertEquals(
 		DefaultSettings::DEFAULT_DATABASE,
 		$settings->getDatabase()
 	);
-	$this->assertEquals(
+	static::assertEquals(
 		DefaultSettings::DEFAULT_PORT[DefaultSettings::DEFAULT_DATASOURCE],
 		$settings->getPort()
 	);
-	$this->assertEquals(
+	static::assertEquals(
 		DefaultSettings::DEFAULT_HOST,
 		$settings->getHost()
 	);
-	$this->assertEquals(
+	static::assertEquals(
 		DefaultSettings::DEFAULT_USERNAME,
 		$settings->getUsername()
 	);
-	$this->assertEquals(
+	static::assertEquals(
 		DefaultSettings::DEFAULT_PASSWORD,
 		$settings->getPassword()
 	);
 }
 
-/** @dataProvider getDatasources */
+/** @dataProvider getDataSources */
 public function testDefaultPort(string $dsn, int $port) {
     // NOTE: Have to use a Settings object here as it's not possible to use anything other
     // than the default_datasource otherwise
@@ -47,8 +47,8 @@ public function testDefaultPort(string $dsn, int $port) {
         $dsn,
         "test-database");
 
-    $this->assertEquals($port, $settings->getPort());
-    $this->assertEquals([
+    static::assertEquals($port, $settings->getPort());
+    static::assertEquals([
         "driver" => $dsn,
         "host" => DefaultSettings::DEFAULT_HOST,
         "port" => $port,
@@ -62,8 +62,7 @@ public function testDefaultPort(string $dsn, int $port) {
     ], $settings->getConnectionSettings());
 }
 
-public function getDatasources(): array
-{
+public function getDataSources(): array {
     return [
         [ Settings::DRIVER_MYSQL, 3306 ],
         [ Settings::DRIVER_POSTGRES, 5432],

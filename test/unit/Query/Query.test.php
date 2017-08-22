@@ -8,7 +8,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase {
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
- * @expectedException QueryNotFoundException
+ * @expectedException \Gt\Database\Query\QueryNotFoundException
  */
 public function testConstructionQueryPathNotExists(
 	string $queryName,
@@ -27,11 +27,9 @@ public function testConstructionQueryPathExists(
 ) {
 	try {
 		$query = new SqlQuery($queryPath, new Driver(new DefaultSettings()));
-		$this->assertFileExists($query->getFilePath());
+		static::assertFileExists($query->getFilePath());
 	}
-	catch(\Exception $e) {
-
-	}
+	catch(\Exception $e) {}
 }
 
 }#
