@@ -1,8 +1,6 @@
 <?php
 namespace Gt\Database\Connection;
 
-use Gt\Database\Connection\SettingsInterface;
-
 class DefaultSettingsTest extends \PHPUnit_Framework_TestCase {
 
 public function testImplementation() {
