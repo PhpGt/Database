@@ -16,24 +16,24 @@ private $mockQuery;
 public function testQueryCollectionQuery() {
 	$placeholderVars = ["nombre" => "hombre"];
 	$this->mockQuery
-		->expects($this->once())
+		->expects(static::once())
 		->method("execute")
 		->with($placeholderVars);
 
 	$resultSet = $this->queryCollection->query("something", $placeholderVars);
 
-	$this->assertInstanceOf(
+	static::assertInstanceOf(
 		ResultSet::class,
 		$resultSet
 	);
 }
 
 public function testQueryCollectionQueryNoParams() {
-	$this->mockQuery->expects($this->once())->method("execute")->with();
+	$this->mockQuery->expects(static::once())->method("execute")->with();
 
 	$resultSet = $this->queryCollection->query("something");
 
-	$this->assertInstanceOf(
+	static::assertInstanceOf(
 		ResultSet::class,
 		$resultSet
 	);
@@ -42,20 +42,20 @@ public function testQueryCollectionQueryNoParams() {
 public function testQueryShorthand() {
 	$placeholderVars = ["nombre" => "hombre"];
 	$this->mockQuery
-		->expects($this->once())
+		->expects(static::once())
 		->method("execute")
 		->with($placeholderVars);
 
-	$this->assertInstanceOf(
+	static::assertInstanceOf(
 		ResultSet::class,
 		$this->queryCollection->something($placeholderVars)
 	);
 }
 
 public function testQueryShorthandNoParams() {
-	$this->mockQuery->expects($this->once())->method("execute")->with();
+	$this->mockQuery->expects(static::once())->method("execute")->with();
 
-	$this->assertInstanceOf(
+	static::assertInstanceOf(
 		ResultSet::class,
 		$this->queryCollection->something()
 	);
@@ -65,7 +65,7 @@ public function setUp() {
 	$mockQueryFactory = $this->createMock(QueryFactory::class);
 	$this->mockQuery = $this->createMock(Query::class);
 	$mockQueryFactory
-		->expects($this->once())
+		->expects(static::once())
 		->method("create")
 		->with("something")
 		->willReturn($this->mockQuery);

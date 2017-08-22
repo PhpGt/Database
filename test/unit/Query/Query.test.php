@@ -15,7 +15,7 @@ public function testConstructionQueryPathNotExists(
 	string $queryCollectionPath,
 	string $queryPath
 ) {
-	$query = new SqlQuery($queryPath, new Driver(new DefaultSettings()));
+	new SqlQuery($queryPath, new Driver(new DefaultSettings()));
 }
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
