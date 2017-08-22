@@ -5,7 +5,6 @@ use PDO;
 use ArrayAccess;
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
-use Gt\Database\Connection\Settings;
 use Gt\Database\Connection\SettingsInterface;
 use Gt\Database\Query\QueryCollection;
 use Gt\Database\Query\QueryCollectionFactory;
@@ -82,9 +81,7 @@ public function getDriver(
 
 private function getPdo(string $connectionName):PDO {
 	$driver = $this->driverArray[$connectionName];
-	$connection = $driver->getConnection();
-	$pdo = $connection->getPdo();
-	return $pdo;
+	return $driver->getConnection();
 }
 
 // ArrayAccess ////////////////////////////////////////////////////////////////

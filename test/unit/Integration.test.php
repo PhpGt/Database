@@ -1,12 +1,9 @@
 <?php
 namespace Gt\Database;
 
-use Gt\Database\Client;
-use Gt\Database\Connection\DefaultSettings;
+use Exception;
 use Gt\Database\Connection\Driver;
 use Gt\Database\Connection\Settings;
-use Gt\Database\Query\QueryCollection;
-use Gt\Database\Query\QueryCollectionFactory;
 use Gt\Database\Test\Helper;
 
 class IntegrationTest extends \PHPUnit_Framework_TestCase {
@@ -27,30 +24,25 @@ public function setUp() {
 	$driver = $this->db->getDriver();
 
 	$connection = $driver->getConnection();
-	$schemaBuilder = $connection->getSchemaBuilder();
-	$schemaBuilder->create("test_table", function($table) {
-		$table->increments("id");
-		$table->string("name")->unique();
-		$table->timestamps();
-	});
+	$output = $connection->exec("CREATE TABLE test_table ( id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(32), timestamp DATETIME DEFAULT current_timestamp); CREATE UNIQUE INDEX test_table_name_uindex ON test_table (name);");
 
-	$this->assertTrue(
-		$schemaBuilder->hasTable("test_table"),
-		"test_table table exists."
-	);
+	if($output === false) {
+		$error = $connection->errorInfo();
+		throw new Exception($error[2]);
+	}
 
-	$insertStatement = $connection->getPdo()->prepare(
-		"insert into test_table (name) values
-		('one'),
-		('two'),
-		('three')"
-	);
+	$insertStatement = $connection->prepare("insert into test_table (name) values ('one'), ('two'), ('three')");
 	$success = $insertStatement->execute();
+	if($success === false) {
+		$error = $connection->errorInfo();
+		throw new Exception($error[2]);
+	}
 
-	$result = $connection->table("test_table")->get();
-	$this->assertCount(3, $result);
+	static::assertTrue($success, "Success inserting fake data");
 
-	$this->assertTrue($success, "Success inserting fake data");
+	$selectStatement = $connection->query("select * from test_table");
+	$result = $selectStatement->fetchAll();
+	static::assertCount(3, $result);
 }
 
 public function testSubsequentSqlQueries() {
@@ -77,7 +69,7 @@ public function testSubsequentSqlQueries() {
 		"rowName" => $uuid,
 	]);
 
-	$this->assertEquals($uuid, $result->name);
+	static::assertEquals($uuid, $result->name);
 
 // perform an insert and select again:
 	$uuid2 = uniqid();
@@ -91,8 +83,8 @@ public function testSubsequentSqlQueries() {
 		"rowName" => $uuid2,
 	]);
 
-	$this->assertEquals($uuid, $result1->name);
-	$this->assertEquals($uuid2, $result2->name);
+	static::assertEquals($uuid, $result1->name);
+	static::assertEquals($uuid2, $result2->name);
 }
 
 public function testQuestionMarkParameter() {
@@ -111,8 +103,8 @@ public function testQuestionMarkParameter() {
 
 	$rqr = $this->db->rawStatement("select id, name from test_table");
 
-	$this->assertEquals(1, $result1->id);
-	$this->assertEquals(2, $result2->id);
+	static::assertEquals(1, $result1->id);
+	static::assertEquals(2, $result2->id);
 }
 
 private function settingsSingleton():Settings {

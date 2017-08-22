@@ -12,5 +12,6 @@ public function getUsername():string;
 public function getPassword():string;
 public function getConnectionName():string;
 public function getTablePrefix():string;
+public function getConnectionString():string;
 
 }#

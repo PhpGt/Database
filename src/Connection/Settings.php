@@ -14,35 +14,35 @@ const DRIVER_SQLSERVER = "dblib";
 const DATABASE_IN_MEMORY = ":memory:";
 
 /** @var string */
-private $baseDirectory;
+protected $baseDirectory;
 /** @var string */
-private $dataSource;
+protected $dataSource;
 /** @var string */
-private $database;
+protected $database;
 /** @var string */
-private $host;
+protected $host;
 /** @var int */
-private $port;
+protected $port;
 /** @var string */
-private $username;
+protected $username;
 /** @var string */
-private $password;
+protected $password;
 /** @var string */
-private $tablePrefix;
+protected $tablePrefix;
 /** @var string */
-private $connectionName;
+protected $connectionName;
 /** @var array */
-private $config = [];
+protected $config = [];
 
 public function __construct(
 	string $baseDirectory,
 	string $dataSource,
-	string $database,
+	string $database = null,
 	string $host = DefaultSettings::DEFAULT_HOST,
 	int $port = null,
 	string $username = DefaultSettings::DEFAULT_USERNAME,
 	string $password = DefaultSettings::DEFAULT_PASSWORD,
-	string $tablePrefix = "",
+	string $tablePrefix = DefaultSettings::DEFAULT_TABLE_PREFIX,
 	string $connectionName = DefaultSettings::DEFAULT_NAME
 ) {
 	if(is_null($port)) {
@@ -118,6 +118,24 @@ public function getConnectionSettings():array {
 		$currentSettings,
 		$this->config
 	);
+}
+
+public function getConnectionString():string {
+	$source = $this->getDataSource();
+	$connectionString = "$source:";
+
+	switch($source) {
+	case self::DRIVER_SQLITE:
+		$connectionString .= $this->getDatabase();
+		break;
+
+	default:
+		$connectionString .= "host=" . $this->getHost();
+		$connectionString .= ";dbname=" . $this->getDatabase();
+		break;
+	}
+
+	return $connectionString;
 }
 
 }#

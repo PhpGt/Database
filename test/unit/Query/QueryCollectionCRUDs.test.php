@@ -9,240 +9,238 @@ use PHPUnit_Framework_MockObject_MockObject;
 
 class QueryCollectionCRUDsTest extends \PHPUnit_Framework_TestCase {
 /** @var  QueryCollection */
-private $SUT;
+private $queryCollection;
 /** @var  PHPUnit_Framework_MockObject_MockObject */
 private $mockQuery;
 
 // CREATE /////////////////////////////////////////////////////////////////////
 public function testCreate() {
-    $placeholderVars = ["nombre" => "hombre"];
-    $lastInsertID = "1234";
-    $mockResultSet = $this->createMock(ResultSet::class);
-    $mockResultSet
-        ->method("getLastInsertID")
-        ->willReturn($lastInsertID);
-    $this->mockQuery
-        ->expects($this->once())
-        ->method("execute")
-        ->with($placeholderVars)
-        ->willReturn($mockResultSet);
+	$placeholderVars = ["nombre" => "hombre"];
+	$lastInsertID = "1234";
+	$mockResultSet = $this->createMock(ResultSet::class);
+	$mockResultSet
+		->method("getLastInsertID")
+		->willReturn($lastInsertID);
+	$this->mockQuery
+		->expects(static::once())
+		->method("execute")
+		->with($placeholderVars)
+		->willReturn($mockResultSet);
 
-    $this->assertEquals(
-        $lastInsertID,
-        $this->SUT->create("something", $placeholderVars));
+	static::assertEquals(
+		$lastInsertID,
+		$this->queryCollection->create("something", $placeholderVars));
 }
 
 public function testCreateNoParams() {
-    $lastInsertID = "1234";
-    $mockResultSet = $this->createMock(ResultSet::class);
-    $mockResultSet
-        ->method("getLastInsertID")
-        ->willReturn($lastInsertID);
-    $this->mockQuery
-        ->expects($this->once())
-        ->method("execute")
-        ->with()
-        ->willReturn($mockResultSet);
+	$lastInsertID = "1234";
+	$mockResultSet = $this->createMock(ResultSet::class);
+	$mockResultSet
+		->method("getLastInsertID")
+		->willReturn($lastInsertID);
+	$this->mockQuery
+		->expects(static::once())
+		->method("execute")
+		->with()
+		->willReturn($mockResultSet);
 
-    $this->assertEquals(
-        $lastInsertID,
-        $this->SUT->create("something"));
+	static::assertEquals(
+		$lastInsertID,
+		$this->queryCollection->create("something"));
 }
 
 // RETRIEVE ///////////////////////////////////////////////////////////////////
 public function testRetrieve() {
-    $placeholderVars = ["nombre" => "hombre"];
-    $expected = new Row(["col1" => "that"]);
+	$placeholderVars = ["nombre" => "hombre"];
+	$expected = new Row(["col1" => "that"]);
 
-    $mockResultSet = $this->createMock(ResultSet::class);
-    $mockResultSet
-        ->method("fetch")
-        ->willReturn($expected);
-    $this->mockQuery
-        ->expects($this->once())
-        ->method("execute")
-        ->with($placeholderVars)
-        ->willReturn($mockResultSet);
+	$mockResultSet = $this->createMock(ResultSet::class);
+	$mockResultSet
+		->method("fetch")
+		->willReturn($expected);
+	$this->mockQuery
+		->expects(static::once())
+		->method("execute")
+		->with($placeholderVars)
+		->willReturn($mockResultSet);
 
-    $actual = $this->SUT->retrieve("something", $placeholderVars);
-    $this->assertInstanceOf(Row::class, $actual);
-    $this->assertCount(1, $actual);
-    $this->assertEquals($expected, $actual);
+	$actual = $this->queryCollection->retrieve("something", $placeholderVars);
+	static::assertInstanceOf(Row::class, $actual);
+	static::assertCount(1, $actual);
+	static::assertEquals($expected, $actual);
 }
 
 public function testRetrieveNoParams() {
-    $expected = new Row(["col1" => "that"]);
+	$expected = new Row(["col1" => "that"]);
 
-    $mockResultSet = $this->createMock(ResultSet::class);
-    $mockResultSet
-        ->method("fetch")
-        ->willReturn($expected);
-    $this->mockQuery
-        ->expects($this->once())
-        ->method("execute")
-        ->with()
-        ->willReturn($mockResultSet);
+	$mockResultSet = $this->createMock(ResultSet::class);
+	$mockResultSet
+		->method("fetch")
+		->willReturn($expected);
+	$this->mockQuery
+		->expects(static::once())
+		->method("execute")
+		->with()
+		->willReturn($mockResultSet);
 
-    $this->assertEquals(
-        $expected,
-        $this->SUT->retrieve("something"));
+	static::assertEquals(
+		$expected,
+		$this->queryCollection->retrieve("something"));
 }
 
 public function testRetrieveNoResults() {
-    $mockResultSet = $this->createMock(ResultSet::class);
-    $mockResultSet
-        ->method("fetch")
-        ->willReturn(null);
-    $this->mockQuery
-        ->expects($this->once())
-        ->method("execute")
-        ->with()
-        ->willReturn($mockResultSet);
+	$mockResultSet = $this->createMock(ResultSet::class);
+	$mockResultSet
+		->method("fetch")
+		->willReturn(null);
+	$this->mockQuery
+		->expects(static::once())
+		->method("execute")
+		->with()
+		->willReturn($mockResultSet);
 
-    $this->assertNull($this->SUT->retrieve("something"));
+	static::assertNull($this->queryCollection->retrieve("something"));
 }
 
 public function testRetrieveAll() {
-    $placeholderVars = ["nombre" => "hombre"];
-    $expected = [new Row(["col1" => "that"]), new Row(["col1" => "theother"])];
+	$placeholderVars = ["nombre" => "hombre"];
+	$expected = [new Row(["col1" => "that"]), new Row(["col1" => "theother"])];
 
-    $mockResultSet = $this->createMock(ResultSet::class);
-    $mockResultSet
-        ->method("fetchAll")
-        ->willReturn($expected);
-    $this->mockQuery
-        ->expects($this->once())
-        ->method("execute")
-        ->with($placeholderVars)
-        ->willReturn($mockResultSet);
+	$mockResultSet = $this->createMock(ResultSet::class);
+	$mockResultSet
+		->method("fetchAll")
+		->willReturn($expected);
+	$this->mockQuery
+		->expects(static::once())
+		->method("execute")
+		->with($placeholderVars)
+		->willReturn($mockResultSet);
 
-    $actual = $this->SUT->retrieveAll("something", $placeholderVars);
-    $this->assertCount(2, $actual);
-    $this->assertEquals($expected, $actual);
+	$actual = $this->queryCollection->retrieveAll("something", $placeholderVars);
+	static::assertCount(2, $actual);
+	static::assertEquals($expected, $actual);
 }
 
 public function testRetrieveAllNoParams() {
-    $expected = [new Row(["col1" => "that"]), new Row(["col1" => "theother"])];
+	$expected = [new Row(["col1" => "that"]), new Row(["col1" => "theother"])];
 
-    $mockResultSet = $this->createMock(ResultSet::class);
-    $mockResultSet
-        ->method("fetchAll")
-        ->willReturn($expected);
-    $this->mockQuery
-        ->expects($this->once())
-        ->method("execute")
-        ->with()
-        ->willReturn($mockResultSet);
+	$mockResultSet = $this->createMock(ResultSet::class);
+	$mockResultSet
+		->method("fetchAll")
+		->willReturn($expected);
+	$this->mockQuery
+		->expects(static::once())
+		->method("execute")
+		->with()
+		->willReturn($mockResultSet);
 
-    $this->assertEquals(
-        $expected,
-        $this->SUT->retrieveAll("something"));
+	static::assertEquals(
+		$expected,
+		$this->queryCollection->retrieveAll("something"));
 }
 
 public function testRetrieveAllNoResults() {
-    $mockResultSet = $this->createMock(ResultSet::class);
-    $mockResultSet
-        ->method("fetchAll")
-        ->willReturn([]);
-    $this->mockQuery
-        ->expects($this->once())
-        ->method("execute")
-        ->with()
-        ->willReturn($mockResultSet);
+	$mockResultSet = $this->createMock(ResultSet::class);
+	$mockResultSet
+		->method("fetchAll")
+		->willReturn([]);
+	$this->mockQuery
+		->expects(static::once())
+		->method("execute")
+		->with()
+		->willReturn($mockResultSet);
 
-    $actual = $this->SUT->retrieveAll("something");
-    $this->assertInternalType("array", $actual);
-    $this->assertCount(0, $actual);
+	$actual = $this->queryCollection->retrieveAll("something");
+	static::assertInternalType("array", $actual);
+	static::assertCount(0, $actual);
 }
 
 
 // UPDATE ///////////////////////////////////////////////////////////////////
 public function testUpdate() {
-    $placeholderVars = ["nombre" => "hombre"];
-    $recordsUpdatedCount = 1;
-    $mockResultSet = $this->createMock(ResultSet::class);
-    $mockResultSet
-        ->method("getAffectedRows")
-        ->willReturn($recordsUpdatedCount);
-    $this->mockQuery
-        ->expects($this->once())
-        ->method("execute")
-        ->with($placeholderVars)
-        ->willReturn($mockResultSet);
+	$placeholderVars = ["nombre" => "hombre"];
+	$recordsUpdatedCount = 1;
+	$mockResultSet = $this->createMock(ResultSet::class);
+	$mockResultSet
+		->method("getAffectedRows")
+		->willReturn($recordsUpdatedCount);
+	$this->mockQuery
+		->expects(static::once())
+		->method("execute")
+		->with($placeholderVars)
+		->willReturn($mockResultSet);
 
-    $this->assertEquals(
-        $recordsUpdatedCount,
-        $this->SUT->update("something", $placeholderVars));
+	static::assertEquals($recordsUpdatedCount, $this->queryCollection->update("something", $placeholderVars));
 }
 
 public function testUpdateNoParams() {
-    $recordsUpdatedCount = 2;
-    $mockResultSet = $this->createMock(ResultSet::class);
-    $mockResultSet
-        ->method("getAffectedRows")
-        ->willReturn($recordsUpdatedCount);
-    $this->mockQuery
-        ->expects($this->once())
-        ->method("execute")
-        ->with()
-        ->willReturn($mockResultSet);
+	$recordsUpdatedCount = 2;
+	$mockResultSet = $this->createMock(ResultSet::class);
+	$mockResultSet
+		->method("getAffectedRows")
+		->willReturn($recordsUpdatedCount);
+	$this->mockQuery
+		->expects(static::once())
+		->method("execute")
+		->with()
+		->willReturn($mockResultSet);
 
-    $this->assertEquals(
-        $recordsUpdatedCount,
-        $this->SUT->update("something"));
+	static::assertEquals(
+		$recordsUpdatedCount,
+		$this->queryCollection->update("something"));
 }
 
 
 // DELETE ///////////////////////////////////////////////////////////////////
 public function testDelete() {
-    $placeholderVars = ["nombre" => "hombre"];
-    $recordsDeletedCount = 0;
-    $mockResultSet = $this->createMock(ResultSet::class);
-    $mockResultSet
-        ->method("getAffectedRows")
-        ->willReturn($recordsDeletedCount);
-    $this->mockQuery
-        ->expects($this->once())
-        ->method("execute")
-        ->with($placeholderVars)
-        ->willReturn($mockResultSet);
+	$placeholderVars = ["nombre" => "hombre"];
+	$recordsDeletedCount = 0;
+	$mockResultSet = $this->createMock(ResultSet::class);
+	$mockResultSet
+		->method("getAffectedRows")
+		->willReturn($recordsDeletedCount);
+	$this->mockQuery
+		->expects(static::once())
+		->method("execute")
+		->with($placeholderVars)
+		->willReturn($mockResultSet);
 
-    $this->assertEquals(
-        $recordsDeletedCount,
-        $this->SUT->delete("something", $placeholderVars));
+	static::assertEquals(
+		$recordsDeletedCount,
+		$this->queryCollection->delete("something", $placeholderVars));
 }
 
 public function testDeleteNoParams() {
-    $recordsDeletedCount = 2;
-    $mockResultSet = $this->createMock(ResultSet::class);
-    $mockResultSet
-        ->method("getAffectedRows")
-        ->willReturn($recordsDeletedCount);
-    $this->mockQuery
-        ->expects($this->once())
-        ->method("execute")
-        ->with()
-        ->willReturn($mockResultSet);
+	$recordsDeletedCount = 2;
+	$mockResultSet = $this->createMock(ResultSet::class);
+	$mockResultSet
+		->method("getAffectedRows")
+		->willReturn($recordsDeletedCount);
+	$this->mockQuery
+		->expects(static::once())
+		->method("execute")
+		->with()
+		->willReturn($mockResultSet);
 
-    $this->assertEquals(
-        $recordsDeletedCount,
-        $this->SUT->delete("something"));
+	static::assertEquals(
+		$recordsDeletedCount,
+		$this->queryCollection->delete("something"));
 }
 
-public function setUp()
-{
-    $mockQueryFactory = $this->createMock(QueryFactory::class);
-    $this->mockQuery = $this->createMock(Query::class);
-    $mockQueryFactory
-        ->expects($this->once())
-        ->method("create")
-        ->with("something")
-        ->willReturn($this->mockQuery);
+public function setUp() {
+	$mockQueryFactory = $this->createMock(QueryFactory::class);
+	$this->mockQuery = $this->createMock(Query::class);
+	$mockQueryFactory
+		->expects(static::once())
+		->method("create")
+		->with("something")
+		->willReturn($this->mockQuery);
 
-    $this->SUT = new QueryCollection(
-        __DIR__,
-        new Driver(new DefaultSettings()),
-        $mockQueryFactory
-    );
+	$this->queryCollection = new QueryCollection(
+		__DIR__,
+		new Driver(new DefaultSettings()),
+		$mockQueryFactory
+	);
 }
+
 }#

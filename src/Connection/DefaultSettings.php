@@ -29,6 +29,8 @@ const DEFAULT_CONFIG = [
 	]
 ];
 
+const DEFAULT_TABLE_PREFIX = "";
+
 public function getBaseDirectory():string {
 	return sys_get_temp_dir();
 }
@@ -82,4 +84,12 @@ public function getConnectionSettings():array {
             "prefix" => $this->getTablePrefix(),
         ]);
 }
+
+public function getConnectionString():string {
+	return implode(":", [
+		$this->getDataSource(),
+		$this->getDatabase(),
+	]);
+}
+
 }#
