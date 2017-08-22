@@ -3,13 +3,12 @@ namespace Gt\Database;
 
 use Gt\Database\Connection\Settings;
 use Gt\Database\Query\QueryCollection;
-use Gt\Database\Query\QueryCollectionNotFoundException;
 
 class ClientTest extends \PHPUnit_Framework_TestCase {
 
 public function testInterface() {
 	$db = new Client();
-	$this->assertInstanceOf(Client::class, $db);
+	static::assertInstanceOf(Client::class, $db);
 }
 
 /**
@@ -24,10 +23,10 @@ public function testQueryCollectionPathExists(string $name, string $path) {
 	);
 	$db = new Client($settings);
 
-	$this->assertTrue(isset($db[$name]));
+	static::assertTrue(isset($db[$name]));
 	$queryCollection = $db->queryCollection($name);
 
-	$this->assertInstanceOf(QueryCollection::class, $queryCollection);
+	static::assertInstanceOf(QueryCollection::class, $queryCollection);
 }
 
 /**
@@ -43,7 +42,7 @@ public function testQueryCollectionPathNotExists(string $name, string $path) {
 		Settings::DATABASE_IN_MEMORY
 	);
 	$db = new Client($settings);
-	$this->assertFalse(isset($db[$name]));
+	static::assertFalse(isset($db[$name]));
 
 	$db->queryCollection($name);
 }
@@ -62,7 +61,7 @@ public function testOffsetGet(string $name, string $path) {
 	$offsetGot = $db->offsetGet($name);
 	$arrayAccessed = $db[$name];
 
-	$this->assertEquals(
+	static::assertEquals(
 		$offsetGot->getDirectoryPath(),
 		$arrayAccessed->getDirectoryPath()
 	);
