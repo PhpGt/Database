@@ -23,55 +23,54 @@ Documentation: https://php.gt/docs/database
 
 ## Example usage
 
-This library provides database access via raw SQL or using a PHP Query Builder, both interoperable through the same API.
-
-The API is consistent for all database operations. To execute an example query located at `src/query/collectionName/exampleQueryName.sql`, the following pattern is used:
+This library organises SQL access through a consistent API. To execute an example query located at `src/query/shop_item/getItemsInCategory.sql`, the following pattern is used:
 
 ```php
-$result = $db["collectionName"]->exampleQueryName($parameters)
+$user = $db->fetch("user/getById", 105);
 ```
 
 Examples of CRUD operations:
 
 ```php
-// "Retrieve" or "get" methods always return a ResultSet.
-$shopItems = $db["shop"]->getItemsInCategory("books");
+// "fetchAll" method returns an array of Row objects, optionally constructed as 
+// a custom type with well-typed properties and helper methods.
 
-foreach($shopItems as $item) {
-	setItemName($item->name);
-	setItemPrice($item->price);
+$bookList = $db->fetchAll("shopitem/getItemsInCategory", "books");
+
+foreach($bookList as $book) {
+	echo "Book title: " . $book->title . PHP_EOL;
+	echo "Book price: " . $book->price . PHP_EOL;
+	
+	if($book->offerEnds) {
+		echo "Item on offer until: " . $book->offerEnds->format("dS M Y");
+	}
 }
 
-// The fields of the first (or only) Row of a ResultSet can be addressed on the
-// ResultSet itself:
-$customer = $db["customer"]->getById(105);
-outputGreeting("Hello, " . $customer->first_name);
-
-// "Create" or "insert" methods always return the last inserted ID:
-$newCustomerId = $db["customer"]->create([
+// "Create" method always returns the last inserted ID:
+$newCustomerId = $db->create("customer/new", [
 	"first_name" => "Marissa",
 	"last_name" => "Mayer",
 	"dob" => new DateTime("1975-05-30"),
 ]);
 
-// "Update" or "set" methods, as well as "delete" or "remove" methods
-// always return the number of affected rows:
-$numberOfItemsAffected = $db["item"]->updatePrice([
+// "Update" or "delete" methods always return the number of affected rows:
+$numberOfItemsAffected = $db->update("shop/item/increasePrice", [
 	"percent" => 12.5
 	"max_increase" => 20.00
 ]);
 
-$numberOfDeletedReviews = $db["review"]->deleteOldReviews([
-	"createdAfter" => new DateTime("-6 months"),
-]);
+$numberOfDeletedReviews = $db->delete(
+	"remove/deleteOlderThan",
+	new DateTime("-6 months")
+);
 ```
 
 ## Features at a glance
 
++ [SQL templates][wiki-templates] (future release)
++ [Automatic database migrations][wiki-migrations]
 + [Organisation of queries using `QueryCollection`s][wiki-query-collections]
 + [Bind parameters by name or sequentially][wiki-parameters]
-+ [Automatic database migrations][wiki-migrations]
-+ [Interoperable SQL and PHP Query Builder][wiki-sql-php] (future release)
 + [Fully configurable][wiki-config]
 
 ## Compatible database engines
@@ -85,8 +84,8 @@ Compatibility is provided for the following database providers:
 * Mongo (planned)
 * CouchDB (planned)
 
+[wiki-templates]: https://github.com/PhpGt/Database/wiki
 [wiki-query-collections]: https://github.com/PhpGt/Database/wiki
 [wiki-parameters]: https://github.com/PhpGt/Database/wiki
 [wiki-migrations]: https://github.com/PhpGt/Database/wiki
-[wiki-sql-php]: https://github.com/PhpGt/Database/wiki
 [wiki-config]: https://github.com/PhpGt/Database/wiki
