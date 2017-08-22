@@ -20,7 +20,7 @@ string $queryName, string $directoryOfQueries) {
 		new Driver(new DefaultSettings())
 	);
 	$queryFilePath = $queryFactory->findQueryFilePath($queryName);
-	$this->assertFileExists($queryFilePath);
+	static::assertFileExists($queryFilePath);
 }
 
 /**
@@ -68,7 +68,7 @@ public function testQueryCreated(
 	);
 	$query = $queryFactory->create($queryName);
 
-	$this->assertInstanceOf(Query::class, $query);
+	static::assertInstanceOf(Query::class, $query);
 }
 
 public function testSelectsCorrectFile() {
@@ -92,7 +92,7 @@ public function testSelectsCorrectFile() {
 		touch($queryPath);
 
 		$query = $queryFactory->create($queryName);
-		$this->assertNotContains($query->getFilePath(), $queryFileList);
+		static::assertNotContains($query->getFilePath(), $queryFileList);
 		$queryFileList[$queryName] = $query->getFilePath();
 	}
 }
