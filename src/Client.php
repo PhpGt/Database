@@ -81,9 +81,7 @@ public function getDriver(
 
 private function getPdo(string $connectionName):PDO {
 	$driver = $this->driverArray[$connectionName];
-	$connection = $driver->getConnection();
-	$pdo = $connection->getPdo();
-	return $pdo;
+	return $driver->getConnection();
 }
 
 // ArrayAccess ////////////////////////////////////////////////////////////////

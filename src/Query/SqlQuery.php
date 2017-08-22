@@ -5,7 +5,6 @@ use PDO;
 use PDOException;
 use PDOStatement;
 use Gt\Database\Result\ResultSet;
-use Illuminate\Database\Connection;
 
 class SqlQuery extends Query {
 
@@ -26,7 +25,7 @@ public function execute(array $bindings = []):ResultSet {
 	$pdo = $this->preparePdo();
 	$sql = $this->getSql($bindings);
 	$statement = $this->prepareStatement($pdo, $sql);
-	$preparedBindings = $this->connection->prepareBindings($bindings);
+	$preparedBindings = $this->prepareBindings($bindings);
 	$preparedBindings = $this->ensureParameterCharacter($preparedBindings);
 	$preparedBindings = $this->removeUnusedBindings($preparedBindings, $sql);
 	$lastInsertId = null;
@@ -52,11 +51,9 @@ public function prepareStatement(PDO $pdo, string $sql):PDOStatement {
 	}
 }
 
-private function preparePdo() {
-	$pdo = $this->connection->getPdo();
-	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-	return $pdo;
+private function preparePdo():PDO {
+	$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	return $this->connection;
 }
 
 /**
@@ -77,6 +74,10 @@ private function injectSpecialBindings(string $sql, array $bindings):string {
 	}
 
 	return $sql;
+}
+
+private function prepareBindings(array $bindings):array {
+	return $bindings;
 }
 
 private function ensureParameterCharacter(array $bindings):array {
