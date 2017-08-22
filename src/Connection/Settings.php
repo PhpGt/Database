@@ -37,7 +37,7 @@ protected $config = [];
 public function __construct(
 	string $baseDirectory,
 	string $dataSource,
-	string $database,
+	string $database = null,
 	string $host = DefaultSettings::DEFAULT_HOST,
 	int $port = null,
 	string $username = DefaultSettings::DEFAULT_USERNAME,
@@ -118,6 +118,24 @@ public function getConnectionSettings():array {
 		$currentSettings,
 		$this->config
 	);
+}
+
+public function getConnectionString():string {
+	$source = $this->getDataSource();
+	$connectionString = "$source:";
+
+	switch($source) {
+	case self::DRIVER_SQLITE:
+		$connectionString .= $this->getDatabase();
+		break;
+
+	default:
+		$connectionString .= "host=" . $this->getHost();
+		$connectionString .= ";dbname=" . $this->getDatabase();
+		break;
+	}
+
+	return $connectionString;
 }
 
 }#

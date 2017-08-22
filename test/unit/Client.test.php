@@ -32,7 +32,7 @@ public function testQueryCollectionPathExists(string $name, string $path) {
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
- * @expectedException QueryCollectionNotFoundException
+ * @expectedException \Gt\Database\Query\QueryCollectionNotFoundException
  */
 public function testQueryCollectionPathNotExists(string $name, string $path) {
 	$basePath = dirname($path);
@@ -69,7 +69,7 @@ public function testOffsetGet(string $name, string $path) {
 }
 
 /**
- * @expectedException ReadOnlyArrayAccessException
+ * @expectedException \Gt\Database\ReadOnlyArrayAccessException
  */
 public function testOffsetSet() {
 	$db = new Client();
@@ -77,7 +77,7 @@ public function testOffsetSet() {
 }
 
 /**
- * @expectedException ReadOnlyArrayAccessException
+ * @expectedException \Gt\Database\ReadOnlyArrayAccessException
  */
 public function testOffsetUnset() {
 	$db = new Client();

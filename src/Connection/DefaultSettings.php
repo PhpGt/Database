@@ -84,4 +84,12 @@ public function getConnectionSettings():array {
             "prefix" => $this->getTablePrefix(),
         ]);
 }
+
+public function getConnectionString():string {
+	return implode(":", [
+		$this->getDataSource(),
+		$this->getDatabase(),
+	]);
+}
+
 }#
