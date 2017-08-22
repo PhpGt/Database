@@ -3,9 +3,6 @@ namespace Gt\Database\Query;
 
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
-use Gt\Database\Query\Query;
-use Gt\Database\Query\QueryFileExtensionException;
-use Gt\Database\Query\QueryNotFoundException;
 use Gt\Database\Test\Helper;
 
 class QueryFactoryTest extends \PHPUnit_Framework_TestCase {
