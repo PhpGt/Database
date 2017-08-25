@@ -62,14 +62,10 @@ public function testSubsequentSqlQueries() {
 		"select * from test_table where name = :rowName"
 	);
 
-	$this->db->queryCollection(
-		"exampleCollection"
-	)->insert("insert", [
+	$this->db->insert("exampleCollection/insert", [
 		"nameToInsert" => $uuid,
 	]);
-	$result = $this->db->queryCollection(
-		"exampleCollection"
-	)->fetch("selectByName", [
+	$result = $this->db->fetch("exampleCollection/selectByName", [
 		"rowName" => $uuid,
 	]);
 
@@ -77,19 +73,13 @@ public function testSubsequentSqlQueries() {
 
 // perform an insert and select again:
 	$uuid2 = uniqid();
-	$this->db->queryCollection(
-		"exampleCollection"
-	)->insert("insert", [
+	$this->db->insert("exampleCollection/insert", [
 		"nameToInsert" => $uuid2,
 	]);
-	$result1 = $this->db->queryCollection(
-		"exampleCollection"
-	)->fetch("selectByName", [
+	$result1 = $this->db->fetchAll("exampleCollection/selectByName", [
 		"rowName" => $uuid,
 	]);
-	$result2 = $this->db->queryCollection(
-		"exampleCollection"
-	)->fetch("selectByName", [
+	$result2 = $this->db->fetch("exampleCollection/selectByName", [
 		"rowName" => $uuid2,
 	]);
 
@@ -98,7 +88,6 @@ public function testSubsequentSqlQueries() {
 }
 
 public function testQuestionMarkParameter() {
-	$uuid = uniqid();
 	$queryCollectionPath = $this->queryBase . "/exampleCollection";
 	$getByIdQueryPath = $queryCollectionPath . "/getById.sql";
 
@@ -108,13 +97,14 @@ public function testQuestionMarkParameter() {
 		"select id, name from test_table where id = ?"
 	);
 
-	$result2 = $this->db->queryCollection("exampleCollection")->getById(2);
-	$result1 = $this->db->queryCollection("exampleCollection")->getById(1);
+	$result2 = $this->db->fetch("exampleCollection/getById", 2);
+	$result1 = $this->db->fetch("exampleCollection/getById", 1);
 
 	$rqr = $this->db->executeSql("select id, name from test_table");
 
 	static::assertEquals(1, $result1->id);
 	static::assertEquals(2, $result2->id);
+	static::assertCount(3, $rqr);
 }
 
 private function settingsSingleton():Settings {
@@ -128,14 +118,6 @@ private function settingsSingleton():Settings {
 	}
 
 	return $this->settings;
-}
-
-private function driverSingleton():Driver {
-	if(is_null($this->driver)) {
-		$this->driver = new Driver($this->settingsSingleton());
-	}
-
-	return $this->driver;
 }
 
 }#
