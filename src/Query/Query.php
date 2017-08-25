@@ -8,7 +8,6 @@ abstract class Query {
 
 /** @var string Absolute path to query file on disk */
 protected $filePath;
-/** @var \Illuminate\Database\Connection */
 protected $connection;
 
 public function __construct(string $filePath, Driver $driver) {
