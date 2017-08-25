@@ -62,10 +62,14 @@ public function testSubsequentSqlQueries() {
 		"select * from test_table where name = :rowName"
 	);
 
-	$this->db["exampleCollection"]->insert([
+	$this->db->queryCollection(
+		"exampleCollection"
+	)->insert([
 		"nameToInsert" => $uuid,
 	]);
-	$result = $this->db["exampleCollection"]->selectByName([
+	$result = $this->db->queryCollection(
+		"exampleCollection"
+	)->selectByName([
 		"rowName" => $uuid,
 	]);
 
@@ -73,13 +77,13 @@ public function testSubsequentSqlQueries() {
 
 // perform an insert and select again:
 	$uuid2 = uniqid();
-	$this->db["exampleCollection"]->insert([
+	$this->db->queryCollection("exampleCollection")->insert([
 		"nameToInsert" => $uuid2,
 	]);
-	$result1 = $this->db["exampleCollection"]->selectByName([
+	$result1 = $this->db->queryCollection("exampleCollection")->selectByName([
 		"rowName" => $uuid,
 	]);
-	$result2 = $this->db["exampleCollection"]->selectByName([
+	$result2 = $this->db->queryCollection("exampleCollection")->selectByName([
 		"rowName" => $uuid2,
 	]);
 
@@ -98,8 +102,8 @@ public function testQuestionMarkParameter() {
 		"select id, name from test_table where id = ?"
 	);
 
-	$result2 = $this->db["exampleCollection"]->getById(2);
-	$result1 = $this->db["exampleCollection"]->getById(1);
+	$result2 = $this->db->queryCollection("exampleCollection")->getById(2);
+	$result1 = $this->db->queryCollection("exampleCollection")->getById(1);
 
 	$rqr = $this->db->rawStatement("select id, name from test_table");
 

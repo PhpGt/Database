@@ -2,7 +2,6 @@
 namespace Gt\Database;
 
 use PDO;
-use ArrayAccess;
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
 use Gt\Database\Connection\SettingsInterface;
@@ -16,7 +15,7 @@ use Gt\Database\Result\ResultSet;
  * connections. If only one database connection is required, a name is not
  * required as the default name will be used.
  */
-class Client implements ArrayAccess {
+class Client {
 
 /** @var QueryCollectionFactory[] */
 private $queryCollectionFactoryArray;
@@ -33,14 +32,14 @@ public function __construct(SettingsInterface...$connectionSettings) {
 	$this->storeQueryCollectionFactoryFromSettings($connectionSettings);
 }
 
-private function storeConnectionDriverFromSettings(array $settingsArray) {
+protected function storeConnectionDriverFromSettings(array $settingsArray) {
 	foreach ($settingsArray as $settings) {
 		$connectionName = $settings->getConnectionName();
 		$this->driverArray[$connectionName] = new Driver($settings);
 	}
 }
 
-private function storeQueryCollectionFactoryFromSettings(array $settingsArray) {
+protected function storeQueryCollectionFactoryFromSettings(array $settingsArray) {
 	foreach ($settingsArray as $settings) {
 		$connectionName = $settings->getConnectionName();
 		$this->queryCollectionFactoryArray[$connectionName] =
@@ -48,18 +47,11 @@ private function storeQueryCollectionFactoryFromSettings(array $settingsArray) {
 	}
 }
 
-/**
- * Synonym for ArrayAccess::offsetGet
- */
 public function queryCollection(
 	string $queryCollectionName,
 	string $connectionName = DefaultSettings::DEFAULT_NAME
 ):QueryCollection {
-	$driver = $this->driverArray[$connectionName];
-	return $this->queryCollectionFactoryArray[$connectionName]->create(
-		$queryCollectionName,
-		$driver
-	);
+	return $this->queryCollectionFactoryArray[$connectionName]->create($queryCollectionName);
 }
 
 public function rawStatement(
@@ -79,37 +71,12 @@ public function getDriver(
 	return $this->driverArray[$connectionName];
 }
 
-private function getPdo(string $connectionName):PDO {
+protected function getPdo(string $connectionName):PDO {
 	$driver = $this->driverArray[$connectionName];
 	return $driver->getConnection();
 }
 
-// ArrayAccess ////////////////////////////////////////////////////////////////
-
-public function offsetExists($offset) {
-	$connectionName = $this->getFirstConnectionName();
-	return $this->queryCollectionFactoryArray[$connectionName]->directoryExists(
-		$offset);
-}
-
-/**
- * @param  string $offset
- * @return QueryCollection
- */
-public function offsetGet($offset) {
-	$connectionName = $this->getFirstConnectionName();
-	return $this->queryCollection($offset, $connectionName);
-}
-
-public function offsetSet($offset, $value) {
-	throw new ReadOnlyArrayAccessException(self::class);
-}
-
-public function offsetUnset($offset) {
-	throw new ReadOnlyArrayAccessException(self::class);
-}
-
-private function getFirstConnectionName():string {
+protected function getFirstConnectionName():string {
 	reset($this->driverArray);
 	return key($this->driverArray);
 }
