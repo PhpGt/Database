@@ -1,7 +1,8 @@
 <?php
 namespace Gt\Database;
 
-use PDO;
+use Gt\Database\Connection\Connection;
+use Gt\Database\Result\Row;
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
 use Gt\Database\Connection\SettingsInterface;
@@ -18,9 +19,11 @@ use Gt\Database\Result\ResultSet;
 class Client {
 
 /** @var QueryCollectionFactory[] */
-private $queryCollectionFactoryArray;
-/** @var \Gt\Database\Connection\Driver[] */
-private $driverArray;
+protected $queryCollectionFactoryArray;
+/** @var Driver[] */
+protected $driverArray;
+/** @var Connection */
+protected $currentConnection;
 
 public function __construct(SettingsInterface...$connectionSettings) {
 	if(empty($connectionSettings)) {
@@ -30,6 +33,66 @@ public function __construct(SettingsInterface...$connectionSettings) {
 
 	$this->storeConnectionDriverFromSettings($connectionSettings);
 	$this->storeQueryCollectionFactoryFromSettings($connectionSettings);
+}
+
+public function fetch(string $queryName, ...$bindings):?Row {
+	$result = $this->query($queryName, $bindings);
+	return $result->current();
+}
+
+public function fetchAll(string $queryName, ...$bindings):ResultSet {
+	return $this->query($queryName, $bindings);
+}
+
+public function insert(string $queryName, ...$bindings):int {
+	$result = $this->query($queryName, $bindings);
+	return $result->getLastInsertId();
+}
+
+public function delete(string $queryName, ...$bindings):int {
+	$result = $this->query($queryName, $bindings);
+	return $result->affectedRows();
+}
+
+public function update(string $queryName, ...$bindings):int {
+	$result = $this->query($queryName, $bindings);
+	return $result->affectedRows();
+}
+
+public function query(string $queryName, ...$bindings):ResultSet {
+	$queryCollectionName = substr(
+		$queryName,
+		0,
+		strrpos($queryName, "/")
+	);
+	$queryFile = substr(
+		$queryName,
+		strrpos($queryName, "/") + 1
+	);
+
+	$connection = $this->currentConnection;
+	$queryCollection = $this->queryCollection($queryCollectionName, $connection);
+	return $queryCollection->query($queryFile, $bindings);
+}
+
+public function setCurrentConnection(string $connectionName) {
+	$this->currentConnection = $this->getNamedConnection($connectionName);
+}
+
+public function executeSql(
+	string $query,
+	array $bindings = [],
+	string $connectionName = DefaultSettings::DEFAULT_NAME
+):ResultSet {
+	$connection = $this->getNamedConnection($connectionName);
+	$statement = $connection->prepare($query);
+	$statement->execute($bindings);
+	return new ResultSet($statement, $connection->lastInsertId());
+}
+
+protected function getNamedConnection(string $connectionName):Connection {
+	$driver = $this->driverArray[$connectionName];
+	return $driver->getConnection();
 }
 
 protected function storeConnectionDriverFromSettings(array $settingsArray) {
@@ -54,26 +117,10 @@ public function queryCollection(
 	return $this->queryCollectionFactoryArray[$connectionName]->create($queryCollectionName);
 }
 
-public function rawStatement(
-	string $query,
-	array $bindings = [],
-	string $connectionName = DefaultSettings::DEFAULT_NAME
-):ResultSet {
-	$pdo = $this->getPdo($connectionName);
-	$statement = $pdo->prepare($query);
-	$statement->execute($bindings);
-	return new ResultSet($statement, $pdo->lastInsertId());
-}
-
 public function getDriver(
 	string $connectionName = DefaultSettings::DEFAULT_NAME
 ):Driver {
 	return $this->driverArray[$connectionName];
-}
-
-protected function getPdo(string $connectionName):PDO {
-	$driver = $this->driverArray[$connectionName];
-	return $driver->getConnection();
 }
 
 protected function getFirstConnectionName():string {

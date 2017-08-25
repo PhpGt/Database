@@ -51,7 +51,7 @@ public function prepareStatement(PDO $pdo, string $sql):PDOStatement {
 	}
 }
 
-private function preparePdo():PDO {
+protected function preparePdo():PDO {
 	$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	return $this->connection;
 }
@@ -62,7 +62,7 @@ private function preparePdo():PDO {
  * function returns the SQL for the query after replacing the bound parameters
  * manually using string replacement.
  */
-private function injectSpecialBindings(string $sql, array $bindings):string {
+protected function injectSpecialBindings(string $sql, array $bindings):string {
 	foreach(self::SPECIAL_BINDINGS as $special) {
 		$specialPlaceholder = ":" . $special;
 
@@ -76,11 +76,11 @@ private function injectSpecialBindings(string $sql, array $bindings):string {
 	return $sql;
 }
 
-private function prepareBindings(array $bindings):array {
+protected function prepareBindings(array $bindings):array {
 	return $bindings;
 }
 
-private function ensureParameterCharacter(array $bindings):array {
+protected function ensureParameterCharacter(array $bindings):array {
 	if($this->bindingsEmptyOrNonAssociative($bindings)) {
 		return $bindings;
 	}
@@ -95,7 +95,7 @@ private function ensureParameterCharacter(array $bindings):array {
 	return $bindings;
 }
 
-private function removeUnusedBindings(array $bindings, string $sql):array {
+protected function removeUnusedBindings(array $bindings, string $sql):array {
 	if($this->bindingsEmptyOrNonAssociative($bindings)) {
 		return $bindings;
 	}
@@ -109,7 +109,7 @@ private function removeUnusedBindings(array $bindings, string $sql):array {
 	return $bindings;
 }
 
-private function bindingsEmptyOrNonAssociative(array $bindings):bool {
+protected function bindingsEmptyOrNonAssociative(array $bindings):bool {
 	return
 		$bindings === []
 		|| array_keys($bindings) === range(0, count($bindings) - 1);

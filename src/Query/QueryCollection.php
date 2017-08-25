@@ -8,9 +8,9 @@ use Gt\Database\Result\Row;
 class QueryCollection {
 
 /** @var string */
-private $directoryPath;
+protected $directoryPath;
 /** @var QueryFactory */
-private $queryFactory;
+protected $queryFactory;
 
 public function __construct(
 string $directoryPath, Driver $driver, QueryFactory $queryFactory = null) {
@@ -35,37 +35,46 @@ public function __call($name, $args) {
 	return call_user_func_array([$this, "query"], $queryArgs);
 }
 
-// TODO: PHP 7.1 iterable, to allow Gt\Database\Gt\Database\PlaceholderMap
 public function query(
-string $name, /*iterable*/array $placeholderMap = []):ResultSet {
-	/** @var Query */
+	string $name,
+	iterable $placeholderMap = []
+):ResultSet {
 	$query = $this->queryFactory->create($name);
 	return $query->execute($placeholderMap);
 }
 
-public function create(
-    string $name, /*iterable*/array $placeholderMap = []):string {
-    return $this->query($name, $placeholderMap)->getLastInsertId();
+public function insert(
+    string $name,
+	iterable $placeholderMap = []
+):int {
+    return (int)$this->query($name, $placeholderMap)->getLastInsertId();
 }
 
-/** @return Row|null */
-public function retrieve(
-    string $name, /*iterable*/array $placeholderMap = []) {
-    return $this->query($name, $placeholderMap)->fetch();
+public function fetch(
+    string $name,
+	iterable $placeholderMap = []
+):?Row {
+    return $this->query($name, $placeholderMap)->current();
 }
 
-public function retrieveAll(
-    string $name, /*iterable*/array $placeholderMap = []) {
-    return $this->query($name, $placeholderMap)->fetchAll();
+public function fetchAll(
+    string $name,
+	iterable $placeholderMap = []
+):ResultSet {
+    return $this->query($name, $placeholderMap);
 }
 
 public function update(
-    string $name, /*iterable*/array $placeholderMap = []):int {
+    string $name,
+	iterable $placeholderMap = []
+):int {
     return $this->query($name, $placeholderMap)->getAffectedRows();
 }
 
 public function delete(
-    string $name, /*iterable*/array $placeholderMap = []):int {
+    string $name,
+	iterable $placeholderMap = []
+):int {
     return $this->query($name, $placeholderMap)->getAffectedRows();
 }
 

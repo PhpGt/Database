@@ -64,12 +64,12 @@ public function testSubsequentSqlQueries() {
 
 	$this->db->queryCollection(
 		"exampleCollection"
-	)->insert([
+	)->insert("insert", [
 		"nameToInsert" => $uuid,
 	]);
 	$result = $this->db->queryCollection(
 		"exampleCollection"
-	)->selectByName([
+	)->fetch("selectByName", [
 		"rowName" => $uuid,
 	]);
 
@@ -77,13 +77,19 @@ public function testSubsequentSqlQueries() {
 
 // perform an insert and select again:
 	$uuid2 = uniqid();
-	$this->db->queryCollection("exampleCollection")->insert([
+	$this->db->queryCollection(
+		"exampleCollection"
+	)->insert("insert", [
 		"nameToInsert" => $uuid2,
 	]);
-	$result1 = $this->db->queryCollection("exampleCollection")->selectByName([
+	$result1 = $this->db->queryCollection(
+		"exampleCollection"
+	)->fetch("selectByName", [
 		"rowName" => $uuid,
 	]);
-	$result2 = $this->db->queryCollection("exampleCollection")->selectByName([
+	$result2 = $this->db->queryCollection(
+		"exampleCollection"
+	)->fetch("selectByName", [
 		"rowName" => $uuid2,
 	]);
 
@@ -105,7 +111,7 @@ public function testQuestionMarkParameter() {
 	$result2 = $this->db->queryCollection("exampleCollection")->getById(2);
 	$result1 = $this->db->queryCollection("exampleCollection")->getById(1);
 
-	$rqr = $this->db->rawStatement("select id, name from test_table");
+	$rqr = $this->db->executeSql("select id, name from test_table");
 
 	static::assertEquals(1, $result1->id);
 	static::assertEquals(2, $result2->id);

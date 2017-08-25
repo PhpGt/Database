@@ -16,15 +16,15 @@ use JsonSerializable;
 class ResultSet implements ArrayAccess, Iterator, Countable, JsonSerializable {
 
 /** @var \PDOStatement */
-private $statement;
+protected $statement;
 /** @var \Gt\Database\Result\Row */
-private $currentRow;
+protected $currentRow;
 /** @var int */
-private $index = 0;
+protected $index = 0;
 /** @var string */
-private $insertId = null;
+protected $insertId = null;
 /** @var Row[] */
-private $fetchAllCache = null;
+protected $fetchAllCache = null;
 
 public function __construct(PDOStatement $statement, string $insertId = null) {
 	$this->statement = $statement;
@@ -76,7 +76,7 @@ public function hasResult():bool {
 	return !is_null($this->currentRow);
 }
 
-public function fetch(bool $skipIndexIncrement = false)/*:?Row*/ {
+public function fetch(bool $skipIndexIncrement = false):?Row {
 	$data = $this->statement->fetch(
 		PDO::FETCH_ASSOC,
 		PDO::FETCH_ORI_NEXT,
@@ -159,7 +159,7 @@ public function valid():bool {
 }
 
 
-private function ensureFirstRowFetched() {
+protected function ensureFirstRowFetched() {
 	if(is_null($this->currentRow)) {
 		$this->fetch(true);
 	}

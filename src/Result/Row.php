@@ -7,7 +7,7 @@ use Iterator;
 class Row implements Countable, Iterator {
 
 /** @var array */
-private $data;
+protected $data;
 
 public function __construct(array $data = []) {
 	$this->data = $data;

@@ -9,7 +9,7 @@ use ArrayAccess;
 
 class Config implements ArrayAccess {
 
-private $config = [];
+protected $config = [];
 
 public function __construct(
 	string $iniPath,
@@ -55,11 +55,11 @@ public function getConfigArray():array {
 	return $this->config;
 }
 
-private function storeConfig(array $config) {
+protected function storeConfig(array $config) {
 	$this->config = $config;
 }
 
-private function mergeArrays(array $array1, array $array2):array {
+protected function mergeArrays(array $array1, array $array2):array {
 	$merged = $array1;
 
 	foreach($array2 as $key => $value) {

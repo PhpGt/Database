@@ -13,6 +13,22 @@ private $queryCollection;
 /** @var  PHPUnit_Framework_MockObject_MockObject */
 private $mockQuery;
 
+public function setUp() {
+	$mockQueryFactory = $this->createMock(QueryFactory::class);
+	$this->mockQuery = $this->createMock(Query::class);
+	$mockQueryFactory
+		->expects(static::once())
+		->method("create")
+		->with("something")
+		->willReturn($this->mockQuery);
+
+	$this->queryCollection = new QueryCollection(
+		__DIR__,
+		new Driver(new DefaultSettings()),
+		$mockQueryFactory
+	);
+}
+
 // CREATE /////////////////////////////////////////////////////////////////////
 public function testCreate() {
 	$placeholderVars = ["nombre" => "hombre"];
@@ -29,7 +45,7 @@ public function testCreate() {
 
 	static::assertEquals(
 		$lastInsertID,
-		$this->queryCollection->create("something", $placeholderVars));
+		$this->queryCollection->insert("something", $placeholderVars));
 }
 
 public function testCreateNoParams() {
@@ -46,7 +62,7 @@ public function testCreateNoParams() {
 
 	static::assertEquals(
 		$lastInsertID,
-		$this->queryCollection->create("something"));
+		$this->queryCollection->insert("something"));
 }
 
 // RETRIEVE ///////////////////////////////////////////////////////////////////
@@ -56,7 +72,7 @@ public function testRetrieve() {
 
 	$mockResultSet = $this->createMock(ResultSet::class);
 	$mockResultSet
-		->method("fetch")
+		->method("current")
 		->willReturn($expected);
 	$this->mockQuery
 		->expects(static::once())
@@ -64,7 +80,7 @@ public function testRetrieve() {
 		->with($placeholderVars)
 		->willReturn($mockResultSet);
 
-	$actual = $this->queryCollection->retrieve("something", $placeholderVars);
+	$actual = $this->queryCollection->fetch("something", $placeholderVars);
 	static::assertInstanceOf(Row::class, $actual);
 	static::assertCount(1, $actual);
 	static::assertEquals($expected, $actual);
@@ -75,7 +91,7 @@ public function testRetrieveNoParams() {
 
 	$mockResultSet = $this->createMock(ResultSet::class);
 	$mockResultSet
-		->method("fetch")
+		->method("current")
 		->willReturn($expected);
 	$this->mockQuery
 		->expects(static::once())
@@ -85,13 +101,13 @@ public function testRetrieveNoParams() {
 
 	static::assertEquals(
 		$expected,
-		$this->queryCollection->retrieve("something"));
+		$this->queryCollection->fetch("something"));
 }
 
 public function testRetrieveNoResults() {
 	$mockResultSet = $this->createMock(ResultSet::class);
 	$mockResultSet
-		->method("fetch")
+		->method("current")
 		->willReturn(null);
 	$this->mockQuery
 		->expects(static::once())
@@ -99,7 +115,7 @@ public function testRetrieveNoResults() {
 		->with()
 		->willReturn($mockResultSet);
 
-	static::assertNull($this->queryCollection->retrieve("something"));
+	static::assertNull($this->queryCollection->fetch("something"));
 }
 
 public function testRetrieveAll() {
@@ -110,15 +126,18 @@ public function testRetrieveAll() {
 	$mockResultSet
 		->method("fetchAll")
 		->willReturn($expected);
+	$mockResultSet
+		->method("count")
+		->willReturn(count($expected));
 	$this->mockQuery
 		->expects(static::once())
 		->method("execute")
 		->with($placeholderVars)
 		->willReturn($mockResultSet);
 
-	$actual = $this->queryCollection->retrieveAll("something", $placeholderVars);
+	$actual = $this->queryCollection->fetchAll("something", $placeholderVars);
 	static::assertCount(2, $actual);
-	static::assertEquals($expected, $actual);
+	static::assertEquals($expected, $actual->fetchAll());
 }
 
 public function testRetrieveAllNoParams() {
@@ -134,9 +153,11 @@ public function testRetrieveAllNoParams() {
 		->with()
 		->willReturn($mockResultSet);
 
+	$resultSet = $this->queryCollection->fetchAll("something");
+
 	static::assertEquals(
 		$expected,
-		$this->queryCollection->retrieveAll("something"));
+		$resultSet->fetchAll());
 }
 
 public function testRetrieveAllNoResults() {
@@ -150,11 +171,10 @@ public function testRetrieveAllNoResults() {
 		->with()
 		->willReturn($mockResultSet);
 
-	$actual = $this->queryCollection->retrieveAll("something");
-	static::assertInternalType("array", $actual);
-	static::assertCount(0, $actual);
+	$resultSet = $this->queryCollection->fetchAll("something");
+	static::assertInternalType("array", $resultSet->fetchAll());
+	static::assertCount(0, $resultSet);
 }
-
 
 // UPDATE ///////////////////////////////////////////////////////////////////
 public function testUpdate() {
@@ -225,22 +245,6 @@ public function testDeleteNoParams() {
 	static::assertEquals(
 		$recordsDeletedCount,
 		$this->queryCollection->delete("something"));
-}
-
-public function setUp() {
-	$mockQueryFactory = $this->createMock(QueryFactory::class);
-	$this->mockQuery = $this->createMock(Query::class);
-	$mockQueryFactory
-		->expects(static::once())
-		->method("create")
-		->with("something")
-		->willReturn($this->mockQuery);
-
-	$this->queryCollection = new QueryCollection(
-		__DIR__,
-		new Driver(new DefaultSettings()),
-		$mockQueryFactory
-	);
 }
 
 }#

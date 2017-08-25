@@ -1,7 +1,6 @@
 <?php
 namespace Gt\Database\Migration;
 
-use DirectoryIterator;
 use Gt\Database\Client;
 use Gt\Database\Connection\Settings;
 
@@ -11,10 +10,10 @@ const COLUMN_QUERY_NUMBER = "query_number";
 const COLUMN_QUERY_HASH = "query_hash";
 const COLUMN_MIGRATED_AT = "migrated_at";
 
-private $schema;
-private $dbClient;
-private $path;
-private $tableName;
+protected $schema;
+protected $dbClient;
+protected $path;
+protected $tableName;
 
 public function __construct(
 	Settings $settings,
@@ -43,7 +42,7 @@ public function __construct(
 
 public function getMigrationCount():int {
 	try {
-		$result = $this->dbClient->rawStatement(
+		$result = $this->dbClient->executeSql(
 			"select `"
 			. self::COLUMN_QUERY_NUMBER
 			. "` from `{$this->tableName}` "
@@ -65,7 +64,7 @@ public function getMigrationCount():int {
 
 		if($tableNotFoundError) {
 			echo "Migration table not found, attempting to create." . PHP_EOL;
-			$this->dbClient->rawStatement(implode("\n", [
+			$this->dbClient->executeSql(implode("\n", [
 				"create table `{$this->tableName}` (",
 				"`" . self::COLUMN_QUERY_NUMBER . "` int primary key,",
 				"`" . self::COLUMN_QUERY_HASH . "` varchar(32) not null,",
@@ -116,7 +115,7 @@ public function checkIntegrity(
 		$md5 = md5_file($file);
 
 		if($fileNumber <= $migrationCount) {
-			$result = $this->dbClient->rawStatement(implode("\n", [
+			$result = $this->dbClient->executeSql(implode("\n", [
 				"select `" . self::COLUMN_QUERY_HASH . "`",
 				"from `{$this->tableName}`",
 				"where `" . self::COLUMN_QUERY_NUMBER . "` = ?",
@@ -152,7 +151,7 @@ public function performMigration(
 			echo "Migration $fileNumber: `$file`." . PHP_EOL;
 			$sql = file_get_contents($file);
 			$md5 = md5_file($file);
-			$this->dbClient->rawStatement($sql);
+			$this->dbClient->executeSql($sql);
 		}
 		catch(\Exception $exception) {
 			echo "Error performing migration $fileNumber.";
@@ -166,9 +165,9 @@ public function performMigration(
 	}
 }
 
-private function recordMigrationSuccess(int $number, string $hash) {
+protected function recordMigrationSuccess(int $number, string $hash) {
 	try {
-		$this->dbClient->rawStatement(implode("\n", [
+		$this->dbClient->executeSql(implode("\n", [
 			"insert into `{$this->tableName}` (",
 			"`" . self::COLUMN_QUERY_NUMBER . "`, ",
 			"`" . self::COLUMN_QUERY_HASH . "`, ",
@@ -188,7 +187,7 @@ private function recordMigrationSuccess(int $number, string $hash) {
 	}
 }
 
-private function selectSchema(bool $deleteAndRecreateSchema = false) {
+protected function selectSchema(bool $deleteAndRecreateSchema = false) {
 	if($deleteAndRecreateSchema) {
 		$this->deleteAndRecreateSchema();
 	}
@@ -196,7 +195,7 @@ private function selectSchema(bool $deleteAndRecreateSchema = false) {
 	$schema = $this->schema;
 
 	try {
-		$this->dbClient->rawStatement("use `$schema`");
+		$this->dbClient->executeSql("use `$schema`");
 	}
 	catch(\Exception $exception) {
 		echo "Error selecting `$schema`." . PHP_EOL;
@@ -205,12 +204,12 @@ private function selectSchema(bool $deleteAndRecreateSchema = false) {
 	}
 }
 
-private function deleteAndRecreateSchema() {
+protected function deleteAndRecreateSchema() {
 	$schema = $this->schema;
 
 	try {
-		$this->dbClient->rawStatement("drop schema if exists `$schema`");
-		$this->dbClient->rawStatement("create schema if not exists `$schema`");
+		$this->dbClient->executeSql("drop schema if exists `$schema`");
+		$this->dbClient->executeSql("create schema if not exists `$schema`");
 	}
 	catch(\Exception $exception) {
 		echo "Error recreating schema `$schema`." . PHP_EOL;
