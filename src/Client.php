@@ -23,7 +23,7 @@ protected $queryCollectionFactoryArray;
 /** @var Driver[] */
 protected $driverArray;
 /** @var Connection */
-protected $currentConnection;
+protected $currentConnectionName;
 
 public function __construct(SettingsInterface...$connectionSettings) {
 	if(empty($connectionSettings)) {
@@ -60,6 +60,11 @@ public function update(string $queryName, ...$bindings):int {
 }
 
 public function query(string $queryName, ...$bindings):ResultSet {
+	while(isset($bindings[0])
+	&& is_array($bindings[0])) {
+		$bindings = $bindings[0];
+	}
+
 	$queryCollectionName = substr(
 		$queryName,
 		0,
@@ -70,13 +75,13 @@ public function query(string $queryName, ...$bindings):ResultSet {
 		strrpos($queryName, "/") + 1
 	);
 
-	$connection = $this->currentConnection;
-	$queryCollection = $this->queryCollection($queryCollectionName, $connection);
+	$connectionName = $this->currentConnectionName ?? DefaultSettings::DEFAULT_NAME;
+	$queryCollection = $this->queryCollection($queryCollectionName, $connectionName);
 	return $queryCollection->query($queryFile, $bindings);
 }
 
-public function setCurrentConnection(string $connectionName) {
-	$this->currentConnection = $this->getNamedConnection($connectionName);
+public function setCurrentConnectionName(string $connectionName) {
+	$this->currentConnectionName = $this->getNamedConnection($connectionName);
 }
 
 public function executeSql(
