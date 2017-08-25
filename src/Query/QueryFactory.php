@@ -16,12 +16,14 @@ const CLASS_FOR_EXTENSION = [
 ];
 
 /** @var string Absolute path to directory on disk containing query files */
-private $directoryOfQueries;
+protected $directoryOfQueries;
 /** @var \Gt\Database\Connection\Driver */
-private $driver;
+protected $driver;
 
 public function __construct(
-string $directoryOfQueries, Driver $driver) {
+	string $directoryOfQueries,
+	Driver $driver
+) {
 	$this->directoryOfQueries = $directoryOfQueries;
 	$this->driver = $driver;
 }
@@ -63,7 +65,7 @@ public function getQueryClassForFilePath(string $filePath) {
 	return self::CLASS_FOR_EXTENSION[$ext];
 }
 
-private function getExtensionIfValid(SplFileInfo $fileInfo) {
+protected function getExtensionIfValid(SplFileInfo $fileInfo) {
 	$ext = strtolower($fileInfo->getExtension());
 
 	if(!array_key_exists($ext, self::CLASS_FOR_EXTENSION)) {
@@ -73,7 +75,7 @@ private function getExtensionIfValid(SplFileInfo $fileInfo) {
 	return $ext;
 }
 
-private function throwCorrectException(Exception $exception) {
+protected function throwCorrectException(Exception $exception) {
 	$message = $exception->getMessage();
 
 	switch(get_class($exception)) {

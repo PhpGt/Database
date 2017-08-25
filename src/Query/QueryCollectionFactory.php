@@ -7,11 +7,11 @@ use Gt\Database\Connection\Driver;
 class QueryCollectionFactory {
 
 /** @var Driver */
-private $driver;
+protected $driver;
 /** @var string */
-private $basePath;
+protected $basePath;
 /** @var array */
-private $queryCollectionCache = [];
+protected $queryCollectionCache = [];
 
 public function __construct(Driver $driver) {
 	$this->driver = $driver;
@@ -46,7 +46,7 @@ public function directoryExists(string $name):bool {
  * @param  string $name Name of the QueryCollection
  * @return string       Absolute path to directory
  */
-private function locateDirectory(string $name)/* :?string */ {
+protected function locateDirectory(string $name)/* :?string */ {
 	foreach (new DirectoryIterator($this->basePath) as $fileInfo) {
 		if($fileInfo->isDot()
 		|| !$fileInfo->isDir()) {
@@ -62,7 +62,7 @@ private function locateDirectory(string $name)/* :?string */ {
 	return null;
 }
 
-private function getDefaultBasePath():string {
+protected function getDefaultBasePath():string {
 	return getcwd();
 }
 
