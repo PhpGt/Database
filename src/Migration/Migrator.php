@@ -195,6 +195,7 @@ protected function selectSchema(bool $deleteAndRecreateSchema = false) {
 	$schema = $this->schema;
 
 	try {
+		$this->dbClient->executeSql("create schema if not exists `$schema`");
 		$this->dbClient->executeSql("use `$schema`");
 	}
 	catch(\Exception $exception) {
