@@ -1,6 +1,6 @@
 {
     "name": "phpgt/database",
-    "description": "Separates database logic through a simple interface.",
+    "description": "Database API organisation for PHP 7 projects.",
     "type": "library",
 
     "require": {
