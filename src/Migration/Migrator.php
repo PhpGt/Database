@@ -41,6 +41,21 @@ public function __construct(
 }
 
 public function getMigrationCount():int {
+	// TODO: Use placeholder when single replacements implemented.
+	$result = $this->dbClient->executeSql("show tables like \"" . $this->tableName . "\"");
+	$existingRow = $result->fetch();
+
+	if(is_null($existingRow)) {
+		echo "Migration table not found, attempting to create." . PHP_EOL;
+		$this->dbClient->executeSql(implode("\n", [
+			"create table `{$this->tableName}` (",
+			"`" . self::COLUMN_QUERY_NUMBER . "` int primary key,",
+			"`" . self::COLUMN_QUERY_HASH . "` varchar(32) not null,",
+			"`" . self::COLUMN_MIGRATED_AT . "` datetime not null )",
+		]));
+		echo "Created table `{$this->tableName}`." . PHP_EOL;
+	}
+
 	try {
 		$result = $this->dbClient->executeSql(
 			"select `"
@@ -57,28 +72,11 @@ public function getMigrationCount():int {
 	}
 	catch(\Exception $exception) {
 		$message = $exception->getMessage();
-		$tableNotFoundError = preg_match(
-			"/(SQLSTATE\\[42S02\\])|(Base table or view not found)/",
-			$message
-		);
-
-		if($tableNotFoundError) {
-			echo "Migration table not found, attempting to create." . PHP_EOL;
-			$this->dbClient->executeSql(implode("\n", [
-				"create table `{$this->tableName}` (",
-				"`" . self::COLUMN_QUERY_NUMBER . "` int primary key,",
-				"`" . self::COLUMN_QUERY_HASH . "` varchar(32) not null,",
-				"`" . self::COLUMN_MIGRATED_AT . "` datetime not null )",
-			]));
-			echo "Created table `{$this->tableName}`." . PHP_EOL;
-		}
-		else {
-			echo "Error getting migration count.";
-			echo PHP_EOL;
-			echo $message;
-			echo PHP_EOL;
-			exit(1);
-		}
+		echo "Error getting migration count.";
+		echo PHP_EOL;
+		echo $message;
+		echo PHP_EOL;
+		exit(1);
 	}
 
 	return 0;
