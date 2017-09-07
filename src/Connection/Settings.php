@@ -132,6 +132,7 @@ public function getConnectionString():string {
 	default:
 		$connectionString .= "host=" . $this->getHost();
 		$connectionString .= ";dbname=" . $this->getDatabase();
+		$connectionString .= ";charset=" . self::CHARSET;
 		break;
 	}
 
