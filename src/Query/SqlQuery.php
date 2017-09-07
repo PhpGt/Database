@@ -4,6 +4,7 @@ namespace Gt\Database\Query;
 use PDO;
 use PDOException;
 use PDOStatement;
+use DateTime;
 use Gt\Database\Result\ResultSet;
 
 class SqlQuery extends Query {
