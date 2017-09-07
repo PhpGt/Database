@@ -42,6 +42,10 @@ public function loadEnvConfig(array $mergeWith = []):array {
 			$configValue
 				= getenv($envVariableName, true) ?: getenv($envVariableName);
 
+			if($configValue === '""') {
+				$configValue = "";
+			}
+
 			if(false !== $configValue) {
 				$config[$section][$key] = $configValue;
 			}
