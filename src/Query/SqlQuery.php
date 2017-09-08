@@ -79,6 +79,9 @@ protected function injectSpecialBindings(string $sql, array $bindings):string {
 
 protected function prepareBindings(array $bindings):array {
 	foreach($bindings as $key => $value) {
+		if(is_bool($value)) {
+			$bindings[$key] = (int)$value;
+		}
 		if($value instanceof DateTime) {
 			$bindings[$key] = $value->format("Y-m-d H:i:s");
 		}
