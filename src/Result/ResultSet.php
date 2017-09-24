@@ -1,19 +1,16 @@
 <?php
 namespace Gt\Database\Result;
 
-use Gt\Database\ReadOnlyArrayAccessException;
+use NonScrollableCursorException;
 use PDO;
-use ArrayAccess;
 use Iterator;
-use Countable;
 use PDOStatement;
-use JsonSerializable;
 
 /**
  * @property int $length Number of rows represented, synonym of
  * count and getLength
  */
-class ResultSet implements ArrayAccess, Iterator, Countable, JsonSerializable {
+class ResultSet implements Iterator {
 
 /** @var \PDOStatement */
 protected $statement;
@@ -39,20 +36,14 @@ public function __get($name) {
 		return $this->$methodName();
 	}
 
-	$this->ensureFirstRowFetched();
-	if($this->currentRow === null) {
-	    throw new EmptyResultSetException();
-    }
-
-	return $this->currentRow->$name;
-}
-
-public function getLength():int {
-	return $this->count();
-}
-
-public function count() {
-	return count($this->fetchAll());
+	trigger_error(
+		"Call to undefined method "
+		. get_class($this)
+		. "::"
+		. $name
+	,
+		E_WARNING
+	);
 }
 
 public function getAffectedRows():int {
@@ -71,78 +62,25 @@ public function lastInsertId():string {
 	return $this->insertId;
 }
 
-public function hasResult():bool {
-	$this->ensureFirstRowFetched();
-	return !is_null($this->currentRow);
-}
-
-public function fetch(bool $skipIndexIncrement = false):?Row {
+public function fetch():?Row {
 	$data = $this->statement->fetch(
-		PDO::FETCH_ASSOC,
-		PDO::FETCH_ORI_NEXT,
-		$this->index
+		PDO::FETCH_ASSOC
 	);
 
 	if(empty($data)) {
-		$this->currentRow = null;
 		return null;
 	}
-	else {
-		$row = new Row($data);
-		$this->currentRow = $row;
-	}
 
-	if(!$skipIndexIncrement) {
-		$this->index ++;
-	}
-
+	$this->currentRow = new Row($data);
 	return $this->currentRow;
-}
-
-/**
- * @return Row[]
- */
-public function fetchAll():array {
-	if(!is_null($this->fetchAllCache)) {
-		return $this->fetchAllCache;
-	}
-
-	$this->fetchAllCache = [];
-
-	foreach($this->statement->fetchAll() as $row) {
-		$this->fetchAllCache []= new Row($row);
-	}
-
-	return $this->fetchAllCache;
-}
-
-// ArrayAccess /////////////////////////////////////////////////////////////////
-
-public function offsetExists($offset) {
-	$allRows = $this->fetchAll();
-	return isset($allRows[$offset]);
-}
-
-public function offsetGet($offset) {
-	$allRows = $this->fetchAll();
-	return $allRows[$offset];
-}
-
-public function offsetSet($offset, $value) {
-	throw new ReadOnlyArrayAccessException($offset);
-}
-
-public function offsetUnset($offset) {
-	throw new ReadOnlyArrayAccessException($offset);
 }
 
 // Iterator ////////////////////////////////////////////////////////////////////
 public function rewind() {
-	$this->index = 0;
+	throw new NonScrollableCursorException();
 }
 
 public function current() {
-	$this->ensureFirstRowFetched();
 	return $this->currentRow;
 }
 
@@ -156,19 +94,6 @@ public function next() {
 
 public function valid():bool {
 	return !empty($this->current());
-}
-
-
-protected function ensureFirstRowFetched() {
-	if(is_null($this->currentRow)) {
-		$this->fetch(true);
-	}
-}
-
-// JsonSerializable ////////////////////////////////////////////////////////////
-
-public function jsonSerialize() {
-	return $this->fetchAll();
 }
 
 }#
