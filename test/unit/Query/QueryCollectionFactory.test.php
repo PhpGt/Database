@@ -4,8 +4,9 @@ namespace Gt\Database\Query;
 use Gt\Database\Connection\Settings;
 use Gt\Database\Connection\Driver;
 use Gt\Database\Test\Helper;
+use PHPUnit\Framework\TestCase;
 
-class QueryCollectionFactoryTest extends \PHPUnit_Framework_TestCase {
+class QueryCollectionFactoryTest extends TestCase {
 
 public function testCurrentWorkingDirectoryDefault() {
 	$queryCollectionName = "exampleTest";

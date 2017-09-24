@@ -3,11 +3,10 @@ namespace Gt\Database\Test;
 
 use Gt\Database\Connection\Driver;
 use Gt\Database\Connection\Settings;
-use Gt\Database\Query\PreparedStatementException;
-use Gt\Database\Query\QueryNotFoundException;
 use Gt\Database\Query\SqlQuery;
+use PHPUnit\Framework\TestCase;
 
-class SqlQueryTest extends \PHPUnit_Framework_TestCase {
+class SqlQueryTest extends TestCase {
 
 /** @var Driver */
 private $driver;
