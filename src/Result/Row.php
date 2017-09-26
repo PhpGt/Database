@@ -46,7 +46,7 @@ public function current() {
 }
 
 public function key():?string {
-	return $this->iterator_data_key_list[$this->iterator_index];
+	return $this->iterator_data_key_list[$this->iterator_index] ?? null;
 }
 
 public function next():void {
