@@ -47,7 +47,7 @@ public function insert(
     string $name,
 	iterable $placeholderMap = []
 ):int {
-    return (int)$this->query($name, $placeholderMap)->getLastInsertId();
+    return (int)$this->query($name, $placeholderMap)->lastInsertId();
 }
 
 public function fetch(
@@ -68,14 +68,14 @@ public function update(
     string $name,
 	iterable $placeholderMap = []
 ):int {
-    return $this->query($name, $placeholderMap)->getAffectedRows();
+    return $this->query($name, $placeholderMap)->affectedRows();
 }
 
 public function delete(
     string $name,
 	iterable $placeholderMap = []
 ):int {
-    return $this->query($name, $placeholderMap)->getAffectedRows();
+    return $this->query($name, $placeholderMap)->affectedRows();
 }
 
 public function getDirectoryPath():string {

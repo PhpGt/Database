@@ -1,7 +1,7 @@
 <?php
 namespace Gt\Database\Result;
 
-use NonScrollableCursorException;
+use Countable;
 use PDO;
 use Iterator;
 use PDOStatement;
@@ -10,52 +10,23 @@ use PDOStatement;
  * @property int $length Number of rows represented, synonym of
  * count and getLength
  */
-class ResultSet implements Iterator {
+class ResultSet implements Iterator, Countable {
 
 /** @var \PDOStatement */
 protected $statement;
 /** @var \Gt\Database\Result\Row */
-protected $currentRow;
-/** @var int */
-protected $index = 0;
+protected $current_row;
+protected $row_index = null;
 /** @var string */
 protected $insertId = null;
-/** @var Row[] */
-protected $fetchAllCache = null;
 
 public function __construct(PDOStatement $statement, string $insertId = null) {
 	$this->statement = $statement;
 	$this->insertId = $insertId;
 }
 
-/** @throws EmptyResultSetException If you try to access a column when no
- * results were returned*/
-public function __get($name) {
-	$methodName = "get" . ucfirst($name);
-	if(method_exists($this, $methodName)) {
-		return $this->$methodName();
-	}
-
-	trigger_error(
-		"Call to undefined method "
-		. get_class($this)
-		. "::"
-		. $name
-	,
-		E_WARNING
-	);
-}
-
-public function getAffectedRows():int {
-	return $this->affectedRows();
-}
-
 public function affectedRows():int {
 	return $this->statement->rowCount();
-}
-
-public function getLastInsertId():string {
-	return $this->lastInsertId();
 }
 
 public function lastInsertId():string {
@@ -67,33 +38,74 @@ public function fetch():?Row {
 		PDO::FETCH_ASSOC
 	);
 
-	if(empty($data)) {
-		return null;
+	if(is_null($this->row_index)) {
+		$this->row_index = 0;
+	}
+	else {
+		$this->row_index ++;
 	}
 
-	$this->currentRow = new Row($data);
-	return $this->currentRow;
+	if(empty($data)) {
+		$this->current_row = null;
+	}
+	else {
+		$this->current_row = new Row($data);
+	}
+
+	return $this->current_row;
+}
+
+/**
+ * @return Row[]
+ */
+public function fetchAll():array {
+	$data = [];
+
+	while($row = $this->fetch()) {
+		$data []= $row;
+	}
+
+	return $data;
+}
+
+protected function fetchUpToIteratorIndex() {
+	while(is_null($this->row_index)
+	|| $this->row_index < $this->iterator_index) {
+		$this->fetch();
+	}
 }
 
 // Iterator ////////////////////////////////////////////////////////////////////
-public function rewind() {
-	throw new NonScrollableCursorException();
+protected $iterator_index = 0;
+
+public function rewind():void {
+	$this->statement->execute();
+	$this->current_row = null;
+	$this->row_index = null;
+	$this->iterator_index = 0;
 }
 
-public function current() {
-	return $this->currentRow;
+public function current():?Row {
+	$this->fetchUpToIteratorIndex();
+	return $this->current_row;
 }
 
-public function key() {
-	return $this->index;
+public function key():int {
+	return $this->iterator_index;
 }
 
-public function next() {
-	$this->fetch();
+public function next():void {
+	$this->iterator_index ++;
 }
 
 public function valid():bool {
 	return !empty($this->current());
+}
+
+// Countable ///////////////////////////////////////////////////////////////////
+public function count():int {
+	$this->rewind();
+	return count($this->fetchAll());
 }
 
 }#

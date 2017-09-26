@@ -36,7 +36,7 @@ public function testCreate() {
 	$lastInsertID = "1234";
 	$mockResultSet = $this->createMock(ResultSet::class);
 	$mockResultSet
-		->method("getLastInsertID")
+		->method("lastInsertId")
 		->willReturn($lastInsertID);
 	$this->mockQuery
 		->expects(static::once())
@@ -53,7 +53,7 @@ public function testCreateNoParams() {
 	$lastInsertID = "1234";
 	$mockResultSet = $this->createMock(ResultSet::class);
 	$mockResultSet
-		->method("getLastInsertID")
+		->method("lastInsertId")
 		->willReturn($lastInsertID);
 	$this->mockQuery
 		->expects(static::once())
@@ -183,7 +183,7 @@ public function testUpdate() {
 	$recordsUpdatedCount = 1;
 	$mockResultSet = $this->createMock(ResultSet::class);
 	$mockResultSet
-		->method("getAffectedRows")
+		->method("affectedRows")
 		->willReturn($recordsUpdatedCount);
 	$this->mockQuery
 		->expects(static::once())
@@ -198,7 +198,7 @@ public function testUpdateNoParams() {
 	$recordsUpdatedCount = 2;
 	$mockResultSet = $this->createMock(ResultSet::class);
 	$mockResultSet
-		->method("getAffectedRows")
+		->method("affectedRows")
 		->willReturn($recordsUpdatedCount);
 	$this->mockQuery
 		->expects(static::once())
@@ -218,7 +218,7 @@ public function testDelete() {
 	$recordsDeletedCount = 0;
 	$mockResultSet = $this->createMock(ResultSet::class);
 	$mockResultSet
-		->method("getAffectedRows")
+		->method("affectedRows")
 		->willReturn($recordsDeletedCount);
 	$this->mockQuery
 		->expects(static::once())
@@ -235,7 +235,7 @@ public function testDeleteNoParams() {
 	$recordsDeletedCount = 2;
 	$mockResultSet = $this->createMock(ResultSet::class);
 	$mockResultSet
-		->method("getAffectedRows")
+		->method("affectedRows")
 		->willReturn($recordsDeletedCount);
 	$this->mockQuery
 		->expects(static::once())
