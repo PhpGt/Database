@@ -3,8 +3,9 @@ namespace Gt\Database\Query;
 
 use Gt\Database\Connection\Driver;
 use Gt\Database\Connection\DefaultSettings;
+use PHPUnit\Framework\TestCase;
 
-class QueryTest extends \PHPUnit_Framework_TestCase {
+class QueryTest extends TestCase {
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider

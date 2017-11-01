@@ -5,9 +5,10 @@ use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
 use Gt\Database\Result\ResultSet;
 use Gt\Database\Result\Row;
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 
-class QueryCollectionCRUDsTest extends \PHPUnit_Framework_TestCase {
+class QueryCollectionCRUDsTest extends TestCase {
 /** @var  QueryCollection */
 private $queryCollection;
 /** @var  PHPUnit_Framework_MockObject_MockObject */

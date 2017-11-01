@@ -4,8 +4,9 @@ namespace Gt\Database\Query;
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
 use Gt\Database\Test\Helper;
+use PHPUnit\Framework\TestCase;
 
-class QueryFactoryTest extends \PHPUnit_Framework_TestCase {
+class QueryFactoryTest extends TestCase {
 
 /**
  * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider

@@ -1,7 +1,9 @@
 <?php
 namespace Gt\Database\Connection;
 
-class DefaultSettingsTest extends \PHPUnit_Framework_TestCase {
+use PHPUnit\Framework\TestCase;
+
+class DefaultSettingsTest extends TestCase {
 
 public function testImplementation() {
 	$settings = new DefaultSettings();

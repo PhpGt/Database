@@ -3,8 +3,9 @@ namespace Gt\Database;
 
 use Gt\Database\Connection\Settings;
 use Gt\Database\Query\QueryCollection;
+use PHPUnit\Framework\TestCase;
 
-class ClientTest extends \PHPUnit_Framework_TestCase {
+class ClientTest extends TestCase {
 
 public function testInterface() {
 	$db = new Client();

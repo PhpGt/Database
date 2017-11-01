@@ -5,8 +5,9 @@ use Exception;
 use Gt\Database\Connection\Driver;
 use Gt\Database\Connection\Settings;
 use Gt\Database\Test\Helper;
+use PHPUnit\Framework\TestCase;
 
-class IntegrationTest extends \PHPUnit_Framework_TestCase {
+class IntegrationTest extends TestCase {
 
 /** @var Driver */
 private $driver;

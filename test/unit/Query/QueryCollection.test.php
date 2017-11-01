@@ -4,9 +4,10 @@ namespace Gt\Database\Query;
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
 use Gt\Database\Result\ResultSet;
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 
-class QueryCollectionTest extends \PHPUnit_Framework_TestCase {
+class QueryCollectionTest extends TestCase {
 
 /** @var  QueryCollection */
 private $queryCollection;
