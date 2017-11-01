@@ -77,7 +77,7 @@ public function testSubsequentSqlQueries() {
 	$this->db->insert("exampleCollection/insert", [
 		"nameToInsert" => $uuid2,
 	]);
-	$result1 = $this->db->fetchAll("exampleCollection/selectByName", [
+	$result1 = $this->db->fetch("exampleCollection/selectByName", [
 		"rowName" => $uuid,
 	]);
 	$result2 = $this->db->fetch("exampleCollection/selectByName", [

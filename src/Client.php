@@ -37,7 +37,7 @@ public function __construct(SettingsInterface...$connectionSettings) {
 
 public function fetch(string $queryName, ...$bindings):?Row {
 	$result = $this->query($queryName, $bindings);
-	return $result->current();
+	return $result->fetch();
 }
 
 public function fetchAll(string $queryName, ...$bindings):ResultSet {
@@ -46,7 +46,7 @@ public function fetchAll(string $queryName, ...$bindings):ResultSet {
 
 public function insert(string $queryName, ...$bindings):int {
 	$result = $this->query($queryName, $bindings);
-	return $result->getLastInsertId();
+	return $result->lastInsertId();
 }
 
 public function delete(string $queryName, ...$bindings):int {

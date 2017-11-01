@@ -7,19 +7,18 @@ class SettingsTest extends TestCase {
 
 private $properties;
 
-public function setUp()
-{
-    $this->properties = [
-        "baseDirectory" => "/tmp",
-        "dataSource" => "test-data-source",
-        "database" => "test-database",
-        "host" => "test-host",
-        "port" => 1234,
-        "username" => "test-username",
-        "password" => "test-password",
-        "tablePrefix" => "test_",
-        "connectionName" => "test-connection",
-    ];
+public function setUp() {
+	$this->properties = [
+		"baseDirectory" => "/tmp",
+		"dataSource" => "test-data-source",
+		"database" => "test-database",
+		"host" => "test-host",
+		"port" => 1234,
+		"username" => "test-username",
+		"password" => "test-password",
+		"tablePrefix" => "test_",
+		"connectionName" => "test-connection",
+	];
 }
 
 public function testPropertiesSet() {
@@ -70,57 +69,57 @@ public function testDefaultConnectionName() {
 }
 
 public function testGetConnectionSettings() {
-    $settings = new Settings(
-        $this->properties["baseDirectory"],
-        $this->properties["dataSource"],
-        $this->properties["database"],
-        $this->properties["host"],
-        $this->properties["port"],
-        $this->properties["username"],
-        $this->properties["password"],
-        $this->properties["tablePrefix"],
-        $this->properties["connectionName"]
-    );
+	$settings = new Settings(
+		$this->properties["baseDirectory"],
+		$this->properties["dataSource"],
+		$this->properties["database"],
+		$this->properties["host"],
+		$this->properties["port"],
+		$this->properties["username"],
+		$this->properties["password"],
+		$this->properties["tablePrefix"],
+		$this->properties["connectionName"]
+	);
 
-    $expected = [
-        "driver" => $this->properties["dataSource"],
-        "host" => $this->properties["host"],
-        "port" => $this->properties["port"],
-        "database" => $this->properties["database"],
-        "username" => $this->properties["username"],
-        "password" => $this->properties["password"],
-        "charset" => Settings::CHARSET,
-        "collation" => Settings::COLLATION,
-        "prefix" => $this->properties["tablePrefix"],
-        "options" => DefaultSettings::DEFAULT_CONFIG["options"],
-    ];
+	$expected = [
+		"driver" => $this->properties["dataSource"],
+		"host" => $this->properties["host"],
+		"port" => $this->properties["port"],
+		"database" => $this->properties["database"],
+		"username" => $this->properties["username"],
+		"password" => $this->properties["password"],
+		"charset" => Settings::CHARSET,
+		"collation" => Settings::COLLATION,
+		"prefix" => $this->properties["tablePrefix"],
+		"options" => DefaultSettings::DEFAULT_CONFIG["options"],
+	];
 
-    $actual = $settings->getConnectionSettings();
-    static::assertEquals($expected, $actual);
+	$actual = $settings->getConnectionSettings();
+	static::assertEquals($expected, $actual);
 }
 
 public function testSetConfig() {
-    $settings = new Settings(
-        $this->properties["baseDirectory"],
-        $this->properties["dataSource"],
-        $this->properties["database"],
-        $this->properties["host"],
-        $this->properties["port"],
-        $this->properties["username"],
-        $this->properties["password"],
-        $this->properties["tablePrefix"],
-        $this->properties["connectionName"]
-    );
+	$settings = new Settings(
+		$this->properties["baseDirectory"],
+		$this->properties["dataSource"],
+		$this->properties["database"],
+		$this->properties["host"],
+		$this->properties["port"],
+		$this->properties["username"],
+		$this->properties["password"],
+		$this->properties["tablePrefix"],
+		$this->properties["connectionName"]
+	);
 
-    $expected = [
-        "optionA" => true,
-    ];
-    $settings->setConfig([
-        "options" => $expected
-    ]);
+	$expected = [
+		"optionA" => true,
+	];
+	$settings->setConfig([
+		"options" => $expected
+	]);
 
-    $actual = $settings->getConnectionSettings();
-    static::assertArrayHasKey("options", $actual);
-    static::assertEquals($expected, $actual["options"]);
+	$actual = $settings->getConnectionSettings();
+	static::assertArrayHasKey("options", $actual);
+	static::assertEquals($expected, $actual["options"]);
 }
 }#

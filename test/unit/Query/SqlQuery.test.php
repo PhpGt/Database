@@ -96,14 +96,15 @@ public function testLastInsertId(
 	file_put_contents($queryPath, "insert into test_table (name) values ('$uuid')");
 	$query = new SqlQuery($queryPath, $this->driverSingleton());
 	$resultSet = $query->execute();
-	$id = $resultSet->lastInsertId;
+	$id = $resultSet->lastInsertId();
 	static::assertNotEmpty($id);
 
 	file_put_contents($queryPath, "select * from test_table where id = $id");
 	$query = new SqlQuery($queryPath, $this->driverSingleton());
 	$resultSet = $query->execute();
 
-	static::assertEquals($uuid, $resultSet->name);
+	$row = $resultSet->fetch();
+	static::assertEquals($uuid, $row->name);
 }
 
 public function testSubsequentCounts() {
@@ -134,7 +135,8 @@ public function testSubsequentCalls() {
 		file_put_contents($queryPath[$i], "select '$testWord' as test");
 		$query = new SqlQuery($queryPath[$i], $this->driverSingleton());
 		$resultSet = $query->execute();
-		static::assertEquals($testWord, $resultSet->test);
+		$row = $resultSet->fetch();
+		static::assertEquals($testWord, $row->test);
 		$lastTestWord = $testWord;
 	}
 }
@@ -154,7 +156,8 @@ public function testPlaceholderReplacement(
 		"testPlaceholder" => $uuid,
 	]);
 
-	static::assertEquals($uuid, $resultSet->testValue);
+	$row = $resultSet->fetch();
+	static::assertEquals($uuid, $row->testValue);
 }
 
 /**
@@ -173,7 +176,8 @@ public function testPlaceholderReplacementInComments(
 		"test" => $uuid,
 	]);
 
-	static::assertEquals($uuid, $resultSet->test);
+	$row = $resultSet->fetch();
+	static::assertEquals($uuid, $row->test);
 }
 
 public function testPlaceholderReplacementSubsequentCalls() {

@@ -1,174 +1,111 @@
 <?php
 namespace Gt\Database\Result;
 
-use Gt\Database\ReadOnlyArrayAccessException;
-use PDO;
-use ArrayAccess;
-use Iterator;
 use Countable;
+use PDO;
+use Iterator;
 use PDOStatement;
-use JsonSerializable;
 
 /**
  * @property int $length Number of rows represented, synonym of
  * count and getLength
  */
-class ResultSet implements ArrayAccess, Iterator, Countable, JsonSerializable {
+class ResultSet implements Iterator, Countable {
 
 /** @var \PDOStatement */
 protected $statement;
 /** @var \Gt\Database\Result\Row */
-protected $currentRow;
-/** @var int */
-protected $index = 0;
+protected $current_row;
+protected $row_index = null;
 /** @var string */
 protected $insertId = null;
-/** @var Row[] */
-protected $fetchAllCache = null;
 
 public function __construct(PDOStatement $statement, string $insertId = null) {
 	$this->statement = $statement;
 	$this->insertId = $insertId;
 }
 
-/** @throws EmptyResultSetException If you try to access a column when no
- * results were returned*/
-public function __get($name) {
-	$methodName = "get" . ucfirst($name);
-	if(method_exists($this, $methodName)) {
-		return $this->$methodName();
-	}
-
-	$this->ensureFirstRowFetched();
-	if($this->currentRow === null) {
-	    throw new EmptyResultSetException();
-    }
-
-	return $this->currentRow->$name;
-}
-
-public function getLength():int {
-	return $this->count();
-}
-
-public function count() {
-	return count($this->fetchAll());
-}
-
-public function getAffectedRows():int {
-	return $this->affectedRows();
-}
-
 public function affectedRows():int {
 	return $this->statement->rowCount();
-}
-
-public function getLastInsertId():string {
-	return $this->lastInsertId();
 }
 
 public function lastInsertId():string {
 	return $this->insertId;
 }
 
-public function hasResult():bool {
-	$this->ensureFirstRowFetched();
-	return !is_null($this->currentRow);
-}
-
-public function fetch(bool $skipIndexIncrement = false):?Row {
+public function fetch():?Row {
 	$data = $this->statement->fetch(
-		PDO::FETCH_ASSOC,
-		PDO::FETCH_ORI_NEXT,
-		$this->index
+		PDO::FETCH_ASSOC
 	);
 
-	if(empty($data)) {
-		$this->currentRow = null;
-		return null;
+	if(is_null($this->row_index)) {
+		$this->row_index = 0;
 	}
 	else {
-		$row = new Row($data);
-		$this->currentRow = $row;
+		$this->row_index ++;
 	}
 
-	if(!$skipIndexIncrement) {
-		$this->index ++;
+	if(empty($data)) {
+		$this->current_row = null;
+	}
+	else {
+		$this->current_row = new Row($data);
 	}
 
-	return $this->currentRow;
+	return $this->current_row;
 }
 
 /**
  * @return Row[]
  */
 public function fetchAll():array {
-	if(!is_null($this->fetchAllCache)) {
-		return $this->fetchAllCache;
+	$data = [];
+
+	while($row = $this->fetch()) {
+		$data []= $row;
 	}
 
-	$this->fetchAllCache = [];
+	return $data;
+}
 
-	foreach($this->statement->fetchAll() as $row) {
-		$this->fetchAllCache []= new Row($row);
+protected function fetchUpToIteratorIndex() {
+	while(is_null($this->row_index)
+	|| $this->row_index < $this->iterator_index) {
+		$this->fetch();
 	}
-
-	return $this->fetchAllCache;
-}
-
-// ArrayAccess /////////////////////////////////////////////////////////////////
-
-public function offsetExists($offset) {
-	$allRows = $this->fetchAll();
-	return isset($allRows[$offset]);
-}
-
-public function offsetGet($offset) {
-	$allRows = $this->fetchAll();
-	return $allRows[$offset];
-}
-
-public function offsetSet($offset, $value) {
-	throw new ReadOnlyArrayAccessException($offset);
-}
-
-public function offsetUnset($offset) {
-	throw new ReadOnlyArrayAccessException($offset);
 }
 
 // Iterator ////////////////////////////////////////////////////////////////////
-public function rewind() {
-	$this->index = 0;
+protected $iterator_index = 0;
+
+public function rewind():void {
+	$this->statement->execute();
+	$this->current_row = null;
+	$this->row_index = null;
+	$this->iterator_index = 0;
 }
 
-public function current() {
-	$this->ensureFirstRowFetched();
-	return $this->currentRow;
+public function current():?Row {
+	$this->fetchUpToIteratorIndex();
+	return $this->current_row;
 }
 
-public function key() {
-	return $this->index;
+public function key():int {
+	return $this->iterator_index;
 }
 
-public function next() {
-	$this->fetch();
+public function next():void {
+	$this->iterator_index ++;
 }
 
 public function valid():bool {
 	return !empty($this->current());
 }
 
-
-protected function ensureFirstRowFetched() {
-	if(is_null($this->currentRow)) {
-		$this->fetch(true);
-	}
-}
-
-// JsonSerializable ////////////////////////////////////////////////////////////
-
-public function jsonSerialize() {
-	return $this->fetchAll();
+// Countable ///////////////////////////////////////////////////////////////////
+public function count():int {
+	$this->rewind();
+	return count($this->fetchAll());
 }
 
 }#

@@ -34,13 +34,6 @@ public function testGetNonExistentProperty() {
 }
 
 /** @dataProvider getTestRowData */
-public function testCount(array $data) {
-	$row = new Row($data);
-	self::assertEquals(count($data), $row->count());
-	self::assertEquals(count($data), count($row));
-}
-
-/** @dataProvider getTestRowData */
 public function testIteration(array $data) {
 	$row = new Row($data);
 
