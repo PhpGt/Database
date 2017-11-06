@@ -92,13 +92,26 @@ public function getMigrationFileList():array {
 
 	$numberedFileList = [];
 
-	foreach($fileList as $i => $file) {
+	$number = 0;
+
+	foreach($fileList as $file) {
 		if($file[0] === ".") {
 			continue;
 		}
 
+		$number++;
+
 		$pathName = $this->path . "/" . $file;
-		$fileNumber = (int)substr($file, 0, strpos($file, "-"));
+		$fileNumber = (int)substr(
+			$file,
+			0,
+			strpos($file, "-")
+		);
+
+		if($fileNumber !== $number) {
+			throw new MigrationOutOfOrder($number);
+		}
+
 		$numberedFileList[$fileNumber] = $pathName;
 	}
 
