@@ -36,7 +36,7 @@ public function testPropertiesSet() {
 
 	static::assertEquals($this->properties["baseDirectory"], $settings->getBaseDirectory());
 	static::assertEquals($this->properties["dataSource"], $settings->getDataSource());
-	static::assertEquals($this->properties["database"], $settings->getDatabase());
+	static::assertEquals($this->properties["database"], $settings->getSchema());
 	static::assertEquals($this->properties["host"], $settings->getHost());
 	static::assertEquals($this->properties["port"], $settings->getPort());
 	static::assertEquals($this->properties["username"], $settings->getUsername());
@@ -85,7 +85,7 @@ public function testGetConnectionSettings() {
 		"driver" => $this->properties["dataSource"],
 		"host" => $this->properties["host"],
 		"port" => $this->properties["port"],
-		"database" => $this->properties["database"],
+		"schema" => $this->properties["database"],
 		"username" => $this->properties["username"],
 		"password" => $this->properties["password"],
 		"charset" => Settings::CHARSET,

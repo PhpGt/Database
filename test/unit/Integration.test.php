@@ -113,7 +113,7 @@ private function settingsSingleton():Settings {
 		$this->settings = new Settings(
 			$this->queryBase,
 			Settings::DRIVER_SQLITE,
-			Settings::DATABASE_IN_MEMORY,
+			Settings::SCHEMA_IN_MEMORY,
 			"localhost"
 		);
 	}

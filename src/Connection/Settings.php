@@ -11,14 +11,14 @@ const DRIVER_POSTGRES = "pgsql";
 const DRIVER_SQLITE = "sqlite";
 const DRIVER_SQLSERVER = "dblib";
 
-const DATABASE_IN_MEMORY = ":memory:";
+const SCHEMA_IN_MEMORY = ":memory:";
 
 /** @var string */
 protected $baseDirectory;
 /** @var string */
 protected $dataSource;
 /** @var string */
-protected $database;
+protected $schema;
 /** @var string */
 protected $host;
 /** @var int */
@@ -37,7 +37,7 @@ protected $config = [];
 public function __construct(
 	string $baseDirectory,
 	string $dataSource,
-	string $database = null,
+	string $schema = null,
 	string $host = DefaultSettings::DEFAULT_HOST,
 	int $port = null,
 	string $username = DefaultSettings::DEFAULT_USERNAME,
@@ -51,7 +51,7 @@ public function __construct(
 
 	$this->baseDirectory = $baseDirectory;
 	$this->dataSource = $dataSource;
-	$this->database = $database;
+	$this->schema = $schema;
 	$this->host = $host;
 	$this->port = $port;
 	$this->username = $username;
@@ -72,8 +72,8 @@ public function getDataSource():string {
 	return $this->dataSource;
 }
 
-public function getDatabase():string {
-	return $this->database;
+public function getSchema():string {
+	return $this->schema;
 }
 
 public function getHost():string {
@@ -104,7 +104,7 @@ public function getConnectionSettings():array {
 	$currentSettings = [
 		"driver" => $this->getDataSource(),
 		"host" => $this->getHost(),
-		"database" => $this->getDatabase(),
+		"schema" => $this->getSchema(),
 		"port" => $this->getPort(),
 		"username" => $this->getUsername(),
 		"password" => $this->getPassword(),
@@ -126,12 +126,12 @@ public function getConnectionString():string {
 
 	switch($source) {
 	case self::DRIVER_SQLITE:
-		$connectionString .= $this->getDatabase();
+		$connectionString .= $this->getSchema();
 		break;
 
 	default:
 		$connectionString .= "host=" . $this->getHost();
-		$connectionString .= ";dbname=" . $this->getDatabase();
+		$connectionString .= ";dbname=" . $this->getSchema();
 		$connectionString .= ";charset=" . self::CHARSET;
 		break;
 	}

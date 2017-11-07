@@ -19,7 +19,7 @@ public function testCurrentWorkingDirectoryDefault() {
 	$driver = new Driver(new Settings(
 		$baseDir,
 		Settings::DRIVER_SQLITE,
-		Settings::DATABASE_IN_MEMORY)
+		Settings::SCHEMA_IN_MEMORY)
 	);
 
 	$queryCollectionFactory = new QueryCollectionFactory($driver);

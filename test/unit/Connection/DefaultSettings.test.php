@@ -17,8 +17,8 @@ public function testDefaults() {
 		$settings->getDataSource()
 	);
 	static::assertEquals(
-		DefaultSettings::DEFAULT_DATABASE,
-		$settings->getDatabase()
+		DefaultSettings::DEFAULT_SCHEMA,
+		$settings->getSchema()
 	);
 	static::assertEquals(
 		DefaultSettings::DEFAULT_PORT[DefaultSettings::DEFAULT_DATASOURCE],
@@ -53,7 +53,7 @@ public function testDefaultPort(string $dsn, int $port) {
 		"driver" => $dsn,
 		"host" => DefaultSettings::DEFAULT_HOST,
 		"port" => $port,
-		"database" => "test-database",
+		"schema" => "test-database",
 		"username" => DefaultSettings::DEFAULT_USERNAME,
 		"password" => DefaultSettings::DEFAULT_PASSWORD,
 		"charset" => DefaultSettings::CHARSET,

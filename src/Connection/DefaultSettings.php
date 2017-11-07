@@ -10,7 +10,7 @@ const COLLATION = "utf8_unicode_ci";
 
 const DEFAULT_NAME = "default";
 const DEFAULT_DATASOURCE = Settings::DRIVER_SQLITE;
-const DEFAULT_DATABASE = Settings::DATABASE_IN_MEMORY;
+const DEFAULT_SCHEMA = Settings::SCHEMA_IN_MEMORY;
 const DEFAULT_HOST = "localhost";
 const DEFAULT_PORT = [
 	Settings::DRIVER_MYSQL => 3306,
@@ -38,8 +38,8 @@ public function getDataSource():string {
 	return self::DEFAULT_DATASOURCE;
 }
 
-public function getDatabase():string {
-	return self::DEFAULT_DATABASE;
+public function getSchema():string {
+	return self::DEFAULT_SCHEMA;
 }
 
 public function getHost():string {
@@ -75,7 +75,7 @@ public function getConnectionSettings():array {
             "driver" => $this->getDataSource(),
             "host" => $this->getHost(),
             "port" => $this->getPort(),
-            "database" => $this->getDatabase(),
+            "database" => $this->getSchema(),
             "username" => $this->getUsername(),
             "password" => $this->getPassword(),
             "charset" => self::CHARSET,
@@ -87,7 +87,7 @@ public function getConnectionSettings():array {
 public function getConnectionString():string {
 	return implode(":", [
 		$this->getDataSource(),
-		$this->getDatabase(),
+		$this->getSchema(),
 	]);
 }
 
