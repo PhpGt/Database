@@ -1,14 +1,13 @@
 <?php
 namespace Gt\Database\Connection;
 
-use Gt\Database\Connection\SettingsInterface;
 use PDO;
 
 class Driver {
 
 /** @var SettingsInterface */
 protected $settings;
-/** @var PDO */
+/** @var Connection */
 protected $connection;
 
 public function __construct(SettingsInterface $settings) {

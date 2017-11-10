@@ -223,7 +223,7 @@ private function driverSingleton():Driver {
 		$settings = new Settings(
 			Helper::getTmpDir(),
 			Settings::DRIVER_SQLITE,
-			Settings::DATABASE_IN_MEMORY
+			Settings::SCHEMA_IN_MEMORY
 		);
 		$this->driver = new Driver($settings);
 	}

@@ -20,7 +20,7 @@ public function testQueryCollectionPathExists(string $name, string $path) {
 	$settings = new Settings(
 		$basePath,
 		Settings::DRIVER_SQLITE,
-		Settings::DATABASE_IN_MEMORY
+		Settings::SCHEMA_IN_MEMORY
 	);
 	$db = new Client($settings);
 
@@ -38,7 +38,7 @@ public function testQueryCollectionPathNotExists(string $name, string $path) {
 	$settings = new Settings(
 		$basePath,
 		Settings::DRIVER_SQLITE,
-		Settings::DATABASE_IN_MEMORY
+		Settings::SCHEMA_IN_MEMORY
 	);
 	$db = new Client($settings);
 	$db->queryCollection($name);

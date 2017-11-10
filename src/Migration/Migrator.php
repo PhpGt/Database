@@ -21,7 +21,7 @@ public function __construct(
 	string $tableName,
 	bool $forced
 ) {
-	$this->schema = $settings->getDatabase();
+	$this->schema = $settings->getSchema();
 	$this->path = $path;
 	$this->tableName = $tableName;
 
