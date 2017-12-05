@@ -3,4 +3,4 @@ namespace Gt\Database;
 
 use RuntimeException;
 
-class DatabaseException extends RuntimeException {}#
+class DatabaseException extends RuntimeException {}
