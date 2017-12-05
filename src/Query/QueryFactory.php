@@ -52,11 +52,12 @@ public function create(string $name):Query {
 		$queryFilePath = $this->findQueryFilePath($name);
 		$queryClass = $this->getQueryClassForFilePath($queryFilePath);
 		$query = new $queryClass($queryFilePath, $this->driver);
-		return $query;
 	}
 	catch(InvalidArgumentException $exception) {
 		$this->throwCorrectException($exception);
 	}
+
+	return $query;
 }
 
 public function getQueryClassForFilePath(string $filePath) {
