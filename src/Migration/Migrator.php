@@ -64,9 +64,10 @@ public function getMigrationCount():int {
 			. "order by 1 desc limit 1"
 		);
 
+		// TODO: hasResult doesn't exist on ResultSet any more
 		if(!$result->hasResult()) {
 		    return 0;
-        }
+        	}
 
 		return (int)$result->{self::COLUMN_QUERY_NUMBER};
 	}
@@ -78,8 +79,6 @@ public function getMigrationCount():int {
 		echo PHP_EOL;
 		exit(1);
 	}
-
-	return 0;
 }
 
 public function getMigrationFileList():array {
