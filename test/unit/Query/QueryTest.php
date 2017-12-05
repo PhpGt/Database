@@ -6,31 +6,31 @@ use Gt\Database\Connection\DefaultSettings;
 use PHPUnit\Framework\TestCase;
 
 class QueryTest extends TestCase {
-
-/**
- * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider
- * @expectedException \Gt\Database\Query\QueryNotFoundException
- */
-public function testConstructionQueryPathNotExists(
-	string $queryName,
-	string $queryCollectionPath,
-	string $queryPath
-) {
-	new SqlQuery($queryPath, new Driver(new DefaultSettings()));
-}
-/**
- * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExistsProvider
- */
-public function testConstructionQueryPathExists(
-	string $queryName,
-	string $queryCollectionPath,
-	string $queryPath
-) {
-	try {
-		$query = new SqlQuery($queryPath, new Driver(new DefaultSettings()));
-		static::assertFileExists($query->getFilePath());
+	/**
+	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider
+	 * @expectedException \Gt\Database\Query\QueryNotFoundException
+	 */
+	public function testConstructionQueryPathNotExists(
+		string $queryName,
+		string $queryCollectionPath,
+		string $queryPath
+	) {
+		new SqlQuery($queryPath, new Driver(new DefaultSettings()));
 	}
-	catch(\Exception $e) {}
-}
 
-}#
+	/**
+	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExistsProvider
+	 */
+	public function testConstructionQueryPathExists(
+		string $queryName,
+		string $queryCollectionPath,
+		string $queryPath
+	) {
+		try {
+			$query = new SqlQuery($queryPath, new Driver(new DefaultSettings()));
+			static::assertFileExists($query->getFilePath());
+		}
+		catch(\Exception $e) {
+		}
+	}
+}
