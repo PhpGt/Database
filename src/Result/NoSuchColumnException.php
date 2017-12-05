@@ -2,7 +2,9 @@
 
 namespace Gt\Database\Result;
 
-class NoSuchColumnException extends \Gt\Database\DatabaseException
+use Gt\Database\DatabaseException;
+
+class NoSuchColumnException extends DatabaseException
 {
     public function __construct($columnName)
     {
