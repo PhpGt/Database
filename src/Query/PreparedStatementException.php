@@ -1,4 +1,6 @@
 <?php
 namespace Gt\Database\Query;
 
-class PreparedStatementException extends \Gt\Database\DatabaseException {}#
+use Gt\Database\DatabaseException;
+
+class PreparedStatementException extends DatabaseException {}

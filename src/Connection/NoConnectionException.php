@@ -1,4 +1,6 @@
 <?php
-namespace Gt\Database\Conenction;
+namespace Gt\Database\Connection;
 
-class NoConnectionException extends \Gt\Database\DatabaseException {}#
+use Gt\Database\DatabaseException;
+
+class NoConnectionException extends DatabaseException {}

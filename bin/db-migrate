@@ -1,7 +1,6 @@
 #!/usr/bin/env php
 <?php
 use Gt\Database\Connection\Settings;
-use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Migration\Config;
 use Gt\Database\Migration\Migrator;
 /**

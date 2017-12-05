@@ -1,4 +1,6 @@
 <?php
 namespace Gt\Database\Migration;
 
-class ConfigException extends \Exception {}#
+use Gt\Database\DatabaseException;
+
+class ConfigException extends DatabaseException {}

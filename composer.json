@@ -24,7 +24,11 @@
 
     "autoload": {
         "psr-4": {
-            "Gt\\Database\\": "./src",
+            "Gt\\Database\\": "./src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "Gt\\Database\\Test\\": "./test/unit"
         }
     },
