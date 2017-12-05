@@ -1,7 +1,5 @@
 <?php
-namespace Gt\Database\Test;
-
-//require_once(__DIR__ . "/../../vendor/autoload.php");
+namespace Gt\Database\Test\Helper;
 
 class Helper {
 

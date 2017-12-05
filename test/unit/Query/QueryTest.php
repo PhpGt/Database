@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 class QueryTest extends TestCase {
 
 /**
- * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
+ * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider
  * @expectedException \Gt\Database\Query\QueryNotFoundException
  */
 public function testConstructionQueryPathNotExists(
@@ -19,7 +19,7 @@ public function testConstructionQueryPathNotExists(
 	new SqlQuery($queryPath, new Driver(new DefaultSettings()));
 }
 /**
- * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
+ * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExistsProvider
  */
 public function testConstructionQueryPathExists(
 	string $queryName,

@@ -5,6 +5,7 @@ use Gt\Database\Connection\Driver;
 use Gt\Database\Connection\Settings;
 use Gt\Database\Query\SqlQuery;
 use PHPUnit\Framework\TestCase;
+use Gt\Database\Test\Helper\Helper;
 
 class SqlQueryTest extends TestCase {
 
@@ -28,7 +29,7 @@ public function setUp() {
 }
 
 /**
- * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
+ * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider
  * @expectedException \Gt\Database\Query\QueryNotFoundException
  */
 public function testQueryNotFound(
@@ -40,7 +41,7 @@ public function testQueryNotFound(
 }
 
 /**
- * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
+ * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExistsProvider
  */
 public function testQueryFound(
 	string $queryName,
@@ -52,7 +53,7 @@ public function testQueryFound(
 }
 
 /**
- * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
+ * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExistsProvider
  * @expectedException \Gt\Database\Query\PreparedStatementException
  */
 public function testBadPreparedStatementThrowsException(
@@ -66,7 +67,7 @@ public function testBadPreparedStatementThrowsException(
 }
 
 /**
- * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
+ * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExistsProvider
  */
 public function testPreparedStatement(
 	string $queryName,
@@ -85,7 +86,7 @@ public function testPreparedStatement(
 }
 
 /**
- * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
+ * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExistsProvider
  */
 public function testLastInsertId(
 	string $queryName,
@@ -142,7 +143,7 @@ public function testSubsequentCalls() {
 }
 
 /**
- * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
+ * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExistsProvider
  */
 public function testPlaceholderReplacement(
 	string $queryName,
@@ -161,7 +162,7 @@ public function testPlaceholderReplacement(
 }
 
 /**
- * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
+ * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExistsProvider
  */
 public function testPlaceholderReplacementInComments(
 	string $queryName,

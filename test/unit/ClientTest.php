@@ -13,7 +13,7 @@ public function testInterface() {
 }
 
 /**
- * @dataProvider \Gt\Database\Test\Helper::queryCollectionPathExistsProvider
+ * @dataProvider \Gt\Database\Test\Helper\Helper::queryCollectionPathExistsProvider
  */
 public function testQueryCollectionPathExists(string $name, string $path) {
 	$basePath = dirname($path);
@@ -29,7 +29,7 @@ public function testQueryCollectionPathExists(string $name, string $path) {
 }
 
 /**
- * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
+ * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider
  * @expectedException \Gt\Database\Query\QueryCollectionNotFoundException
  */
 public function testQueryCollectionPathNotExists(string $name, string $path) {

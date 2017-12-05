@@ -3,7 +3,7 @@ namespace Gt\Database\Query;
 
 use Gt\Database\Connection\Settings;
 use Gt\Database\Connection\Driver;
-use Gt\Database\Test\Helper;
+use Gt\Database\Test\Helper\Helper;
 use PHPUnit\Framework\TestCase;
 
 class QueryCollectionFactoryTest extends TestCase {

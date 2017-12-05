@@ -24,10 +24,14 @@
 
     "autoload": {
         "psr-4": {
-            "Gt\\Database\\": "./src",
-            "Gt\\Database\\Test\\": "./test/unit"
+            "Gt\\Database\\": "./src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Gt\\Database\\Test\\": "./test/unit"
+        }
+    }
 
     "bin": [
         "bin/db-migrate"

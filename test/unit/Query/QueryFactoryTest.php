@@ -3,13 +3,13 @@ namespace Gt\Database\Query;
 
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
-use Gt\Database\Test\Helper;
+use Gt\Database\Test\Helper\Helper;
 use PHPUnit\Framework\TestCase;
 
 class QueryFactoryTest extends TestCase {
 
 /**
- * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
+ * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExistsProvider
  */
 public function testFindQueryFilePathExists(
 	string $queryName,
@@ -24,7 +24,7 @@ public function testFindQueryFilePathExists(
 }
 
 /**
- * @dataProvider \Gt\Database\Test\Helper::queryPathNotExistsProvider
+ * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider
  * @expectedException \Gt\Database\Query\QueryNotFoundException
  */
 public function testFindQueryFilePathNotExists(
@@ -40,7 +40,7 @@ public function testFindQueryFilePathNotExists(
 }
 
 /**
- * @dataProvider \Gt\Database\Test\Helper::queryPathExtensionNotValidProvider
+ * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExtensionNotValidProvider
  * @expectedException \Gt\Database\Query\QueryFileExtensionException
  */
 public function testFindQueryFilePathWithInvalidExtension(
@@ -56,7 +56,7 @@ public function testFindQueryFilePathWithInvalidExtension(
 }
 
 /**
- * @dataProvider \Gt\Database\Test\Helper::queryPathExistsProvider
+ * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExistsProvider
  */
 public function testQueryCreated(
 	string $queryName,
