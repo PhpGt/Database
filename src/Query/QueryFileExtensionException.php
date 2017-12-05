@@ -1,5 +1,6 @@
 <?php
 namespace Gt\Database\Query;
 
-class QueryFileExtensionException
-extends \Gt\Database\DatabaseException {}#
+use Gt\Database\DatabaseException;
+
+class QueryFileExtensionException extends DatabaseException {}#
