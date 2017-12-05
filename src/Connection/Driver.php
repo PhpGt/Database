@@ -1,8 +1,6 @@
 <?php
 namespace Gt\Database\Connection;
 
-use PDO;
-
 class Driver {
 
 /** @var SettingsInterface */
