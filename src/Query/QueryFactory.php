@@ -48,6 +48,8 @@ public function findQueryFilePath(string $name):string {
 }
 
 public function create(string $name):Query {
+	$query = null;
+
 	try {
 		$queryFilePath = $this->findQueryFilePath($name);
 		$queryClass = $this->getQueryClassForFilePath($queryFilePath);
