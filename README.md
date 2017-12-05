@@ -4,8 +4,6 @@
 
 Encloses your application's database scripts within a simple and standardised interface, separating database access from your page logic.
 
-Documentation: https://php.gt/docs/database
-
 ***
 
 <a href="https://circleci.com/gh/PhpGt/Database" target="_blank">
@@ -19,6 +17,9 @@ Documentation: https://php.gt/docs/database
 </a>
 <a href="https://packagist.org/packages/PhpGt/Database" target="_blank">
 	<img src="https://img.shields.io/packagist/v/PhpGt/Database.svg?style=flat-square" alt="Current version" />
+</a>
+<a href="http://www.php.gt/input" target="_blank">
+	<img src="https://img.shields.io/badge/docs-www.php.gt/database-26a5e3.svg?style=flat-square" alt="PHP.G/Database documentation" />
 </a>
 
 ## Example usage
