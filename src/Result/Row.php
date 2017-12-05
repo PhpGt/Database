@@ -1,7 +1,6 @@
 <?php
 namespace Gt\Database\Result;
 
-use Countable;
 use Iterator;
 
 class Row implements Iterator {
