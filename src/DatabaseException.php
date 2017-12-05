@@ -1,4 +1,6 @@
 <?php
 namespace Gt\Database;
 
-class DatabaseException extends \Exception {}#
+use RuntimeException;
+
+class DatabaseException extends RuntimeException {}#
