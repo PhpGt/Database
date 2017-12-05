@@ -3,4 +3,4 @@ namespace Gt\Database\Query;
 
 use Gt\Database\DatabaseException;
 
-class QueryCollectionNotFoundException extends DatabaseException {}#
+class QueryCollectionNotFoundException extends DatabaseException {}
