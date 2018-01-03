@@ -63,8 +63,7 @@ class Migrator {
 				. "order by 1 desc limit 1"
 			);
 
-			// TODO: hasResult doesn't exist on ResultSet any more
-			if(!$result->hasResult()) {
+			if(count($result) === 0) {
 				return 0;
 			}
 
