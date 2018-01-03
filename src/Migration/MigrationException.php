@@ -1,6 +1,6 @@
 <?php
 namespace Gt\Database\Migration;
 
-use Gt\Database\Exception;
+use Gt\Database\DatabaseException;
 
-class MigrationException extends Exception {}
+class MigrationException extends DatabaseException {}

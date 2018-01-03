@@ -8,121 +8,122 @@ use DateTime;
 use Gt\Database\Result\ResultSet;
 
 class SqlQuery extends Query {
+	const SPECIAL_BINDINGS = [
+		"limit",
+		"offset",
+		"groupBy",
+		"orderBy",
+	];
 
-const SPECIAL_BINDINGS = [
-	"limit",
-	"offset",
-	"groupBy",
-	"orderBy",
-];
+	public function getSql(array $bindings = []):string {
+		$sql = file_get_contents($this->getFilePath());
+		$sql = $this->injectSpecialBindings($sql, $bindings);
 
-public function getSql(array $bindings = []):string {
-	$sql = file_get_contents($this->getFilePath());
-	$sql = $this->injectSpecialBindings($sql, $bindings);
-	return $sql;
-}
-
-public function execute(array $bindings = []):ResultSet {
-	$pdo = $this->preparePdo();
-	$sql = $this->getSql($bindings);
-	$statement = $this->prepareStatement($pdo, $sql);
-	$preparedBindings = $this->prepareBindings($bindings);
-	$preparedBindings = $this->ensureParameterCharacter($preparedBindings);
-	$preparedBindings = $this->removeUnusedBindings($preparedBindings, $sql);
-	$lastInsertId = null;
-
-	try {
-		$statement->execute($preparedBindings);
-		$lastInsertId = $pdo->lastInsertId();
-	}
-	catch(PDOException $exception) {
-		throw new PreparedStatementException(null, 0, $exception);
+		return $sql;
 	}
 
-	return new ResultSet($statement, $lastInsertId);
-}
+	public function execute(array $bindings = []):ResultSet {
+		$pdo = $this->preparePdo();
+		$sql = $this->getSql($bindings);
+		$statement = $this->prepareStatement($pdo, $sql);
+		$preparedBindings = $this->prepareBindings($bindings);
+		$preparedBindings = $this->ensureParameterCharacter($preparedBindings);
+		$preparedBindings = $this->removeUnusedBindings($preparedBindings, $sql);
+		$lastInsertId = null;
 
-public function prepareStatement(PDO $pdo, string $sql):PDOStatement {
-	try {
-		$statement = $pdo->prepare($sql);
-		return $statement;
-	}
-	catch(PDOException $exception) {
-		throw new PreparedStatementException(null, 0, $exception);
-	}
-}
-
-protected function preparePdo():PDO {
-	$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	return $this->connection;
-}
-
-/**
- * Certain words are reserved for use by different SQL engines, such as "limit"
- * and "offset", and can't be used by the driver as bound parameters. This
- * function returns the SQL for the query after replacing the bound parameters
- * manually using string replacement.
- */
-protected function injectSpecialBindings(string $sql, array $bindings):string {
-	foreach(self::SPECIAL_BINDINGS as $special) {
-		$specialPlaceholder = ":" . $special;
-
-		if(!array_key_exists($special, $bindings)) {
-			continue;
+		try {
+			$statement->execute($preparedBindings);
+			$lastInsertId = $pdo->lastInsertId();
 		}
-		$sql = str_replace($specialPlaceholder, $bindings[$special], $sql);
-		unset($bindings[$special]);
+		catch(PDOException $exception) {
+			throw new PreparedStatementException(null, 0, $exception);
+		}
+
+		return new ResultSet($statement, $lastInsertId);
 	}
 
-	return $sql;
-}
+	public function prepareStatement(PDO $pdo, string $sql):PDOStatement {
+		try {
+			$statement = $pdo->prepare($sql);
 
-protected function prepareBindings(array $bindings):array {
-	foreach($bindings as $key => $value) {
-		if(is_bool($value)) {
-			$bindings[$key] = (int)$value;
+			return $statement;
 		}
-		if($value instanceof DateTime) {
-			$bindings[$key] = $value->format("Y-m-d H:i:s");
+		catch(PDOException $exception) {
+			throw new PreparedStatementException(null, 0, $exception);
 		}
 	}
 
-	return $bindings;
-}
+	protected function preparePdo():PDO {
+		$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-protected function ensureParameterCharacter(array $bindings):array {
-	if($this->bindingsEmptyOrNonAssociative($bindings)) {
+		return $this->connection;
+	}
+
+	/**
+	 * Certain words are reserved for use by different SQL engines, such as "limit"
+	 * and "offset", and can't be used by the driver as bound parameters. This
+	 * function returns the SQL for the query after replacing the bound parameters
+	 * manually using string replacement.
+	 */
+	protected function injectSpecialBindings(string $sql, array $bindings):string {
+		foreach(self::SPECIAL_BINDINGS as $special) {
+			$specialPlaceholder = ":" . $special;
+
+			if(!array_key_exists($special, $bindings)) {
+				continue;
+			}
+			$sql = str_replace($specialPlaceholder, $bindings[$special], $sql);
+			unset($bindings[$special]);
+		}
+
+		return $sql;
+	}
+
+	protected function prepareBindings(array $bindings):array {
+		foreach($bindings as $key => $value) {
+			if(is_bool($value)) {
+				$bindings[$key] = (int)$value;
+			}
+			if($value instanceof DateTime) {
+				$bindings[$key] = $value->format("Y-m-d H:i:s");
+			}
+		}
+
 		return $bindings;
 	}
 
-	foreach($bindings as $key => $value) {
-		if(substr($key, 0, 1) !== ":") {
-			$bindings[":" . $key] = $value;
-			unset($bindings[$key]);
+	protected function ensureParameterCharacter(array $bindings):array {
+		if($this->bindingsEmptyOrNonAssociative($bindings)) {
+			return $bindings;
 		}
-	}
 
-	return $bindings;
-}
+		foreach($bindings as $key => $value) {
+			if(substr($key, 0, 1) !== ":") {
+				$bindings[":" . $key] = $value;
+				unset($bindings[$key]);
+			}
+		}
 
-protected function removeUnusedBindings(array $bindings, string $sql):array {
-	if($this->bindingsEmptyOrNonAssociative($bindings)) {
 		return $bindings;
 	}
 
-	foreach($bindings as $key => $value) {
-		if(!preg_match("/{$key}(\W|\$)/", $sql)) {
-			unset($bindings[$key]);
+	protected function removeUnusedBindings(array $bindings, string $sql):array {
+		if($this->bindingsEmptyOrNonAssociative($bindings)) {
+			return $bindings;
 		}
+
+		foreach($bindings as $key => $value) {
+			if(!preg_match("/{$key}(\W|\$)/", $sql)) {
+				unset($bindings[$key]);
+			}
+		}
+
+		return $bindings;
 	}
 
-	return $bindings;
+	protected function bindingsEmptyOrNonAssociative(array $bindings):bool {
+		return
+			$bindings === []
+			|| array_keys($bindings) === range(0, count($bindings) - 1);
+	}
 }
-
-protected function bindingsEmptyOrNonAssociative(array $bindings):bool {
-	return
-		$bindings === []
-		|| array_keys($bindings) === range(0, count($bindings) - 1);
-}
-
-}#

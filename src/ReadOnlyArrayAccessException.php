@@ -1,4 +1,4 @@
 <?php
 namespace Gt\Database;
 
-class ReadOnlyArrayAccessException extends DatabaseException {}#
+class ReadOnlyArrayAccessException extends DatabaseException {}

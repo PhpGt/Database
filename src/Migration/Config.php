@@ -8,91 +8,92 @@ namespace Gt\Database\Migration;
 use ArrayAccess;
 
 class Config implements ArrayAccess {
+	protected $config = [];
 
-protected $config = [];
-
-public function __construct(
-	string $iniPath,
-	array $defaultConfig = []
-) {
-	$iniConfig = $this->loadIniConfig($iniPath);
-	$iniConfigWithDefaults = $this->mergeArrays($defaultConfig, $iniConfig);
-	$envConfig = $this->loadEnvConfig($iniConfigWithDefaults);
-	$config = $this->mergeArrays($iniConfigWithDefaults, $envConfig);
-	$this->storeConfig($config);
-}
-
-public function loadIniConfig(string $iniPath):array {
-	if(!file_exists($iniPath)) {
-		return [];
+	public function __construct(
+		string $iniPath,
+		array $defaultConfig = []
+	) {
+		$iniConfig = $this->loadIniConfig($iniPath);
+		$iniConfigWithDefaults = $this->mergeArrays($defaultConfig, $iniConfig);
+		$envConfig = $this->loadEnvConfig($iniConfigWithDefaults);
+		$config = $this->mergeArrays($iniConfigWithDefaults, $envConfig);
+		$this->storeConfig($config);
 	}
 
-	$config = parse_ini_file($iniPath, true);
-	return $config;
-}
+	public function loadIniConfig(string $iniPath):array {
+		if(!file_exists($iniPath)) {
+			return [];
+		}
 
-public function loadEnvConfig(array $mergeWith = []):array {
-	$config = [];
+		$config = parse_ini_file($iniPath, true);
 
-	foreach($mergeWith as $section => $store) {
-		$config[$section] = [];
+		return $config;
+	}
 
-		foreach($store as $key => $value) {
-			$envVariableName = "{$section}_{$key}";
-			$configValue
-				= getenv($envVariableName, true) ?: getenv($envVariableName);
+	public function loadEnvConfig(array $mergeWith = []):array {
+		$config = [];
 
-			if($configValue === '""') {
-				$configValue = "";
+		foreach($mergeWith as $section => $store) {
+			$config[$section] = [];
+
+			foreach($store as $key => $value) {
+				$envVariableName = "{$section}_{$key}";
+				$configValue
+					= getenv($envVariableName, true)
+					?: getenv($envVariableName);
+
+				if($configValue === '""') {
+					$configValue = "";
+				}
+
+				if(false !== $configValue) {
+					$config[$section][$key] = $configValue;
+				}
 			}
+		}
 
-			if(false !== $configValue) {
-				$config[$section][$key] = $configValue;
+		return $config;
+	}
+
+	public function getConfigArray():array {
+		return $this->config;
+	}
+
+	protected function storeConfig(array $config) {
+		$this->config = $config;
+	}
+
+	protected function mergeArrays(array $array1, array $array2):array {
+		$merged = $array1;
+
+		foreach($array2 as $key => $value) {
+			if(is_array($value)
+				&& isset($merged[$key])
+				&& is_array($merged[$key])) {
+				$merged[$key] = $this->mergeArrays($merged[$key], $value);
+			}
+			else {
+				$merged[$key] = $value;
 			}
 		}
+
+		return $merged;
 	}
 
-	return $config;
-}
-
-public function getConfigArray():array {
-	return $this->config;
-}
-
-protected function storeConfig(array $config) {
-	$this->config = $config;
-}
-
-protected function mergeArrays(array $array1, array $array2):array {
-	$merged = $array1;
-
-	foreach($array2 as $key => $value) {
-		if(is_array($value)
-		&& isset($merged[$key])
-		&& is_array($merged[$key])) {
-			$merged[$key] = $this->mergeArrays($merged[$key], $value);
-		}
-		else {
-			$merged[$key] = $value;
-		}
+	public function offsetExists($offset):bool {
+		return isset($this->config[$offset]);
 	}
 
-	return $merged;
-}
+	public function offsetGet($offset) {
+		return $this->config[$offset];
+	}
 
-// ArrayAccess /////////////////////////////////////////////////////////////////
+	public function offsetSet($offset, $value) {
+		$this->config[$offset] = $value;
+	}
 
-public function offsetExists($offset):bool {
-	return isset($this->config[$offset]);
+	public function offsetUnset($offset) {
+		unset($this->config[$offset]);
+	}
 }
-public function offsetGet($offset) {
-	return $this->config[$offset];
-}
-public function offsetSet($offset, $value) {
-	$this->config[$offset] = $value;
-}
-public function offsetUnset($offset) {
-	unset($this->config[$offset]);
-}
-
-}#

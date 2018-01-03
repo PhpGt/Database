@@ -1,4 +1,6 @@
 <?php
 namespace Gt\Database\Query;
 
-class QueryNotFoundException extends \Gt\Database\DatabaseException {}#
+use Gt\Database\DatabaseException;
+
+class QueryNotFoundException extends DatabaseException {}

@@ -17,120 +17,131 @@ use Gt\Database\Result\ResultSet;
  * required as the default name will be used.
  */
 class Client {
+	/** @var QueryCollectionFactory[] */
+	protected $queryCollectionFactoryArray;
+	/** @var Driver[] */
+	protected $driverArray;
+	/** @var Connection */
+	protected $currentConnectionName;
 
-/** @var QueryCollectionFactory[] */
-protected $queryCollectionFactoryArray;
-/** @var Driver[] */
-protected $driverArray;
-/** @var Connection */
-protected $currentConnectionName;
+	public function __construct(SettingsInterface...$connectionSettings) {
+		if(empty($connectionSettings)) {
+			$connectionSettings[DefaultSettings::DEFAULT_NAME]
+				= new DefaultSettings();
+		}
 
-public function __construct(SettingsInterface...$connectionSettings) {
-	if(empty($connectionSettings)) {
-		$connectionSettings[DefaultSettings::DEFAULT_NAME]
-			= new DefaultSettings();
+		$this->storeConnectionDriverFromSettings($connectionSettings);
+		$this->storeQueryCollectionFactoryFromSettings($connectionSettings);
 	}
 
-	$this->storeConnectionDriverFromSettings($connectionSettings);
-	$this->storeQueryCollectionFactoryFromSettings($connectionSettings);
-}
+	public function fetch(string $queryName, ...$bindings):?Row {
+		$result = $this->query($queryName, $bindings);
 
-public function fetch(string $queryName, ...$bindings):?Row {
-	$result = $this->query($queryName, $bindings);
-	return $result->fetch();
-}
-
-public function fetchAll(string $queryName, ...$bindings):ResultSet {
-	return $this->query($queryName, $bindings);
-}
-
-public function insert(string $queryName, ...$bindings):int {
-	$result = $this->query($queryName, $bindings);
-	return $result->lastInsertId();
-}
-
-public function delete(string $queryName, ...$bindings):int {
-	$result = $this->query($queryName, $bindings);
-	return $result->affectedRows();
-}
-
-public function update(string $queryName, ...$bindings):int {
-	$result = $this->query($queryName, $bindings);
-	return $result->affectedRows();
-}
-
-public function query(string $queryName, ...$bindings):ResultSet {
-	while(isset($bindings[0])
-	&& is_array($bindings[0])) {
-		$bindings = $bindings[0];
+		return $result->fetch();
 	}
 
-	$queryCollectionName = substr(
-		$queryName,
-		0,
-		strrpos($queryName, "/")
-	);
-	$queryFile = substr(
-		$queryName,
-		strrpos($queryName, "/") + 1
-	);
+	public function fetchAll(string $queryName, ...$bindings):ResultSet {
+		return $this->query($queryName, $bindings);
+	}
 
-	$connectionName = $this->currentConnectionName ?? DefaultSettings::DEFAULT_NAME;
-	$queryCollection = $this->queryCollection($queryCollectionName, $connectionName);
-	return $queryCollection->query($queryFile, $bindings);
-}
+	public function insert(string $queryName, ...$bindings):int {
+		$result = $this->query($queryName, $bindings);
 
-public function setCurrentConnectionName(string $connectionName) {
-	$this->currentConnectionName = $this->getNamedConnection($connectionName);
-}
+		return $result->lastInsertId();
+	}
 
-public function executeSql(
-	string $query,
-	array $bindings = [],
-	string $connectionName = DefaultSettings::DEFAULT_NAME
-):ResultSet {
-	$connection = $this->getNamedConnection($connectionName);
-	$statement = $connection->prepare($query);
-	$statement->execute($bindings);
-	return new ResultSet($statement, $connection->lastInsertId());
-}
+	public function delete(string $queryName, ...$bindings):int {
+		$result = $this->query($queryName, $bindings);
 
-protected function getNamedConnection(string $connectionName):Connection {
-	$driver = $this->driverArray[$connectionName];
-	return $driver->getConnection();
-}
+		return $result->affectedRows();
+	}
 
-protected function storeConnectionDriverFromSettings(array $settingsArray) {
-	foreach ($settingsArray as $settings) {
-		$connectionName = $settings->getConnectionName();
-		$this->driverArray[$connectionName] = new Driver($settings);
+	public function update(string $queryName, ...$bindings):int {
+		$result = $this->query($queryName, $bindings);
+
+		return $result->affectedRows();
+	}
+
+	public function query(string $queryName, ...$bindings):ResultSet {
+		while(isset($bindings[0])
+			&& is_array($bindings[0])) {
+			$bindings = $bindings[0];
+		}
+
+		$queryCollectionName = substr(
+			$queryName,
+			0,
+			strrpos($queryName, "/")
+		);
+		$queryFile = substr(
+			$queryName,
+			strrpos($queryName, "/") + 1
+		);
+
+		$connectionName = $this->currentConnectionName ?? DefaultSettings::DEFAULT_NAME;
+		$queryCollection = $this->queryCollection(
+			$queryCollectionName,
+			$connectionName
+		);
+
+		return $queryCollection->query($queryFile, $bindings);
+	}
+
+	public function setCurrentConnectionName(string $connectionName) {
+		$this->currentConnectionName = $this->getNamedConnection(
+			$connectionName
+		);
+	}
+
+	public function executeSql(
+		string $query,
+		array $bindings = [],
+		string $connectionName = DefaultSettings::DEFAULT_NAME
+	):ResultSet {
+		$connection = $this->getNamedConnection($connectionName);
+		$statement = $connection->prepare($query);
+		$statement->execute($bindings);
+
+		return new ResultSet($statement, $connection->lastInsertId());
+	}
+
+	protected function getNamedConnection(string $connectionName):Connection {
+		$driver = $this->driverArray[$connectionName];
+
+		return $driver->getConnection();
+	}
+
+	protected function storeConnectionDriverFromSettings(array $settingsArray) {
+		foreach($settingsArray as $settings) {
+			$connectionName = $settings->getConnectionName();
+			$this->driverArray[$connectionName] = new Driver($settings);
+		}
+	}
+
+	protected function storeQueryCollectionFactoryFromSettings(array $settingsArray) {
+		foreach($settingsArray as $settings) {
+			$connectionName = $settings->getConnectionName();
+			$this->queryCollectionFactoryArray[$connectionName] =
+				new QueryCollectionFactory($this->driverArray[$connectionName]);
+		}
+	}
+
+	public function queryCollection(
+		string $queryCollectionName,
+		string $connectionName = DefaultSettings::DEFAULT_NAME
+	):QueryCollection {
+		return $this->queryCollectionFactoryArray[$connectionName]->create($queryCollectionName);
+	}
+
+	public function getDriver(
+		string $connectionName = DefaultSettings::DEFAULT_NAME
+	):Driver {
+		return $this->driverArray[$connectionName];
+	}
+
+	protected function getFirstConnectionName():string {
+		reset($this->driverArray);
+
+		return key($this->driverArray);
 	}
 }
-
-protected function storeQueryCollectionFactoryFromSettings(array $settingsArray) {
-	foreach ($settingsArray as $settings) {
-		$connectionName = $settings->getConnectionName();
-		$this->queryCollectionFactoryArray[$connectionName] =
-			new QueryCollectionFactory($this->driverArray[$connectionName]);
-	}
-}
-
-public function queryCollection(
-	string $queryCollectionName,
-	string $connectionName = DefaultSettings::DEFAULT_NAME
-):QueryCollection {
-	return $this->queryCollectionFactoryArray[$connectionName]->create($queryCollectionName);
-}
-
-public function getDriver(
-	string $connectionName = DefaultSettings::DEFAULT_NAME
-):Driver {
-	return $this->driverArray[$connectionName];
-}
-
-protected function getFirstConnectionName():string {
-	reset($this->driverArray);
-	return key($this->driverArray);
-}
-
-}#

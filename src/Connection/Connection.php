@@ -2,4 +2,6 @@
 
 namespace Gt\Database\Connection;
 
-class Connection extends \PDO {}#
+use PDO;
+
+class Connection extends PDO {}
