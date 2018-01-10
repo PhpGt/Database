@@ -28,8 +28,7 @@ class RowTest extends TestCase {
 
 	public function testGetNonExistentProperty() {
 		$row = new Row(["col1" => "item"]);
-		self::expectException(NoSuchColumnException::class);
-		$row->doink;
+		self::assertNull($row->doink);
 	}
 
 	/** @dataProvider getTestRowData */

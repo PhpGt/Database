@@ -82,6 +82,7 @@ class QueryCollectionCRUDsTest extends TestCase {
 			->willReturn($mockResultSet);
 
 		$actual = $this->queryCollection->fetch("something", $placeholderVars);
+
 		static::assertInstanceOf(Row::class, $actual);
 		static::assertCount(1, $actual);
 		static::assertEquals($expected, $actual);
