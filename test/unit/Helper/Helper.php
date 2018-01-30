@@ -5,7 +5,7 @@ class Helper {
 	const COUNT_PATH_PROVIDER = 10;
 
 	public static function getTmpDir() {
-		return implode("/", [
+		return implode(DIRECTORY_SEPARATOR, [
 			sys_get_temp_dir(),
 			"phpgt",
 			"database",
