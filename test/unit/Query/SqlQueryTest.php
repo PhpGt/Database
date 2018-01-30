@@ -19,9 +19,9 @@ class SqlQueryTest extends TestCase {
 
 		$insertStatement = $connection->prepare(
 			"INSERT INTO test_table (name) VALUES
-		('one'),
-		('two'),
-		('three')"
+			('one'),
+			('two'),
+			('three')"
 		);
 		$success = $insertStatement->execute();
 		static::assertTrue($success, "Success inserting fake data");

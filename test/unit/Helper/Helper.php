@@ -14,8 +14,29 @@ class Helper {
 	}
 
 	public static function deleteDir(string $dir) {
-		exec("rm -rf $dir");
+		self::recursiveRemove($dir);
 	}
+
+	public static function recursiveRemove(string $dir) {
+		if(!file_exists($dir)) {
+			return;
+		}
+		$scanDir = array_diff(
+			scandir($dir),
+			array('.', '..')
+		);
+
+		foreach($scanDir as $file) {
+			if(is_dir("$dir/$file")) {
+				self::recursiveRemove("$dir/$file");
+			}
+			else {
+				unlink("$dir/$file");
+			}
+		}
+		rmdir($dir);
+	}
+
 
 	public static function queryPathExistsProvider() {
 		return self::queryPathProvider(true);

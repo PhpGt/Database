@@ -9,6 +9,7 @@ class Migrator {
 	const COLUMN_QUERY_HASH = "query_hash";
 	const COLUMN_MIGRATED_AT = "migrated_at";
 
+	protected $dataSource;
 	protected $schema;
 	protected $dbClient;
 	protected $path;
@@ -17,12 +18,13 @@ class Migrator {
 	public function __construct(
 		Settings $settings,
 		string $path,
-		string $tableName,
-		bool $forced
+		string $tableName = "_migration",
+		bool $forced = false
 	) {
 		$this->schema = $settings->getSchema();
 		$this->path = $path;
 		$this->tableName = $tableName;
+		$this->dataSource = $settings->getDataSource();
 
 		$settingsWithoutSchema = new Settings(
 			$settings->getBaseDirectory(),
@@ -36,12 +38,35 @@ class Migrator {
 		);
 
 		$this->dbClient = new Client($settingsWithoutSchema);
-		$this->selectSchema($forced);
+		if($forced) {
+			$this->deleteAndRecreateSchema();
+		}
+
+		$this->selectSchema();
 	}
 
 	public function getMigrationCount():int {
-		// TODO: Use placeholder when single replacements implemented.
-		$result = $this->dbClient->executeSql("show tables like \"" . $this->tableName . "\"");
+		switch($this->dataSource) {
+		case Settings::DRIVER_SQLITE:
+			$result = $this->dbClient->executeSql(
+				"select name from sqlite_master "
+				. "where type=? "
+				. "and name like ?",[
+					"table",
+					$this->tableName,
+				]
+			);
+			break;
+
+		default:
+			$result = $this->dbClient->executeSql(
+				"show tables like ?",
+				[
+					$this->tableName
+				]
+			);
+			break;
+		}
 		$existingRow = $result->fetch();
 
 		if(is_null($existingRow)) {
@@ -182,9 +207,10 @@ class Migrator {
 		}
 	}
 
-	protected function selectSchema(bool $deleteAndRecreateSchema = false) {
-		if($deleteAndRecreateSchema) {
-			$this->deleteAndRecreateSchema();
+	protected function selectSchema() {
+// SQLITE databases represent their own schema.
+		if($this->dataSource === Settings::DRIVER_SQLITE) {
+			return;
 		}
 
 		$schema = $this->schema;
@@ -202,6 +228,7 @@ class Migrator {
 
 	protected function deleteAndRecreateSchema() {
 		$schema = $this->schema;
+//		if($this->)
 
 		try {
 			$this->dbClient->executeSql("drop schema if exists `$schema`");
