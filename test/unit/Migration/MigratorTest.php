@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Database\Test\Migration;
 
+use Exception;
 use Gt\Database\Connection\Settings;
 use Gt\Database\Migration\MigrationException;
 use Gt\Database\Migration\Migrator;
@@ -77,6 +78,47 @@ class MigratorTest extends TestCase {
 		);
 		$this->expectException(MigrationException::class);
 		$migrator->getMigrationFileList();
+	}
+
+	/**
+	 * @dataProvider dataMigrationFileList
+	 */
+	public function testCheckFileListOrder(array $fileList) {
+		$settings = $this->createSettings();
+		$migrator = new Migrator($settings, self::getPath());
+		$actualFileList = $migrator->getMigrationFileList();
+
+		try {
+			$migrator->checkFileListOrder($actualFileList);
+		}
+		catch(Exception $exception) {}
+
+		self::assertNull(
+			$exception,
+			"No exception should be thrown"
+		);
+	}
+
+	/**
+	 * @dataProvider dataMigrationFileListMissing
+	 */
+	public function testCheckFileListOrderMissing(array $fileList) {
+		$settings = $this->createSettings();
+		$migrator = new Migrator($settings, self::getPath());
+		$actualFileList = $migrator->getMigrationFileList();
+		$this->expectException(MigrationSequenceMissingException::class);
+		$migrator->checkFileListOrder($actualFileList);
+	}
+
+	/**
+	 * @dataProvider dataMigrationFileListDuplicate
+	 */
+	public function testCheckFileListOrderDuplicate(array $fileList) {
+		$settings = $this->createSettings();
+		$migrator = new Migrator($settings, self::getPath());
+		$actualFileList = $migrator->getMigrationFileList();
+		$this->expectException(MigrationSequenceDuplicateException::class);
+		$migrator->checkFileListOrder($actualFileList);
 	}
 
 	public function dataMigrationFileList(
