@@ -1,9 +1,11 @@
 <?php
 namespace Gt\Database\Migration;
 
+use DirectoryIterator;
 use Gt\Database\Client;
 use Gt\Database\Connection\Settings;
 use Gt\Database\DatabaseException;
+use SplFileInfo;
 
 class Migrator {
 	const COLUMN_QUERY_NUMBER = "query_number";
@@ -101,25 +103,50 @@ class Migrator {
 			throw new MigrationException(
 				"Migration directory not found: " . $this->path);
 		}
-		$fileList = scandir($this->path);
-		natsort($fileList);
 
-		$numberedFileList = [];
+		$fileList = [];
 
-		foreach($fileList as $i => $file) {
-			if($file[0] === ".") {
+		foreach(new DirectoryIterator($this->path) as $i => $fileInfo) {
+			if($fileInfo->isDot()
+			|| $fileInfo->getExtension() !== "sql") {
 				continue;
 			}
 
-			$pathName = implode(DIRECTORY_SEPARATOR, [
-				$this->path,
-				$file,
-			]);
-			$fileNumber = (int)substr($file, 0, strpos($file, "-"));
-			$numberedFileList[$fileNumber] = $pathName;
+			$pathName = $fileInfo->getPathname();
+			$fileNumber = $this->extractNumberFromFilename(
+				$pathName
+			);
+			$fileList []= $pathName;
 		}
 
-		return $numberedFileList;
+		return $fileList;
+	}
+
+	public function checkFileListOrder(array $fileList):void {
+		$counter = 0;
+		foreach($fileList as $file) {
+			$counter++;
+			$migrationNumber = $this->extractNumberFromFilename($file);
+
+			if($counter > $migrationNumber) {
+				throw new MigrationSequenceDuplicateException($migrationNumber);
+			}
+			else if($counter < $migrationNumber) {
+				throw new MigrationSequenceMissingException($counter);
+			}
+		}
+	}
+
+	protected function extractNumberFromFilename(string $pathName):int {
+		$file = new SplFileInfo($pathName);
+		$filename = $file->getFilename();
+		preg_match("/(\d+)-?.*\.sql/", $filename, $matches);
+
+		if(!isset($matches[1])) {
+			throw new MigrationFileNameFormatException($filename);
+		}
+
+		return (int)$matches[1];
 	}
 
 	public function checkIntegrity(

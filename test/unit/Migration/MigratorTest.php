@@ -4,57 +4,56 @@ namespace Gt\Database\Test\Migration;
 use Exception;
 use Gt\Database\Connection\Settings;
 use Gt\Database\Migration\MigrationException;
+use Gt\Database\Migration\MigrationSequenceDuplicateException;
+use Gt\Database\Migration\MigrationSequenceMissingException;
 use Gt\Database\Migration\Migrator;
 use Gt\Database\Test\Helper\Helper;
 use PHPUnit\Framework\TestCase;
 
 class MigratorTest extends TestCase {
-	protected static $path;
-
-	public static function getPath():string {
-		if(!empty(self::$path)) {
-			return self::$path;
-		}
-
-		self::$path = implode(DIRECTORY_SEPARATOR, [
+	public function getPath():string {
+		$path = implode(DIRECTORY_SEPARATOR, [
 			Helper::getTmpDir(),
 			"query",
 			"_migration",
 		]);
-		mkdir(self::$path, 0775, true);
-		return self::$path;
+		mkdir($path, 0775, true);
+		return $path;
 	}
 
 	public function setUp() {
-		self::$path = self::getPath();
 	}
 
-	public static function tearDownAfterClass() {
-		Helper::recursiveRemove(dirname(dirname(self::getPath())));
+	public function tearDown() {
+		Helper::recursiveRemove(dirname(dirname($this->getPath())));
 	}
 
 	public function testMigrationZeroAtStartWithoutTable() {
-		$settings = $this->createSettings();
-		$migrator = new Migrator($settings, self::getPath());
+		$path = $this->getPath();
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
 		self::assertEquals(0, $migrator->getMigrationCount());
 	}
 
 	public function testCheckMigrationTableExists() {
-		$settings = $this->createSettings();
-		$migrator = new Migrator($settings, self::getPath());
+		$path = $this->getPath();
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
 		self::assertFalse($migrator->checkMigrationTableExists());
 	}
 
 	public function testCreateMigrationTable() {
-		$settings = $this->createSettings();
-		$migrator = new Migrator($settings, self::getPath());
+		$path = $this->getPath();
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
 		$migrator->createMigrationTable();
 		self::assertTrue($migrator->checkMigrationTableExists());
 	}
 
 	public function testMigrationZeroAtStartWithTable() {
-		$settings = $this->createSettings();
-		$migrator = new Migrator($settings, self::getPath());
+		$path = $this->getPath();
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
 		$migrator->createMigrationTable();
 		self::assertEquals(0, $migrator->getMigrationCount());
 	}
@@ -63,18 +62,20 @@ class MigratorTest extends TestCase {
 	 * @dataProvider dataMigrationFileList
 	 */
 	public function testGetMigrationFileList(array $fileList) {
-		$settings = $this->createSettings();
-		$migrator = new Migrator($settings, self::getPath());
+		$path = $this->getPath();
+		$this->createFiles($fileList, $path);
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
 		$actualFileList = $migrator->getMigrationFileList();
-
-		self::assertSameSize($actualFileList, $fileList);
+		self::assertSameSize($fileList, $actualFileList);
 	}
 
 	public function testGetMigrationFileListNotExists() {
-		$settings = $this->createSettings();
+		$path = $this->getPath();
+		$settings = $this->createSettings($path);
 		$migrator = new Migrator(
 			$settings,
-			dirname(self::getPath()) . "does-not-exist"
+			dirname($path) . "does-not-exist"
 		);
 		$this->expectException(MigrationException::class);
 		$migrator->getMigrationFileList();
@@ -84,8 +85,11 @@ class MigratorTest extends TestCase {
 	 * @dataProvider dataMigrationFileList
 	 */
 	public function testCheckFileListOrder(array $fileList) {
-		$settings = $this->createSettings();
-		$migrator = new Migrator($settings, self::getPath());
+		$path = $this->getPath();
+		$this->createFiles($fileList, $path);
+
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
 		$actualFileList = $migrator->getMigrationFileList();
 
 		try {
@@ -103,8 +107,11 @@ class MigratorTest extends TestCase {
 	 * @dataProvider dataMigrationFileListMissing
 	 */
 	public function testCheckFileListOrderMissing(array $fileList) {
-		$settings = $this->createSettings();
-		$migrator = new Migrator($settings, self::getPath());
+		$path = $this->getPath();
+		$this->createFiles($fileList, $path);
+
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
 		$actualFileList = $migrator->getMigrationFileList();
 		$this->expectException(MigrationSequenceMissingException::class);
 		$migrator->checkFileListOrder($actualFileList);
@@ -114,17 +121,44 @@ class MigratorTest extends TestCase {
 	 * @dataProvider dataMigrationFileListDuplicate
 	 */
 	public function testCheckFileListOrderDuplicate(array $fileList) {
-		$settings = $this->createSettings();
-		$migrator = new Migrator($settings, self::getPath());
+		$path = $this->getPath();
+		$this->createFiles($fileList, $path);
+
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
 		$actualFileList = $migrator->getMigrationFileList();
 		$this->expectException(MigrationSequenceDuplicateException::class);
 		$migrator->checkFileListOrder($actualFileList);
 	}
 
-	public function dataMigrationFileList(
-		$missingFiles = false,
-		$duplicateFiles = false
-	):array {
+	public function dataMigrationFileList():array {
+		$fileList = $this->generateFileList();
+		return [
+			[$fileList]
+		];
+	}
+
+	public function dataMigrationFileListMissing():array {
+		$fileList = $this->generateFileList(
+			true,
+			false
+		);
+		return [
+			[$fileList]
+		];
+	}
+
+	public function dataMigrationFileListDuplicate():array {
+		$fileList = $this->generateFileList(
+			false,
+			true
+		);
+		return [
+			[$fileList]
+		];
+	}
+
+	private function generateFileList($missingFiles = false, $duplicateFiles = false) {
 		$fileList = [];
 
 		$migLength = rand(10, 200);
@@ -139,25 +173,53 @@ class MigratorTest extends TestCase {
 			$fileName .= uniqid();
 			$fileName .= ".sql";
 
-			$filePath = implode(DIRECTORY_SEPARATOR, [
-				self::getPath(),
-				$fileName,
-			]);
-
-			touch($filePath);
-			$fileList []= $filePath;
+			$fileList []= $fileName;
 		}
 
-		return [
-			[$fileList]
-		];
+		if($missingFiles) {
+			$numToRemove = rand(1, $migLength / 10);
+			for($i = 0; $i < $numToRemove; $i++) {
+				$keyToRemove = array_rand($fileList);
+				unset($fileList[$keyToRemove]);
+			}
+		}
+
+		if($duplicateFiles) {
+			$numToDuplicate = rand(1, 10);
+			for($i = 0; $i < $numToDuplicate; $i++) {
+				$keyToDuplicate = array_rand($fileList);
+				$newFilename = $fileList[$keyToDuplicate];
+				$newFilename = strtok($newFilename, "-");
+				$newFilename .= "-";
+				$newFilename .= uniqid();
+				$newFilename .= ".sql";
+				$fileList []= $newFilename;
+			}
+
+			$fileList = array_values($fileList);
+			sort($fileList);
+		}
+
+		$fileList = array_values($fileList);
+		return $fileList;
 	}
 
-	protected function createSettings():Settings {
+	protected function createSettings(string $path):Settings {
 		return new Settings(
-			dirname(dirname(self::getPath())),
+			dirname(dirname($path)),
 			Settings::DRIVER_SQLITE,
 			Settings::SCHEMA_IN_MEMORY
 		);
+	}
+
+	protected function createFiles(array $files, string $path):void {
+		foreach($files as $filename) {
+			$pathName = implode(DIRECTORY_SEPARATOR, [
+				$path,
+				$filename
+			]);
+
+			touch($pathName);
+		}
 	}
 }
