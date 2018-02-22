@@ -9,6 +9,7 @@ use Gt\Database\Connection\SettingsInterface;
 use Gt\Database\Query\QueryCollection;
 use Gt\Database\Query\QueryCollectionFactory;
 use Gt\Database\Result\ResultSet;
+use PDOException;
 
 /**
  * The Database Client stores the factory for creating QueryCollections, and an
@@ -99,7 +100,16 @@ class Client {
 		string $connectionName = DefaultSettings::DEFAULT_NAME
 	):ResultSet {
 		$connection = $this->getNamedConnection($connectionName);
-		$statement = $connection->prepare($query);
+		try {
+			$statement = $connection->prepare($query);
+		}
+		catch(PDOException $exception) {
+			throw new DatabaseException(
+				$exception->getMessage(),
+				intval($exception->getCode())
+			);
+		}
+
 		$statement->execute($bindings);
 
 		return new ResultSet($statement, $connection->lastInsertId());

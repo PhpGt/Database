@@ -3,6 +3,7 @@ namespace Gt\Database\Migration;
 
 use Gt\Database\Client;
 use Gt\Database\Connection\Settings;
+use Gt\Database\DatabaseException;
 
 class Migrator {
 	const COLUMN_QUERY_NUMBER = "query_number";
@@ -45,7 +46,57 @@ class Migrator {
 		$this->selectSchema();
 	}
 
+	public function checkMigrationTableExists():bool {
+		switch($this->dataSource) {
+		case Settings::DRIVER_SQLITE:
+			$result = $this->dbClient->executeSql(
+				"select name from sqlite_master "
+				. "where type=? "
+				. "and name like ?",[
+					"table",
+					$this->tableName,
+				]
+			);
+			break;
+
+		default:
+			$result = $this->dbClient->executeSql(
+				"show tables like ?",
+				[
+					$this->tableName
+				]
+			);
+			break;
+		}
+
+		return !empty($result->fetch());
+	}
+
+	public function createMigrationTable():void {
+		$this->dbClient->executeSql(implode("\n", [
+			"create table `{$this->tableName}` (",
+			"`" . self::COLUMN_QUERY_NUMBER . "` int primary key,",
+			"`" . self::COLUMN_QUERY_HASH . "` varchar(32) not null,",
+			"`" . self::COLUMN_MIGRATED_AT . "` datetime not null )",
+		]));
+	}
+
 	public function getMigrationCount():int {
+		try {
+			$result = $this->dbClient->executeSql(
+				"select `count` from `{$this->tableName}`"
+				. "order by `count` desc"
+			);
+			$row = $result->fetch();
+		}
+		catch(DatabaseException $exception) {
+			return 0;
+		}
+
+		return $row->count;
+	}
+
+	public function getMigrationCountAndCreateTable():int {
 		switch($this->dataSource) {
 		case Settings::DRIVER_SQLITE:
 			$result = $this->dbClient->executeSql(
