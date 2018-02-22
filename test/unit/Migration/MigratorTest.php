@@ -2,6 +2,7 @@
 namespace Gt\Database\Test\Migration;
 
 use Gt\Database\Connection\Settings;
+use Gt\Database\Migration\MigrationException;
 use Gt\Database\Migration\Migrator;
 use Gt\Database\Test\Helper\Helper;
 use PHPUnit\Framework\TestCase;
@@ -68,7 +69,20 @@ class MigratorTest extends TestCase {
 		self::assertSameSize($actualFileList, $fileList);
 	}
 
-	public function dataMigrationFileList():array {
+	public function testGetMigrationFileListNotExists() {
+		$settings = $this->createSettings();
+		$migrator = new Migrator(
+			$settings,
+			dirname(self::getPath()) . "does-not-exist"
+		);
+		$this->expectException(MigrationException::class);
+		$migrator->getMigrationFileList();
+	}
+
+	public function dataMigrationFileList(
+		$missingFiles = false,
+		$duplicateFiles = false
+	):array {
 		$fileList = [];
 
 		$migLength = rand(10, 200);
