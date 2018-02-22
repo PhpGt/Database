@@ -22,7 +22,7 @@ class MigratorTest extends TestCase {
 		Helper::recursiveRemove(dirname(dirname($this->path)));
 	}
 
-	public function testMigrationZeroAtStartNoTable() {
+	public function testMigrationZeroAtStartWithoutTable() {
 		$settings = $this->createSettings();
 		$migrator = new Migrator($settings, $this->path);
 		self::assertEquals(0, $migrator->getMigrationCount());
@@ -39,6 +39,13 @@ class MigratorTest extends TestCase {
 		$migrator = new Migrator($settings, $this->path);
 		$migrator->createMigrationTable();
 		self::assertTrue($migrator->checkMigrationTableExists());
+	}
+
+	public function testMigrationZeroAtStartWithTable() {
+		$settings = $this->createSettings();
+		$migrator = new Migrator($settings, $this->path);
+		$migrator->createMigrationTable();
+		self::assertEquals(0, $migrator->getMigrationCount());
 	}
 
 	protected function createSettings():Settings {
