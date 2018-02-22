@@ -111,7 +111,10 @@ class Migrator {
 				continue;
 			}
 
-			$pathName = $this->path . "/" . $file;
+			$pathName = implode(DIRECTORY_SEPARATOR, [
+				$this->path,
+				$file,
+			]);
 			$fileNumber = (int)substr($file, 0, strpos($file, "-"));
 			$numberedFileList[$fileNumber] = $pathName;
 		}
@@ -177,6 +180,29 @@ class Migrator {
 		}
 	}
 
+	protected function selectSchema() {
+// SQLITE databases represent their own schema.
+		if($this->dataSource === Settings::DRIVER_SQLITE) {
+			return;
+		}
+
+		$schema = $this->schema;
+
+		try {
+			$this->dbClient->executeSql(
+				"create schema if not exists `$schema`"
+			);
+			$this->dbClient->executeSql(
+				"use `$schema`"
+			);
+		}
+		catch(DatabaseException $exception) {
+			echo "Error selecting `$schema`." . PHP_EOL;
+			echo $exception->getMessage() . PHP_EOL;
+			exit(1);
+		}
+	}
+
 	protected function recordMigrationSuccess(int $number, string $hash) {
 		try {
 			$this->dbClient->executeSql(implode("\n", [
@@ -195,25 +221,6 @@ class Migrator {
 			echo PHP_EOL;
 			echo $exception->getMessage();
 			echo PHP_EOL;
-			exit(1);
-		}
-	}
-
-	protected function selectSchema() {
-// SQLITE databases represent their own schema.
-		if($this->dataSource === Settings::DRIVER_SQLITE) {
-			return;
-		}
-
-		$schema = $this->schema;
-
-		try {
-			$this->dbClient->executeSql("create schema if not exists `$schema`");
-			$this->dbClient->executeSql("use `$schema`");
-		}
-		catch(\Exception $exception) {
-			echo "Error selecting `$schema`." . PHP_EOL;
-			echo $exception->getMessage() . PHP_EOL;
 			exit(1);
 		}
 	}
