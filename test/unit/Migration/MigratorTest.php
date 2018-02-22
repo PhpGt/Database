@@ -91,6 +91,7 @@ class MigratorTest extends TestCase {
 		$settings = $this->createSettings($path);
 		$migrator = new Migrator($settings, $path);
 		$actualFileList = $migrator->getMigrationFileList();
+		$exception = null;
 
 		try {
 			$migrator->checkFileListOrder($actualFileList);
