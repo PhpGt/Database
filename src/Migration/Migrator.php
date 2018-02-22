@@ -96,65 +96,6 @@ class Migrator {
 		return $row->count;
 	}
 
-	public function getMigrationCountAndCreateTable():int {
-		switch($this->dataSource) {
-		case Settings::DRIVER_SQLITE:
-			$result = $this->dbClient->executeSql(
-				"select name from sqlite_master "
-				. "where type=? "
-				. "and name like ?",[
-					"table",
-					$this->tableName,
-				]
-			);
-			break;
-
-		default:
-			$result = $this->dbClient->executeSql(
-				"show tables like ?",
-				[
-					$this->tableName
-				]
-			);
-			break;
-		}
-		$existingRow = $result->fetch();
-
-		if(is_null($existingRow)) {
-			echo "Migration table not found, attempting to create." . PHP_EOL;
-			$this->dbClient->executeSql(implode("\n", [
-				"create table `{$this->tableName}` (",
-				"`" . self::COLUMN_QUERY_NUMBER . "` int primary key,",
-				"`" . self::COLUMN_QUERY_HASH . "` varchar(32) not null,",
-				"`" . self::COLUMN_MIGRATED_AT . "` datetime not null )",
-			]));
-			echo "Created table `{$this->tableName}`." . PHP_EOL;
-		}
-
-		try {
-			$result = $this->dbClient->executeSql(
-				"select `"
-				. self::COLUMN_QUERY_NUMBER
-				. "` from `{$this->tableName}` "
-				. "order by 1 desc limit 1"
-			);
-
-			if(count($result) === 0) {
-				return 0;
-			}
-
-			return (int)$result->{self::COLUMN_QUERY_NUMBER};
-		}
-		catch(\Exception $exception) {
-			$message = $exception->getMessage();
-			echo "Error getting migration count.";
-			echo PHP_EOL;
-			echo $message;
-			echo PHP_EOL;
-			exit(1);
-		}
-	}
-
 	public function getMigrationFileList():array {
 		if(!is_dir($this->path)) {
 			throw new MigrationException(
