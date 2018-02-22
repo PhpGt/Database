@@ -254,7 +254,6 @@ class Migrator {
 
 	protected function deleteAndRecreateSchema() {
 		$schema = $this->schema;
-//		if($this->)
 
 		try {
 			$this->dbClient->executeSql("drop schema if exists `$schema`");
