@@ -100,11 +100,14 @@ class Migrator {
 
 	public function getMigrationFileList():array {
 		if(!is_dir($this->path)) {
-			throw new MigrationException(
-				"Migration directory not found: " . $this->path);
+			throw new MigrationDirectoryNotFoundException(
+				$this->path
+			);
 		}
 
 		$fileList = [];
+//		$currentMigrationNumber = 1;
+//		$sequenceNumbers = [];
 
 		foreach(new DirectoryIterator($this->path) as $i => $fileInfo) {
 			if($fileInfo->isDot()
@@ -113,9 +116,17 @@ class Migrator {
 			}
 
 			$pathName = $fileInfo->getPathname();
-			$fileNumber = $this->extractNumberFromFilename(
-				$pathName
-			);
+//			if($fileNumber !== $currentMigrationNumber) {
+//				$sequenceNumbers []= $fileNumber;
+//				throw new MigrationSequenceOrderException(
+//					implode(
+//						", ",
+//						$sequenceNumbers
+//					)
+//				);
+//			}
+//			$sequenceNumbers []= $fileNumber;
+//			$currentMigrationNumber++;
 			$fileList []= $pathName;
 		}
 
@@ -124,15 +135,16 @@ class Migrator {
 
 	public function checkFileListOrder(array $fileList):void {
 		$counter = 0;
+		$sequence = [];
 		foreach($fileList as $file) {
 			$counter++;
 			$migrationNumber = $this->extractNumberFromFilename($file);
+			$sequence []= $migrationNumber;
 
-			if($counter > $migrationNumber) {
-				throw new MigrationSequenceDuplicateException($migrationNumber);
-			}
-			else if($counter < $migrationNumber) {
-				throw new MigrationSequenceMissingException($counter);
+			if($counter !== $migrationNumber) {
+				throw new MigrationSequenceOrderException(
+					implode(", ", $sequence)
+				);
 			}
 		}
 	}

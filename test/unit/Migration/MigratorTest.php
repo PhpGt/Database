@@ -3,9 +3,11 @@ namespace Gt\Database\Test\Migration;
 
 use Exception;
 use Gt\Database\Connection\Settings;
+use Gt\Database\Migration\MigrationDirectoryNotFoundException;
 use Gt\Database\Migration\MigrationException;
 use Gt\Database\Migration\MigrationSequenceDuplicateException;
 use Gt\Database\Migration\MigrationSequenceMissingException;
+use Gt\Database\Migration\MigrationSequenceOrderException;
 use Gt\Database\Migration\Migrator;
 use Gt\Database\Test\Helper\Helper;
 use PHPUnit\Framework\TestCase;
@@ -77,7 +79,7 @@ class MigratorTest extends TestCase {
 			$settings,
 			dirname($path) . "does-not-exist"
 		);
-		$this->expectException(MigrationException::class);
+		$this->expectException(MigrationDirectoryNotFoundException::class);
 		$migrator->getMigrationFileList();
 	}
 
@@ -114,7 +116,7 @@ class MigratorTest extends TestCase {
 		$settings = $this->createSettings($path);
 		$migrator = new Migrator($settings, $path);
 		$actualFileList = $migrator->getMigrationFileList();
-		$this->expectException(MigrationSequenceMissingException::class);
+		$this->expectException(MigrationSequenceOrderException::class);
 		$migrator->checkFileListOrder($actualFileList);
 	}
 
@@ -128,7 +130,7 @@ class MigratorTest extends TestCase {
 		$settings = $this->createSettings($path);
 		$migrator = new Migrator($settings, $path);
 		$actualFileList = $migrator->getMigrationFileList();
-		$this->expectException(MigrationSequenceDuplicateException::class);
+		$this->expectException(MigrationSequenceOrderException::class);
 		$migrator->checkFileListOrder($actualFileList);
 	}
 
