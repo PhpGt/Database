@@ -106,8 +106,6 @@ class Migrator {
 		}
 
 		$fileList = [];
-//		$currentMigrationNumber = 1;
-//		$sequenceNumbers = [];
 
 		foreach(new DirectoryIterator($this->path) as $i => $fileInfo) {
 			if($fileInfo->isDot()
@@ -116,17 +114,6 @@ class Migrator {
 			}
 
 			$pathName = $fileInfo->getPathname();
-//			if($fileNumber !== $currentMigrationNumber) {
-//				$sequenceNumbers []= $fileNumber;
-//				throw new MigrationSequenceOrderException(
-//					implode(
-//						", ",
-//						$sequenceNumbers
-//					)
-//				);
-//			}
-//			$sequenceNumbers []= $fileNumber;
-//			$currentMigrationNumber++;
 			$fileList []= $pathName;
 		}
 
