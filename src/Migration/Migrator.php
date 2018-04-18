@@ -123,6 +123,7 @@ class Migrator {
 	public function checkFileListOrder(array $fileList):void {
 		$counter = 0;
 		$sequence = [];
+
 		foreach($fileList as $file) {
 			$counter++;
 			$migrationNumber = $this->extractNumberFromFilename($file);
@@ -130,7 +131,7 @@ class Migrator {
 
 			if($counter !== $migrationNumber) {
 				throw new MigrationSequenceOrderException(
-					implode(", ", $sequence)
+					"Missing: $counter"
 				);
 			}
 		}
