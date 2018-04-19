@@ -137,18 +137,6 @@ class Migrator {
 		}
 	}
 
-	protected function extractNumberFromFilename(string $pathName):int {
-		$file = new SplFileInfo($pathName);
-		$filename = $file->getFilename();
-		preg_match("/(\d+)-?.*\.sql/", $filename, $matches);
-
-		if(!isset($matches[1])) {
-			throw new MigrationFileNameFormatException($filename);
-		}
-
-		return (int)$matches[1];
-	}
-
 	public function checkIntegrity(
 		int $migrationCount = 0,
 		array $migrationFileList
@@ -178,6 +166,18 @@ class Migrator {
 				continue;
 			}
 		}
+	}
+
+	protected function extractNumberFromFilename(string $pathName):int {
+		$file = new SplFileInfo($pathName);
+		$filename = $file->getFilename();
+		preg_match("/(\d+)-?.*\.sql/", $filename, $matches);
+
+		if(!isset($matches[1])) {
+			throw new MigrationFileNameFormatException($filename);
+		}
+
+		return (int)$matches[1];
 	}
 
 	public function performMigration(
