@@ -131,6 +131,16 @@ class MigratorTest extends TestCase {
 		$migrator->checkFileListOrder($actualFileList);
 	}
 
+	/**
+	 * @dataProvider dataMigrationFileList
+	 */
+	public function testCheckIntegrity(array $fileList) {
+		$path = $this->getPath();
+		$settings = $this->createSettings($path);
+
+		$migrator = new Migrator($settings, $path);
+	}
+
 	public function dataMigrationFileList():array {
 		$fileList = $this->generateFileList();
 		return [

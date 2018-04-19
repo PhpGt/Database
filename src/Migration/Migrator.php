@@ -152,18 +152,9 @@ class Migrator {
 					"limit 1",
 				]), [$fileNumber]);
 
-				echo "Migration $fileNumber OK" . PHP_EOL;
-
 				if($result->{self::COLUMN_QUERY_HASH} !== $md5) {
-					echo PHP_EOL;
-					echo "Migration query doesn't match existing migration!";
-					echo PHP_EOL;
-					echo "Please check $file against your version control system.";
-					echo PHP_EOL;
-					exit(1);
+					throw new MigrationIntegrityException($file);
 				}
-
-				continue;
 			}
 		}
 	}
