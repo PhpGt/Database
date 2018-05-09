@@ -2,14 +2,20 @@
 namespace Gt\Database\Test\Migration;
 
 use Exception;
+use Gt\Database\Client;
 use Gt\Database\Connection\Settings;
 use Gt\Database\Migration\MigrationDirectoryNotFoundException;
 use Gt\Database\Migration\MigrationSequenceOrderException;
 use Gt\Database\Migration\Migrator;
 use Gt\Database\Test\Helper\Helper;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class MigratorTest extends TestCase {
+	const MIGRATION_QUERY_LIST = [
+		1 => "create table `test` (`id` int primary key, `name` varchar(32))",
+		2 => "alter table `test` add `new_column_name` varchar(32)",
+	];
 	public function getPath():string {
 		$path = implode(DIRECTORY_SEPARATOR, [
 			Helper::getTmpDir(),
@@ -134,11 +140,23 @@ class MigratorTest extends TestCase {
 	/**
 	 * @dataProvider dataMigrationFileList
 	 */
-	public function testCheckIntegrity(array $fileList) {
+	public function testCheckIntegrityGood(array $fileList) {
 		$path = $this->getPath();
 		$settings = $this->createSettings($path);
 
 		$migrator = new Migrator($settings, $path);
+		$migrator->checkIntegrity($fileList);
+	}
+
+	/**
+	 * @dataProvider dataMigrationFileList
+	 */
+	public function testCheckIntegrityBad(array $fileList) {
+		$path = $this->getPath();
+		$settings = $this->createSettings($path);
+
+		$migrator = new Migrator($settings, $path);
+		$migrator->checkIntegrity($fileList);
 	}
 
 	public function dataMigrationFileList():array {
