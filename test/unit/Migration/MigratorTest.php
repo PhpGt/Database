@@ -12,11 +12,11 @@ use PHPUnit\Framework\TestCase;
 use stdClass;
 
 class MigratorTest extends TestCase {
-	const MIGRATION_QUERY_LIST = [
-		1 => "create table `test` (`id` int primary key, `name` varchar(32))",
-		2 => "alter table `test` add `new_column_name` varchar(32)",
-	];
-	public function getPath():string {
+	const MIGRATION_CREATE
+		= "create table `test` (`id` int primary key, `name` varchar(32))";
+	const MIGRATION_ALTER = "alter table `test` add `new_column` varchar(32)";
+
+	public function getMigrationDirectory():string {
 		$path = implode(DIRECTORY_SEPARATOR, [
 			Helper::getTmpDir(),
 			"query",
@@ -30,25 +30,25 @@ class MigratorTest extends TestCase {
 	}
 
 	public function tearDown() {
-		Helper::recursiveRemove(dirname(dirname($this->getPath())));
+		Helper::recursiveRemove(dirname(dirname($this->getMigrationDirectory())));
 	}
 
 	public function testMigrationZeroAtStartWithoutTable() {
-		$path = $this->getPath();
+		$path = $this->getMigrationDirectory();
 		$settings = $this->createSettings($path);
 		$migrator = new Migrator($settings, $path);
 		self::assertEquals(0, $migrator->getMigrationCount());
 	}
 
 	public function testCheckMigrationTableExists() {
-		$path = $this->getPath();
+		$path = $this->getMigrationDirectory();
 		$settings = $this->createSettings($path);
 		$migrator = new Migrator($settings, $path);
 		self::assertFalse($migrator->checkMigrationTableExists());
 	}
 
 	public function testCreateMigrationTable() {
-		$path = $this->getPath();
+		$path = $this->getMigrationDirectory();
 		$settings = $this->createSettings($path);
 		$migrator = new Migrator($settings, $path);
 		$migrator->createMigrationTable();
@@ -56,7 +56,7 @@ class MigratorTest extends TestCase {
 	}
 
 	public function testMigrationZeroAtStartWithTable() {
-		$path = $this->getPath();
+		$path = $this->getMigrationDirectory();
 		$settings = $this->createSettings($path);
 		$migrator = new Migrator($settings, $path);
 		$migrator->createMigrationTable();
@@ -67,7 +67,7 @@ class MigratorTest extends TestCase {
 	 * @dataProvider dataMigrationFileList
 	 */
 	public function testGetMigrationFileList(array $fileList) {
-		$path = $this->getPath();
+		$path = $this->getMigrationDirectory();
 		$this->createFiles($fileList, $path);
 		$settings = $this->createSettings($path);
 		$migrator = new Migrator($settings, $path);
@@ -76,7 +76,7 @@ class MigratorTest extends TestCase {
 	}
 
 	public function testGetMigrationFileListNotExists() {
-		$path = $this->getPath();
+		$path = $this->getMigrationDirectory();
 		$settings = $this->createSettings($path);
 		$migrator = new Migrator(
 			$settings,
@@ -90,7 +90,7 @@ class MigratorTest extends TestCase {
 	 * @dataProvider dataMigrationFileList
 	 */
 	public function testCheckFileListOrder(array $fileList) {
-		$path = $this->getPath();
+		$path = $this->getMigrationDirectory();
 		$this->createFiles($fileList, $path);
 
 		$settings = $this->createSettings($path);
@@ -113,7 +113,7 @@ class MigratorTest extends TestCase {
 	 * @dataProvider dataMigrationFileListMissing
 	 */
 	public function testCheckFileListOrderMissing(array $fileList) {
-		$path = $this->getPath();
+		$path = $this->getMigrationDirectory();
 		$this->createFiles($fileList, $path);
 
 		$settings = $this->createSettings($path);
@@ -127,7 +127,7 @@ class MigratorTest extends TestCase {
 	 * @dataProvider dataMigrationFileListDuplicate
 	 */
 	public function testCheckFileListOrderDuplicate(array $fileList) {
-		$path = $this->getPath();
+		$path = $this->getMigrationDirectory();
 		$this->createFiles($fileList, $path);
 
 		$settings = $this->createSettings($path);
@@ -141,18 +141,27 @@ class MigratorTest extends TestCase {
 	 * @dataProvider dataMigrationFileList
 	 */
 	public function testCheckIntegrityGood(array $fileList) {
-		$path = $this->getPath();
-		$settings = $this->createSettings($path);
+		$path = $this->getMigrationDirectory();
 
+		$this->createMigrationFiles($fileList, $path);
+		$this->hashMigrationToDb($fileList, $path);
+
+		$settings = $this->createSettings($path);
 		$migrator = new Migrator($settings, $path);
-		$migrator->checkIntegrity($fileList);
+		$absoluteFileList = array_map(function($file)use($path) {
+			return implode(DIRECTORY_SEPARATOR, [
+				$path,
+				$file,
+			]);
+		},$fileList);
+		$migrator->checkIntegrity($absoluteFileList);
 	}
 
 	/**
 	 * @dataProvider dataMigrationFileList
 	 */
 	public function testCheckIntegrityBad(array $fileList) {
-		$path = $this->getPath();
+		$path = $this->getMigrationDirectory();
 		$settings = $this->createSettings($path);
 
 		$migrator = new Migrator($settings, $path);
@@ -184,6 +193,71 @@ class MigratorTest extends TestCase {
 		return [
 			[$fileList]
 		];
+	}
+
+	protected function createMigrationFiles(array $fileList, string $path):void {
+		foreach($fileList as $i => $fileName) {
+			$migPathName = implode(DIRECTORY_SEPARATOR, [
+				$path,
+				$fileName,
+			]);
+			if($i === 0) {
+				$mig = self::MIGRATION_CREATE;
+			}
+			else {
+				$mig = self::MIGRATION_ALTER;
+				$mig = str_replace(
+					"`new_column`",
+					"`new_column_$i`",
+					$mig
+				);
+			}
+
+			file_put_contents($migPathName, $mig);
+		}
+	}
+
+	protected function hashMigrationToDb(array $fileList, string $path):void {
+		$hashUpTo = count($fileList) - rand(0, count($fileList) - 5);
+		$settings = $this->createSettings($path);
+		$settingsWithoutSchema = new Settings(
+			$settings->getBaseDirectory(),
+			$settings->getDataSource(),
+			// Schema may not exist yet.
+			"",
+			$settings->getHost(),
+			$settings->getPort(),
+			$settings->getUsername(),
+			$settings->getPassword()
+		);
+		$db = new Client($settingsWithoutSchema);
+		$db->executeSql(implode("\n", [
+			"create table `_migration` (",
+			"`" . Migrator::COLUMN_QUERY_NUMBER . "` int primary key,",
+			"`" . Migrator::COLUMN_QUERY_HASH . "` varchar(32) not null,",
+			"`" . Migrator::COLUMN_MIGRATED_AT . "` datetime not null )",
+		]));
+
+		for($i = 0; $i < $hashUpTo; $i++) {
+			$migNum = $i + 1;
+			$migPathName = implode(DIRECTORY_SEPARATOR, [
+				$path,
+				$fileList[$i],
+			]);
+			$hash = md5_file($migPathName);
+
+			$sql = implode("\n", [
+				"insert into `_migration` (",
+				"`" . Migrator::COLUMN_QUERY_NUMBER . "`, ",
+				"`" . Migrator::COLUMN_QUERY_HASH . "`, ",
+				"`" . Migrator::COLUMN_MIGRATED_AT . "` ",
+				") values (",
+				"?, ?, datetime('now')",
+				")",
+			]);
+
+			$db->executeSql($sql, [$migNum, $hash]);
+		}
 	}
 
 	private function generateFileList($missingFiles = false, $duplicateFiles = false) {
@@ -233,10 +307,16 @@ class MigratorTest extends TestCase {
 	}
 
 	protected function createSettings(string $path):Settings {
+		$sqlitePath = implode(DIRECTORY_SEPARATOR, [
+			dirname($path),
+			"migrator-test.db",
+		]);
+		$sqlitePath = str_replace("\\", "/", $sqlitePath);
+
 		return new Settings(
 			dirname(dirname($path)),
 			Settings::DRIVER_SQLITE,
-			Settings::SCHEMA_IN_MEMORY
+			$sqlitePath
 		);
 	}
 

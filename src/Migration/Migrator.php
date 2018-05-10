@@ -138,8 +138,8 @@ class Migrator {
 	}
 
 	public function checkIntegrity(
-		int $migrationCount = 0,
-		array $migrationFileList
+		array $migrationFileList,
+		int $migrationCount = 0
 	) {
 		foreach($migrationFileList as $fileNumber => $file) {
 			$md5 = md5_file($file);
