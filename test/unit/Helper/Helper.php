@@ -31,10 +31,10 @@ class Helper {
 				self::recursiveRemove("$dir/$file");
 			}
 			else {
-				unlink("$dir/$file");
+				@unlink("$dir/$file");
 			}
 		}
-		rmdir($dir);
+		@rmdir($dir);
 	}
 
 

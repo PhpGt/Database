@@ -132,12 +132,14 @@ class Migrator {
 
 	public function checkIntegrity(
 		array $migrationFileList,
-		int $migrationCount = 0
-	) {
-		foreach($migrationFileList as $fileNumber => $file) {
+		int $migrationCount = null
+	):int {
+		foreach($migrationFileList as $i => $file) {
+			$fileNumber = $i + 1;
 			$md5 = md5_file($file);
 
-			if($fileNumber <= $migrationCount) {
+			if(is_null($migrationCount)
+			|| $fileNumber <= $migrationCount) {
 				$result = $this->dbClient->executeSql(implode("\n", [
 					"select `" . self::COLUMN_QUERY_HASH . "`",
 					"from `{$this->tableName}`",
@@ -150,6 +152,8 @@ class Migrator {
 				}
 			}
 		}
+
+		return $fileNumber;
 	}
 
 	protected function extractNumberFromFilename(string $pathName):int {

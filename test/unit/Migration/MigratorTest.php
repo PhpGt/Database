@@ -5,6 +5,7 @@ use Exception;
 use Gt\Database\Client;
 use Gt\Database\Connection\Settings;
 use Gt\Database\Migration\MigrationDirectoryNotFoundException;
+use Gt\Database\Migration\MigrationIntegrityException;
 use Gt\Database\Migration\MigrationSequenceOrderException;
 use Gt\Database\Migration\Migrator;
 use Gt\Database\Test\Helper\Helper;
@@ -30,7 +31,7 @@ class MigratorTest extends TestCase {
 	}
 
 	public function tearDown() {
-		Helper::recursiveRemove(dirname(dirname($this->getMigrationDirectory())));
+		Helper::recursiveRemove(dirname(dirname(dirname($this->getMigrationDirectory()))));
 	}
 
 	public function testMigrationZeroAtStartWithoutTable() {
@@ -154,7 +155,11 @@ class MigratorTest extends TestCase {
 				$file,
 			]);
 		},$fileList);
-		$migrator->checkIntegrity($absoluteFileList);
+
+		self::assertEquals(
+			count($absoluteFileList),
+			$migrator->checkIntegrity($absoluteFileList)
+		);
 	}
 
 	/**
@@ -162,10 +167,34 @@ class MigratorTest extends TestCase {
 	 */
 	public function testCheckIntegrityBad(array $fileList) {
 		$path = $this->getMigrationDirectory();
-		$settings = $this->createSettings($path);
 
+		$this->createMigrationFiles($fileList, $path);
+		$this->hashMigrationToDb($fileList, $path);
+
+		$migrationToBreak = implode(DIRECTORY_SEPARATOR, [
+			$path,
+			$fileList[array_rand($fileList)],
+		]);
+		$sql = file_get_contents($migrationToBreak);
+		$sql = substr_replace(
+			$sql,
+			"EDITED",
+			rand(0, 20),
+			0
+		);
+		file_put_contents($migrationToBreak, $sql);
+
+		$settings = $this->createSettings($path);
 		$migrator = new Migrator($settings, $path);
-		$migrator->checkIntegrity($fileList);
+		$absoluteFileList = array_map(function($file)use($path) {
+			return implode(DIRECTORY_SEPARATOR, [
+				$path,
+				$file,
+			]);
+		},$fileList);
+
+		self::expectException(MigrationIntegrityException::class);
+		$migrator->checkIntegrity($absoluteFileList);
 	}
 
 	public function dataMigrationFileList():array {
@@ -220,17 +249,7 @@ class MigratorTest extends TestCase {
 	protected function hashMigrationToDb(array $fileList, string $path):void {
 		$hashUpTo = count($fileList) - rand(0, count($fileList) - 5);
 		$settings = $this->createSettings($path);
-		$settingsWithoutSchema = new Settings(
-			$settings->getBaseDirectory(),
-			$settings->getDataSource(),
-			// Schema may not exist yet.
-			"",
-			$settings->getHost(),
-			$settings->getPort(),
-			$settings->getUsername(),
-			$settings->getPassword()
-		);
-		$db = new Client($settingsWithoutSchema);
+		$db = new Client($settings);
 		$db->executeSql(implode("\n", [
 			"create table `_migration` (",
 			"`" . Migrator::COLUMN_QUERY_NUMBER . "` int primary key,",
