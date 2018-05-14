@@ -29,18 +29,11 @@ class Migrator {
 		$this->tableName = $tableName;
 		$this->dataSource = $settings->getDataSource();
 
-		$settingsWithoutSchema = new Settings(
-			$settings->getBaseDirectory(),
-			$settings->getDataSource(),
-			// Schema may not exist yet.
-			"",
-			$settings->getHost(),
-			$settings->getPort(),
-			$settings->getUsername(),
-			$settings->getPassword()
-		);
+		if($this->dataSource !== Settings::DRIVER_SQLITE) {
+			$settings = $settings->withoutSchema();
+		}
 
-		$this->dbClient = new Client($settingsWithoutSchema);
+		$this->dbClient = new Client($settings);
 		if($forced) {
 			$this->deleteAndRecreateSchema();
 		}

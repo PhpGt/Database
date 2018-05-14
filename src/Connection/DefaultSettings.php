@@ -4,6 +4,8 @@ namespace Gt\Database\Connection;
 use PDO;
 
 class DefaultSettings implements SettingsInterface {
+	use ImmutableSettings;
+
 	const CHARSET = "utf8";
 	const COLLATION = "utf8_unicode_ci";
 
@@ -89,5 +91,45 @@ class DefaultSettings implements SettingsInterface {
 			$this->getDataSource(),
 			$this->getSchema(),
 		]);
+	}
+
+	public function withBaseDirectory(string $baseDirectory):Settings {
+		// TODO: Implement withBaseDirectory() method.
+	}
+
+	public function withDataSource(string $dataSource):Settings {
+		// TODO: Implement withDataSource() method.
+	}
+
+	public function withSchema(string $schema):Settings {
+		// TODO: Implement withSchema() method.
+	}
+
+	public function withHost(string $host):Settings {
+		// TODO: Implement withHost() method.
+	}
+
+	public function withPort(int $port):Settings {
+		// TODO: Implement withPort() method.
+	}
+
+	public function withUsername(string $username):Settings {
+		// TODO: Implement withUsername() method.
+	}
+
+	public function withPassword(string $password):Settings {
+		// TODO: Implement withPassword() method.
+	}
+
+	public function withTablePrefix(string $tablePrefix):Settings {
+		// TODO: Implement withTablePrefix() method.
+	}
+
+	public function withConnectionName(string $connectionName):Settings {
+		// TODO: Implement withConnectionName() method.
+	}
+
+	public function withoutSchema():Settings {
+		// TODO: Implement withoutSchema() method.
 	}
 }
