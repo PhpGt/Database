@@ -55,6 +55,7 @@ class Migrator {
 			break;
 
 		default:
+// @codeCoverageIgnoreStart
 			$result = $this->dbClient->executeSql(
 				"show tables like ?",
 				[
@@ -62,6 +63,7 @@ class Migrator {
 				]
 			);
 			break;
+// @codeCoverageIgnoreEnd
 		}
 
 		return !empty($result->fetch());
@@ -147,7 +149,9 @@ class Migrator {
 					"limit 1",
 				]), [$fileNumber]);
 
-				if($result->{self::COLUMN_QUERY_HASH} !== $md5) {
+				$hashInDb = ($result->fetch())->{self::COLUMN_QUERY_HASH};
+
+				if($hashInDb !== $md5) {
 					throw new MigrationIntegrityException($file);
 				}
 			}

@@ -5,12 +5,13 @@ class Helper {
 	const COUNT_PATH_PROVIDER = 10;
 
 	public static function getTmpDir() {
-		return implode(DIRECTORY_SEPARATOR, [
+		$dir = implode(DIRECTORY_SEPARATOR, [
 			sys_get_temp_dir(),
 			"phpgt",
 			"database",
 			uniqid()
 		]);
+		return $dir;
 	}
 
 	public static function deleteDir(string $dir) {
@@ -94,7 +95,11 @@ class Helper {
 
 		for($i = 0; $i < self::COUNT_PATH_PROVIDER; ++$i) {
 			$name = uniqid();
-			$path = self::getTmpDir() . "/query/" . $name;
+			$path = implode(DIRECTORY_SEPARATOR, [
+				self::getTmpDir(),
+				"query",
+				$name,
+			]);
 
 			if($exists) {
 				mkdir($path, 0775, true);

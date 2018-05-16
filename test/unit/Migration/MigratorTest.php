@@ -18,20 +18,15 @@ class MigratorTest extends TestCase {
 	const MIGRATION_ALTER = "alter table `test` add `new_column` varchar(32)";
 
 	public function getMigrationDirectory():string {
+		$tmp = Helper::getTmpDir();
+
 		$path = implode(DIRECTORY_SEPARATOR, [
-			Helper::getTmpDir(),
+			$tmp,
 			"query",
 			"_migration",
 		]);
 		mkdir($path, 0775, true);
 		return $path;
-	}
-
-	public function setUp() {
-	}
-
-	public function tearDown() {
-		Helper::recursiveRemove(dirname(dirname(dirname($this->getMigrationDirectory()))));
 	}
 
 	public function testMigrationZeroAtStartWithoutTable() {
@@ -246,8 +241,17 @@ class MigratorTest extends TestCase {
 		}
 	}
 
-	protected function hashMigrationToDb(array $fileList, string $path):void {
-		$hashUpTo = count($fileList) - rand(0, count($fileList) - 5);
+	protected function hashMigrationToDb(
+		array $fileList,
+		string $path,
+		bool $stopEarly = false
+	):void {
+		$hashUpTo = null;
+
+		if($stopEarly) {
+			$hashUpTo = count($fileList) - rand(0, count($fileList) - 5);
+		}
+
 		$settings = $this->createSettings($path);
 		$db = new Client($settings);
 		$db->executeSql(implode("\n", [
@@ -257,11 +261,16 @@ class MigratorTest extends TestCase {
 			"`" . Migrator::COLUMN_MIGRATED_AT . "` datetime not null )",
 		]));
 
-		for($i = 0; $i < $hashUpTo; $i++) {
+		foreach($fileList as $i => $file) {
+			if(!is_null($hashUpTo)
+			&& $i >= $hashUpTo) {
+				break;
+			}
+
 			$migNum = $i + 1;
 			$migPathName = implode(DIRECTORY_SEPARATOR, [
 				$path,
-				$fileList[$i],
+				$file,
 			]);
 			$hash = md5_file($migPathName);
 

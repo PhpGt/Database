@@ -3,6 +3,7 @@ namespace Gt\Database\Query;
 
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
+use Gt\Database\Test\GtDatabaseTestCase;
 use Gt\Database\Test\Helper\Helper;
 use PHPUnit\Framework\TestCase;
 
