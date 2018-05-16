@@ -249,15 +249,24 @@ class Migrator {
 		}
 	}
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	protected function deleteAndRecreateSchema() {
-		$schema = $this->schema;
+		if($this->dataSource === Settings::DRIVER_SQLITE) {
+			return;
+		}
 
 		try {
-			$this->dbClient->executeSql("drop schema if exists `$schema`");
-			$this->dbClient->executeSql("create schema if not exists `$schema`");
+			$this->dbClient->executeSql(
+				"drop schema if exists `{$this->schema}`"
+			);
+			$this->dbClient->executeSql(
+				"create schema if not exists `{$this->schema}`"
+			);
 		}
 		catch(\Exception $exception) {
-			echo "Error recreating schema `$schema`." . PHP_EOL;
+			echo "Error recreating schema `{$this->schema}`." . PHP_EOL;
 			echo $exception->getMessage() . PHP_EOL;
 			exit(1);
 		}

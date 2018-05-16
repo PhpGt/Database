@@ -253,6 +253,28 @@ class MigratorTest extends TestCase {
 		$migrator->checkFileListOrder($absoluteFileList);
 	}
 
+	/**
+	 * @dataProvider dataMigrationFileList
+	 */
+	public function testForcedMigration(array $fileList) {
+		$path = $this->getMigrationDirectory();
+
+		$this->createMigrationFiles($fileList, $path);
+		$this->hashMigrationToDb($fileList, $path);
+
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator(
+			$settings,
+			$path,
+			"_migration",
+			true
+		);
+		self::assertNotNull(
+			$migrator,
+			"Exception is not thrown by constructor"
+		);
+	}
+
 	public function dataMigrationFileList():array {
 		$fileList = $this->generateFileList();
 		return [
