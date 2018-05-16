@@ -201,6 +201,9 @@ class Migrator {
 		}
 	}
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	protected function selectSchema() {
 // SQLITE databases represent their own schema.
 		if($this->dataSource === Settings::DRIVER_SQLITE) {
