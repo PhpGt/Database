@@ -30,10 +30,11 @@ class Migrator {
 		$this->dataSource = $settings->getDataSource();
 
 		if($this->dataSource !== Settings::DRIVER_SQLITE) {
-			$settings = $settings->withoutSchema();
+			$settings = $settings->withoutSchema(); // @codeCoverageIgnore
 		}
 
 		$this->dbClient = new Client($settings);
+
 		if($forced) {
 			$this->deleteAndRecreateSchema();
 		}
@@ -80,8 +81,9 @@ class Migrator {
 
 	public function getMigrationCount():int {
 		try {
-			$result = $this->dbClient->executeSql(
-				"select `count` from `{$this->tableName}`"
+			$result = $this->dbClient->executeSql("select `"
+				. self::COLUMN_QUERY_NUMBER
+				. "` from `{$this->tableName}` "
 				. "order by `count` desc"
 			);
 			$row = $result->fetch();

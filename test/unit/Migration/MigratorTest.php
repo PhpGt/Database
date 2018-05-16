@@ -192,6 +192,13 @@ class MigratorTest extends TestCase {
 		$migrator->checkIntegrity($absoluteFileList);
 	}
 
+	public function testMigrationCountZeroAtStart() {
+		$path = $this->getMigrationDirectory();
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
+		self::assertEquals(0, $migrator->getMigrationCount());
+	}
+
 	public function dataMigrationFileList():array {
 		$fileList = $this->generateFileList();
 		return [
