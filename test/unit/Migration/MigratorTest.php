@@ -263,16 +263,19 @@ class MigratorTest extends TestCase {
 		$this->hashMigrationToDb($fileList, $path);
 
 		$settings = $this->createSettings($path);
-		$migrator = new Migrator(
-			$settings,
-			$path,
-			"_migration",
-			true
-		);
-		self::assertNotNull(
-			$migrator,
-			"Exception is not thrown by constructor"
-		);
+		$exception = null;
+
+		try {
+			new Migrator(
+				$settings,
+				$path,
+				"_migration",
+				true
+			);
+		}
+		catch(Exception $exception) {}
+
+		self::assertNull($exception,"Exception should not be thrown");
 	}
 
 	public function dataMigrationFileList():array {
