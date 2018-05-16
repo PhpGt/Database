@@ -199,6 +199,30 @@ class MigratorTest extends TestCase {
 		self::assertEquals(0, $migrator->getMigrationCount());
 	}
 
+	/**
+	 * @dataProvider dataMigrationFileList
+	 */
+	public function testMigrationCountNotZeroAfterMigration(array $fileList) {
+		$path = $this->getMigrationDirectory();
+
+		$this->createMigrationFiles($fileList, $path);
+		$this->hashMigrationToDb($fileList, $path);
+
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
+		$absoluteFileList = array_map(function($file)use($path) {
+			return implode(DIRECTORY_SEPARATOR, [
+				$path,
+				$file,
+			]);
+		},$fileList);
+
+		self::assertEquals(
+			count($absoluteFileList),
+			$migrator->getMigrationCount()
+		);
+	}
+
 	public function dataMigrationFileList():array {
 		$fileList = $this->generateFileList();
 		return [

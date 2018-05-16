@@ -84,7 +84,7 @@ class Migrator {
 			$result = $this->dbClient->executeSql("select `"
 				. self::COLUMN_QUERY_NUMBER
 				. "` from `{$this->tableName}` "
-				. "order by `count` desc"
+				. "order by `" . self::COLUMN_QUERY_NUMBER . "` desc"
 			);
 			$row = $result->fetch();
 		}
@@ -92,7 +92,7 @@ class Migrator {
 			return 0;
 		}
 
-		return $row->count;
+		return $row->{self::COLUMN_QUERY_NUMBER};
 	}
 
 	public function getMigrationFileList():array {
