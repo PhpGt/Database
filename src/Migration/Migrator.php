@@ -92,7 +92,7 @@ class Migrator {
 			return 0;
 		}
 
-		return $row->{self::COLUMN_QUERY_NUMBER};
+		return $row->{self::COLUMN_QUERY_NUMBER} ?? 0;
 	}
 
 	public function getMigrationFileList():array {
