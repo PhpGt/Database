@@ -5,6 +5,7 @@ use Exception;
 use Gt\Database\Client;
 use Gt\Database\Connection\Settings;
 use Gt\Database\Migration\MigrationDirectoryNotFoundException;
+use Gt\Database\Migration\MigrationFileNameFormatException;
 use Gt\Database\Migration\MigrationIntegrityException;
 use Gt\Database\Migration\MigrationSequenceOrderException;
 use Gt\Database\Migration\Migrator;
@@ -221,6 +222,35 @@ class MigratorTest extends TestCase {
 			count($absoluteFileList),
 			$migrator->getMigrationCount()
 		);
+	}
+
+	/**
+	 * @dataProvider dataMigrationFileList
+	 */
+	public function testMigrationFileNameFormat(array $fileList) {
+		$path = $this->getMigrationDirectory();
+
+		$this->createMigrationFiles($fileList, $path);
+		$this->hashMigrationToDb($fileList, $path);
+
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
+		$absoluteFileList = array_map(function($file)use($path) {
+			return implode(DIRECTORY_SEPARATOR, [
+				$path,
+				$file,
+			]);
+		},$fileList);
+
+		$fileToBreakFormat = array_rand($absoluteFileList);
+		$absoluteFileList[$fileToBreakFormat] = str_replace(
+			".sql",
+			".broken",
+			$absoluteFileList[$fileToBreakFormat]
+		);
+
+		self::expectException(MigrationFileNameFormatException::class);
+		$migrator->checkFileListOrder($absoluteFileList);
 	}
 
 	public function dataMigrationFileList():array {
