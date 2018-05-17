@@ -114,6 +114,7 @@ class Migrator {
 			$fileList []= $pathName;
 		}
 
+		sort($fileList);
 		return $fileList;
 	}
 
