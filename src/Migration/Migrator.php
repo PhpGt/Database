@@ -178,7 +178,7 @@ class Migrator {
 	public function performMigration(
 		array $migrationFileList,
 		int $existingMigrationCount = 0
-	) {
+	):int {
 		foreach($migrationFileList as $fileNumber => $file) {
 			if($fileNumber <= $existingMigrationCount) {
 				continue;
@@ -189,6 +189,7 @@ class Migrator {
 				$sql = file_get_contents($file);
 				$md5 = md5_file($file);
 				$this->dbClient->executeSql($sql);
+				$this->recordMigrationSuccess($fileNumber, $md5);
 			}
 			catch(\Exception $exception) {
 				echo "Error performing migration $fileNumber.";
@@ -197,9 +198,9 @@ class Migrator {
 				echo PHP_EOL;
 				exit(1);
 			}
-
-			$this->recordMigrationSuccess($fileNumber, $md5);
 		}
+
+		return $fileNumber;
 	}
 
 	/**

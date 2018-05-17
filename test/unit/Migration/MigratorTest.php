@@ -278,6 +278,28 @@ class MigratorTest extends TestCase {
 		self::assertNull($exception,"Exception should not be thrown");
 	}
 
+	/**
+	 * @dataProvider dataMigrationFileList
+	 */
+	public function testPerformMigrationGood(array $fileList):void {
+		$path = $this->getMigrationDirectory();
+
+		$this->createMigrationFiles($fileList, $path);
+		$this->hashMigrationToDb($fileList, $path);
+
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
+		$absoluteFileList = array_map(function($file)use($path) {
+			return implode(DIRECTORY_SEPARATOR, [
+				$path,
+				$file,
+			]);
+		},$fileList);
+
+		$migrator->performMigration($absoluteFileList);
+
+	}
+
 	public function dataMigrationFileList():array {
 		$fileList = $this->generateFileList();
 		return [
