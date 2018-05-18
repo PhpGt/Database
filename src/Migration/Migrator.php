@@ -179,7 +179,9 @@ class Migrator {
 		array $migrationFileList,
 		int $existingMigrationCount = 0
 	):int {
-		foreach($migrationFileList as $fileNumber => $file) {
+		foreach($migrationFileList as $i => $file) {
+			$fileNumber = $i + 1;
+
 			if($fileNumber <= $existingMigrationCount) {
 				continue;
 			}
@@ -231,13 +233,19 @@ class Migrator {
 
 	protected function recordMigrationSuccess(int $number, string $hash) {
 		try {
+			$now = "now()";
+
+			if($this->dataSource === Settings::DRIVER_SQLITE) {
+				$now = "datetime('now')";
+			}
+
 			$this->dbClient->executeSql(implode("\n", [
 				"insert into `{$this->tableName}` (",
 				"`" . self::COLUMN_QUERY_NUMBER . "`, ",
 				"`" . self::COLUMN_QUERY_HASH . "`, ",
 				"`" . self::COLUMN_MIGRATED_AT . "` ",
 				") values (",
-				"?, ?, now()",
+				"?, ?, $now",
 				")",
 			]), [$number, $hash]);
 		}

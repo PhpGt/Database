@@ -285,7 +285,6 @@ class MigratorTest extends TestCase {
 		$path = $this->getMigrationDirectory();
 
 		$this->createMigrationFiles($fileList, $path);
-		$this->hashMigrationToDb($fileList, $path);
 
 		$settings = $this->createSettings($path);
 		$migrator = new Migrator($settings, $path);
@@ -296,8 +295,23 @@ class MigratorTest extends TestCase {
 			]);
 		},$fileList);
 
-		$migrator->performMigration($absoluteFileList);
+		$migrator->createMigrationTable();
 
+		$exception = null;
+
+		try {
+			$migrator->performMigration($absoluteFileList);
+		}
+		catch(Exception $exception) {}
+
+		$db = new Client($settings);
+		$result = $db->executeSql("PRAGMA table_info(test);");
+// There should be one more column than the number of files, due to the fact that the first
+// migration creates the table with two columns.
+		self::assertCount(
+		count($absoluteFileList) + 1,
+			$result->fetchAll()
+		);
 	}
 
 	public function dataMigrationFileList():array {
