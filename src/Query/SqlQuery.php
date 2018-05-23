@@ -23,6 +23,8 @@ class SqlQuery extends Query {
 	}
 
 	public function execute(array $bindings = []):ResultSet {
+		$bindings = $this->flattenBindings($bindings);
+
 		$pdo = $this->preparePdo();
 		$sql = $this->getSql($bindings);
 		$statement = $this->prepareStatement($pdo, $sql);
@@ -125,5 +127,33 @@ class SqlQuery extends Query {
 		return
 			$bindings === []
 			|| array_keys($bindings) === range(0, count($bindings) - 1);
+	}
+
+	/**
+	 * $bindings can either be :
+	 * 1) An array of individual values for binding to the question mark placeholder,
+	 * passed in as variable arguments.
+	 * 2) An array containing one single subarray containing key-value-pairs for binding to
+	 * named placeholders.
+	 *
+	 * Due to the use of variable arguments on the Database and QueryCollection classes,
+	 * key-value-pair bindings may be double or triple nested.
+	 */
+	protected function flattenBindings(array $bindings):array {
+		if(!isset($bindings[0])) {
+			return $bindings;
+		}
+
+		$flatArray = [];
+		foreach($bindings as $i => $b) {
+			while(isset($b[0])
+			&& is_array($b[0])) {
+				$b = $b[0];
+			}
+
+			$flatArray = array_merge($flatArray, $b);
+		}
+
+		return $flatArray;
 	}
 }

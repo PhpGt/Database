@@ -18,7 +18,7 @@ class QueryCollectionTest extends TestCase {
 		$this->mockQuery
 			->expects(static::once())
 			->method("execute")
-			->with($placeholderVars);
+			->with([$placeholderVars]);
 
 		$resultSet = $this->queryCollection->query(
 			"something",
@@ -47,7 +47,7 @@ class QueryCollectionTest extends TestCase {
 		$this->mockQuery
 			->expects(static::once())
 			->method("execute")
-			->with($placeholderVars);
+			->with([$placeholderVars]);
 
 		static::assertInstanceOf(
 			ResultSet::class,

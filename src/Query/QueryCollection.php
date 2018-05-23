@@ -43,12 +43,6 @@ class QueryCollection {
 		...$placeholderMap
 	):ResultSet {
 		$query = $this->queryFactory->create($name);
-
-		while(isset($placeholderMap[0])
-		&& is_array($placeholderMap[0])) {
-			$placeholderMap = $placeholderMap[0];
-		}
-
 		return $query->execute($placeholderMap);
 	}
 
