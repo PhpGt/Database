@@ -7,25 +7,14 @@ use Gt\Database\Migration\Migrator;
  * Database migration iterates over a set of incremental schema changes and
  * stores the currently-migrated schema version within the database itself.
  */
-$autoloadPath = "";
-$currentDir = __DIR__;
-
-// The bin directory may be in multiple places, depending on how this library
-// was installed. Iterate up the tree until either the autoloader or the root
-// directory is found:
-while((empty($autoloadPath)) && $currentDir !== "/") {
-	$currentDir = realpath($currentDir . "/..");
-	if(is_file("$currentDir/autoload.php")) {
-		$autoloadPath = "$currentDir/autoload.php";
-	}
-}
-if(empty($autoloadPath)) {
-	$autoloadPath = realpath(__DIR__ . "/../vendor/autoload.php");
-}
+// The script must be run from the context of a project's root directory.
+$repoBasePath = getcwd();
+$autoloadPath = implode(DIRECTORY_SEPARATOR, [
+	$repoBasePath,
+	"vendor",
+	"autoload.php",
+]);
 require($autoloadPath);
-
-// Repository will always be the parent directory above autoload.php.
-$repoBasePath = dirname(dirname($autoloadPath));
 
 $forced = false;
 if(!empty($argv[1])
@@ -33,17 +22,17 @@ if(!empty($argv[1])
 	$forced = true;
 }
 
-$config = new Config("$repoBasePath/config.ini", [
-		"database" => [
-			"query_path" => "src/query",
-			"migration_path" => "_migration",
-			"migration_table" => "_migration",
-		]
+// Load the default config supplied by WebEngine, if available:
+$webEngineConfig = new Config("$repoBasePath/vendor/phpgt/webengine/config.default.ini");
+$config = new Config(
+	"$repoBasePath/config.ini",
+	[
+		"database" => $webEngineConfig["database"] ?? [],
 	]
 );
 
 $settings = new Settings(
-	implode("/", [
+	implode(DIRECTORY_SEPARATOR, [
 		$repoBasePath,
 		$config["database"]["query_path"]
 	]),
@@ -55,7 +44,7 @@ $settings = new Settings(
 	$config["database"]["password"]
 );
 
-$migrationPath = implode("/", [
+$migrationPath = implode(DIRECTORY_SEPARATOR, [
 	$repoBasePath,
 	$config["database"]["query_path"],
 	$config["database"]["migration_path"],
@@ -63,7 +52,8 @@ $migrationPath = implode("/", [
 $migrationTable = $config["database"]["migration_table"];
 
 $migrator = new Migrator($settings, $migrationPath, $migrationTable, $forced);
+$migrator->createMigrationTable();
 $migrationCount = $migrator->getMigrationCount();
 $migrationFileList = $migrator->getMigrationFileList();
-$migrator->checkIntegrity($migrationCount, $migrationFileList);
+$migrator->checkIntegrity($migrationFileList, $migrationCount);
 $migrator->performMigration($migrationFileList, $migrationCount);

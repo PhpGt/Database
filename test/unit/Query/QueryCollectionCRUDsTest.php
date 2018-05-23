@@ -41,12 +41,16 @@ class QueryCollectionCRUDsTest extends TestCase {
 		$this->mockQuery
 			->expects(static::once())
 			->method("execute")
-			->with($placeholderVars)
+			->with([$placeholderVars])
 			->willReturn($mockResultSet);
 
 		static::assertEquals(
 			$lastInsertID,
-			$this->queryCollection->insert("something", $placeholderVars));
+			$this->queryCollection->insert(
+				"something",
+				$placeholderVars
+			)
+		);
 	}
 
 	public function testCreateNoParams() {
@@ -78,7 +82,7 @@ class QueryCollectionCRUDsTest extends TestCase {
 		$this->mockQuery
 			->expects(static::once())
 			->method("execute")
-			->with($placeholderVars)
+			->with([$placeholderVars])
 			->willReturn($mockResultSet);
 
 		$actual = $this->queryCollection->fetch("something", $placeholderVars);
@@ -133,7 +137,7 @@ class QueryCollectionCRUDsTest extends TestCase {
 		$this->mockQuery
 			->expects(static::once())
 			->method("execute")
-			->with($placeholderVars)
+			->with([$placeholderVars])
 			->willReturn($mockResultSet);
 
 		$actual = $this->queryCollection->fetchAll("something", $placeholderVars);
@@ -188,7 +192,7 @@ class QueryCollectionCRUDsTest extends TestCase {
 		$this->mockQuery
 			->expects(static::once())
 			->method("execute")
-			->with($placeholderVars)
+			->with([$placeholderVars])
 			->willReturn($mockResultSet);
 
 		static::assertEquals($recordsUpdatedCount, $this->queryCollection->update("something", $placeholderVars));
@@ -223,7 +227,7 @@ class QueryCollectionCRUDsTest extends TestCase {
 		$this->mockQuery
 			->expects(static::once())
 			->method("execute")
-			->with($placeholderVars)
+			->with([$placeholderVars])
 			->willReturn($mockResultSet);
 
 		static::assertEquals(

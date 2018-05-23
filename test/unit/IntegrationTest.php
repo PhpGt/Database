@@ -14,24 +14,24 @@ class IntegrationTest extends TestCase {
 	private $settings;
 	/** @var string */
 	private $queryBase;
-	/** @var Client */
+	/** @var Database */
 	private $db;
 
 	public function setUp() {
 		$this->queryBase = Helper::getTmpDir() . "/query";
 
-		$this->db = new Client($this->settingsSingleton());
+		$this->db = new Database($this->settingsSingleton());
 		$driver = $this->db->getDriver();
 
 		$connection = $driver->getConnection();
-		$output = $connection->exec("CREATE TABLE test_table ( id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(32), timestamp DATETIME DEFAULT current_timestamp); CREATE UNIQUE INDEX test_table_name_uindex ON test_table (name);");
+		$output = $connection->exec("CREATE TABLE test_table ( id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(32), number integer, timestamp DATETIME DEFAULT current_timestamp); CREATE UNIQUE INDEX test_table_name_uindex ON test_table (name);");
 
 		if($output === false) {
 			$error = $connection->errorInfo();
 			throw new Exception($error[2]);
 		}
 
-		$insertStatement = $connection->prepare("INSERT INTO test_table (name) VALUES ('one'), ('two'), ('three')");
+		$insertStatement = $connection->prepare("INSERT INTO test_table (name, number) VALUES ('one', 1), ('two', 2), ('three', 3)");
 		$success = $insertStatement->execute();
 		if($success === false) {
 			$error = $connection->errorInfo();
@@ -94,7 +94,7 @@ class IntegrationTest extends TestCase {
 		mkdir($queryCollectionPath, 0775, true);
 		file_put_contents(
 			$getByIdQueryPath,
-			"SELECT id, name FROM test_table WHERE id = ?"
+			"SELECT id, name, number FROM test_table WHERE id = ?"
 		);
 
 		$result2 = $this->db->fetch("exampleCollection/getById", 2);
@@ -105,6 +105,36 @@ class IntegrationTest extends TestCase {
 		static::assertEquals(1, $result1->id);
 		static::assertEquals(2, $result2->id);
 		static::assertCount(3, $rqr);
+	}
+
+	public function testMultipleParameterUsage() {
+		$queryCollectionPath = $this->queryBase . "/exampleCollection";
+		$getByNameNumberQueryPath = $queryCollectionPath . "/getByNameNumber.sql";
+
+		mkdir($queryCollectionPath, 0775, true);
+		file_put_contents(
+			$getByNameNumberQueryPath,
+			"SELECT id, name, number FROM test_table WHERE name = :name and number = :number"
+		);
+
+		$result1 = $this->db->fetch("exampleCollection/getByNameNumber", [
+			"name" => "one",
+			"number" => 1,
+		]);
+		$result2 = $this->db->fetch("exampleCollection/getByNameNumber", [
+			"name" => "two",
+			"number" => 2,
+		]);
+		$resultNull = $this->db->fetch("exampleCollection/getByNameNumber", [
+			"name" => "three",
+			"number" => 55,
+		]);
+
+		$rqr = $this->db->executeSql("SELECT id, name FROM test_table");
+
+		static::assertEquals(1, $result1->id);
+		static::assertEquals(2, $result2->id);
+		static::assertNull($resultNull);
 	}
 
 	private function settingsSingleton():Settings {

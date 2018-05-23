@@ -40,49 +40,60 @@ class QueryCollection {
 
 	public function query(
 		string $name,
-		iterable $placeholderMap = []
+		...$placeholderMap
 	):ResultSet {
 		$query = $this->queryFactory->create($name);
-
 		return $query->execute($placeholderMap);
 	}
 
 	public function insert(
 		string $name,
-		iterable $placeholderMap = []
+		...$placeholderMap
 	):int {
 		return (int)$this->query(
 			$name,
-			$placeholderMap
+			...$placeholderMap
 		)->lastInsertId();
 	}
 
 	public function fetch(
 		string $name,
-		iterable $placeholderMap = []
+		...$placeholderMap
 	):?Row {
-		return $this->query($name, $placeholderMap)->current();
+		return $this->query(
+			$name,
+			...$placeholderMap
+		)->current();
 	}
 
 	public function fetchAll(
 		string $name,
-		iterable $placeholderMap = []
+		...$placeholderMap
 	):ResultSet {
-		return $this->query($name, $placeholderMap);
+		return $this->query(
+			$name,
+			...$placeholderMap
+		);
 	}
 
 	public function update(
 		string $name,
-		iterable $placeholderMap = []
+		...$placeholderMap
 	):int {
-		return $this->query($name, $placeholderMap)->affectedRows();
+		return $this->query(
+			$name,
+			...$placeholderMap
+		)->affectedRows();
 	}
 
 	public function delete(
 		string $name,
-		iterable $placeholderMap = []
+		...$placeholderMap
 	):int {
-		return $this->query($name, $placeholderMap)->affectedRows();
+		return $this->query(
+			$name,
+			...$placeholderMap
+		)->affectedRows();
 	}
 
 	public function getDirectoryPath():string {
