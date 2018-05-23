@@ -1,14 +1,18 @@
 <?php
 namespace Gt\Database\Migration;
 
+use DirectoryIterator;
 use Gt\Database\Client;
 use Gt\Database\Connection\Settings;
+use Gt\Database\DatabaseException;
+use SplFileInfo;
 
 class Migrator {
 	const COLUMN_QUERY_NUMBER = "query_number";
 	const COLUMN_QUERY_HASH = "query_hash";
 	const COLUMN_MIGRATED_AT = "migrated_at";
 
+	protected $dataSource;
 	protected $schema;
 	protected $dbClient;
 	protected $path;
@@ -17,99 +21,130 @@ class Migrator {
 	public function __construct(
 		Settings $settings,
 		string $path,
-		string $tableName,
-		bool $forced
+		string $tableName = "_migration",
+		bool $forced = false
 	) {
 		$this->schema = $settings->getSchema();
 		$this->path = $path;
 		$this->tableName = $tableName;
+		$this->dataSource = $settings->getDataSource();
 
-		$settingsWithoutSchema = new Settings(
-			$settings->getBaseDirectory(),
-			$settings->getDataSource(),
-			// Schema may not exist yet.
-			"",
-			$settings->getHost(),
-			$settings->getPort(),
-			$settings->getUsername(),
-			$settings->getPassword()
-		);
+		if($this->dataSource !== Settings::DRIVER_SQLITE) {
+			$settings = $settings->withoutSchema(); // @codeCoverageIgnore
+		}
 
-		$this->dbClient = new Client($settingsWithoutSchema);
-		$this->selectSchema($forced);
+		$this->dbClient = new Client($settings);
+
+		if($forced) {
+			$this->deleteAndRecreateSchema();
+		}
+
+		$this->selectSchema();
+	}
+
+	public function checkMigrationTableExists():bool {
+		switch($this->dataSource) {
+		case Settings::DRIVER_SQLITE:
+			$result = $this->dbClient->executeSql(
+				"select name from sqlite_master "
+				. "where type=? "
+				. "and name like ?",[
+					"table",
+					$this->tableName,
+				]
+			);
+			break;
+
+		default:
+// @codeCoverageIgnoreStart
+			$result = $this->dbClient->executeSql(
+				"show tables like ?",
+				[
+					$this->tableName
+				]
+			);
+			break;
+// @codeCoverageIgnoreEnd
+		}
+
+		return !empty($result->fetch());
+	}
+
+	public function createMigrationTable():void {
+		$this->dbClient->executeSql(implode("\n", [
+			"create table `{$this->tableName}` (",
+			"`" . self::COLUMN_QUERY_NUMBER . "` int primary key,",
+			"`" . self::COLUMN_QUERY_HASH . "` varchar(32) not null,",
+			"`" . self::COLUMN_MIGRATED_AT . "` datetime not null )",
+		]));
 	}
 
 	public function getMigrationCount():int {
-		// TODO: Use placeholder when single replacements implemented.
-		$result = $this->dbClient->executeSql("show tables like \"" . $this->tableName . "\"");
-		$existingRow = $result->fetch();
-
-		if(is_null($existingRow)) {
-			echo "Migration table not found, attempting to create." . PHP_EOL;
-			$this->dbClient->executeSql(implode("\n", [
-				"create table `{$this->tableName}` (",
-				"`" . self::COLUMN_QUERY_NUMBER . "` int primary key,",
-				"`" . self::COLUMN_QUERY_HASH . "` varchar(32) not null,",
-				"`" . self::COLUMN_MIGRATED_AT . "` datetime not null )",
-			]));
-			echo "Created table `{$this->tableName}`." . PHP_EOL;
-		}
-
 		try {
-			$result = $this->dbClient->executeSql(
-				"select `"
+			$result = $this->dbClient->executeSql("select `"
 				. self::COLUMN_QUERY_NUMBER
 				. "` from `{$this->tableName}` "
-				. "order by 1 desc limit 1"
+				. "order by `" . self::COLUMN_QUERY_NUMBER . "` desc"
 			);
-
-			if(count($result) === 0) {
-				return 0;
-			}
-
-			return (int)$result->{self::COLUMN_QUERY_NUMBER};
+			$row = $result->fetch();
 		}
-		catch(\Exception $exception) {
-			$message = $exception->getMessage();
-			echo "Error getting migration count.";
-			echo PHP_EOL;
-			echo $message;
-			echo PHP_EOL;
-			exit(1);
+		catch(DatabaseException $exception) {
+			return 0;
 		}
+
+		return $row->{self::COLUMN_QUERY_NUMBER} ?? 0;
 	}
 
 	public function getMigrationFileList():array {
 		if(!is_dir($this->path)) {
-			throw new MigrationException(
-				"Migration directory not found: " . $this->path);
+			throw new MigrationDirectoryNotFoundException(
+				$this->path
+			);
 		}
-		$fileList = scandir($this->path);
-		natsort($fileList);
 
-		$numberedFileList = [];
+		$fileList = [];
 
-		foreach($fileList as $i => $file) {
-			if($file[0] === ".") {
+		foreach(new DirectoryIterator($this->path) as $i => $fileInfo) {
+			if($fileInfo->isDot()
+			|| $fileInfo->getExtension() !== "sql") {
 				continue;
 			}
 
-			$pathName = $this->path . "/" . $file;
-			$fileNumber = (int)substr($file, 0, strpos($file, "-"));
-			$numberedFileList[$fileNumber] = $pathName;
+			$pathName = $fileInfo->getPathname();
+			$fileList []= $pathName;
 		}
 
-		return $numberedFileList;
+		sort($fileList);
+		return $fileList;
+	}
+
+	public function checkFileListOrder(array $fileList):void {
+		$counter = 0;
+		$sequence = [];
+
+		foreach($fileList as $file) {
+			$counter++;
+			$migrationNumber = $this->extractNumberFromFilename($file);
+			$sequence []= $migrationNumber;
+
+			if($counter !== $migrationNumber) {
+				throw new MigrationSequenceOrderException(
+					"Missing: $counter"
+				);
+			}
+		}
 	}
 
 	public function checkIntegrity(
-		int $migrationCount = 0,
-		array $migrationFileList
-	) {
-		foreach($migrationFileList as $fileNumber => $file) {
+		array $migrationFileList,
+		int $migrationCount = null
+	):int {
+		foreach($migrationFileList as $i => $file) {
+			$fileNumber = $i + 1;
 			$md5 = md5_file($file);
 
-			if($fileNumber <= $migrationCount) {
+			if(is_null($migrationCount)
+			|| $fileNumber <= $migrationCount) {
 				$result = $this->dbClient->executeSql(implode("\n", [
 					"select `" . self::COLUMN_QUERY_HASH . "`",
 					"from `{$this->tableName}`",
@@ -117,27 +152,36 @@ class Migrator {
 					"limit 1",
 				]), [$fileNumber]);
 
-				echo "Migration $fileNumber OK" . PHP_EOL;
+				$hashInDb = ($result->fetch())->{self::COLUMN_QUERY_HASH};
 
-				if($result->{self::COLUMN_QUERY_HASH} !== $md5) {
-					echo PHP_EOL;
-					echo "Migration query doesn't match existing migration!";
-					echo PHP_EOL;
-					echo "Please check $file against your version control system.";
-					echo PHP_EOL;
-					exit(1);
+				if($hashInDb !== $md5) {
+					throw new MigrationIntegrityException($file);
 				}
-
-				continue;
 			}
 		}
+
+		return $fileNumber;
+	}
+
+	protected function extractNumberFromFilename(string $pathName):int {
+		$file = new SplFileInfo($pathName);
+		$filename = $file->getFilename();
+		preg_match("/(\d+)-?.*\.sql/", $filename, $matches);
+
+		if(!isset($matches[1])) {
+			throw new MigrationFileNameFormatException($filename);
+		}
+
+		return (int)$matches[1];
 	}
 
 	public function performMigration(
 		array $migrationFileList,
 		int $existingMigrationCount = 0
-	) {
-		foreach($migrationFileList as $fileNumber => $file) {
+	):int {
+		foreach($migrationFileList as $i => $file) {
+			$fileNumber = $i + 1;
+
 			if($fileNumber <= $existingMigrationCount) {
 				continue;
 			}
@@ -147,6 +191,7 @@ class Migrator {
 				$sql = file_get_contents($file);
 				$md5 = md5_file($file);
 				$this->dbClient->executeSql($sql);
+				$this->recordMigrationSuccess($fileNumber, $md5);
 			}
 			catch(\Exception $exception) {
 				echo "Error performing migration $fileNumber.";
@@ -155,20 +200,52 @@ class Migrator {
 				echo PHP_EOL;
 				exit(1);
 			}
+		}
 
-			$this->recordMigrationSuccess($fileNumber, $md5);
+		return $fileNumber;
+	}
+
+	/**
+	 * @codeCoverageIgnore
+	 */
+	protected function selectSchema() {
+// SQLITE databases represent their own schema.
+		if($this->dataSource === Settings::DRIVER_SQLITE) {
+			return;
+		}
+
+		$schema = $this->schema;
+
+		try {
+			$this->dbClient->executeSql(
+				"create schema if not exists `$schema`"
+			);
+			$this->dbClient->executeSql(
+				"use `$schema`"
+			);
+		}
+		catch(DatabaseException $exception) {
+			echo "Error selecting `$schema`." . PHP_EOL;
+			echo $exception->getMessage() . PHP_EOL;
+			exit(1);
 		}
 	}
 
 	protected function recordMigrationSuccess(int $number, string $hash) {
 		try {
+			$now = "now()";
+
+			if($this->dataSource === Settings::DRIVER_SQLITE) {
+				$now = "datetime('now')";
+			}
+
 			$this->dbClient->executeSql(implode("\n", [
 				"insert into `{$this->tableName}` (",
 				"`" . self::COLUMN_QUERY_NUMBER . "`, ",
 				"`" . self::COLUMN_QUERY_HASH . "`, ",
 				"`" . self::COLUMN_MIGRATED_AT . "` ",
 				") values (",
-				"?, ?, now()",
+				"?, ?, $now",
 				")",
 			]), [$number, $hash]);
 		}
@@ -182,33 +259,24 @@ class Migrator {
 		}
 	}
 
-	protected function selectSchema(bool $deleteAndRecreateSchema = false) {
-		if($deleteAndRecreateSchema) {
-			$this->deleteAndRecreateSchema();
-		}
-
-		$schema = $this->schema;
-
-		try {
-			$this->dbClient->executeSql("create schema if not exists `$schema`");
-			$this->dbClient->executeSql("use `$schema`");
-		}
-		catch(\Exception $exception) {
-			echo "Error selecting `$schema`." . PHP_EOL;
-			echo $exception->getMessage() . PHP_EOL;
-			exit(1);
-		}
-	}
-
+	/**
+	 * @codeCoverageIgnore
+	 */
 	protected function deleteAndRecreateSchema() {
-		$schema = $this->schema;
+		if($this->dataSource === Settings::DRIVER_SQLITE) {
+			return;
+		}
 
 		try {
-			$this->dbClient->executeSql("drop schema if exists `$schema`");
-			$this->dbClient->executeSql("create schema if not exists `$schema`");
+			$this->dbClient->executeSql(
+				"drop schema if exists `{$this->schema}`"
+			);
+			$this->dbClient->executeSql(
+				"create schema if not exists `{$this->schema}`"
+			);
 		}
 		catch(\Exception $exception) {
-			echo "Error recreating schema `$schema`." . PHP_EOL;
+			echo "Error recreating schema `{$this->schema}`." . PHP_EOL;
 			echo $exception->getMessage() . PHP_EOL;
 			exit(1);
 		}

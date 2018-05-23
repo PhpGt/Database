@@ -2,6 +2,8 @@
 namespace Gt\Database\Connection;
 
 class Settings implements SettingsInterface {
+	use ImmutableSettings;
+
 	const CHARSET = "utf8";
 	const COLLATION = "utf8_unicode_ci";
 

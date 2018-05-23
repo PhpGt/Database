@@ -10,7 +10,10 @@ class QueryCollectionFactoryTest extends TestCase {
 	public function testCurrentWorkingDirectoryDefault() {
 		$queryCollectionName = "exampleTest";
 		$baseDir = Helper::getTmpDir();
-		$queryCollectionDirectoryPath = "$baseDir/$queryCollectionName";
+		$queryCollectionDirectoryPath = implode(DIRECTORY_SEPARATOR, [
+			$baseDir,
+			$queryCollectionName,
+		]);
 
 		mkdir($queryCollectionDirectoryPath, 0775, true);
 		chdir($baseDir);
@@ -23,8 +26,7 @@ class QueryCollectionFactoryTest extends TestCase {
 
 		$queryCollectionFactory = new QueryCollectionFactory($driver);
 		$queryCollection = $queryCollectionFactory->create(
-			$queryCollectionName,
-			$driver
+			$queryCollectionName
 		);
 
 		static::assertEquals(

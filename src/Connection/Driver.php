@@ -25,7 +25,9 @@ class Driver {
 	}
 
 	protected function connect() {
-		$options = null;
+		$options = [
+			Connection::ATTR_ERRMODE => Connection::ERRMODE_EXCEPTION,
+		];
 
 		$this->connection = new Connection(
 			$this->settings->getConnectionString(),

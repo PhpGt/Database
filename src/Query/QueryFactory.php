@@ -30,7 +30,7 @@ class QueryFactory {
 	public function findQueryFilePath(string $name):string {
 		foreach(new DirectoryIterator($this->directoryOfQueries) as $fileInfo) {
 			if($fileInfo->isDot()
-				|| $fileInfo->isDir()) {
+			|| $fileInfo->isDir()) {
 				continue;
 			}
 

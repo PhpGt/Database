@@ -5,17 +5,39 @@ class Helper {
 	const COUNT_PATH_PROVIDER = 10;
 
 	public static function getTmpDir() {
-		return implode("/", [
+		$dir = implode(DIRECTORY_SEPARATOR, [
 			sys_get_temp_dir(),
 			"phpgt",
 			"database",
 			uniqid()
 		]);
+		return $dir;
 	}
 
 	public static function deleteDir(string $dir) {
-		exec("rm -rf $dir");
+		self::recursiveRemove($dir);
 	}
+
+	public static function recursiveRemove(string $dir) {
+		if(!file_exists($dir)) {
+			return;
+		}
+		$scanDir = array_diff(
+			scandir($dir),
+			array('.', '..')
+		);
+
+		foreach($scanDir as $file) {
+			if(is_dir("$dir/$file")) {
+				self::recursiveRemove("$dir/$file");
+			}
+			else {
+				@unlink("$dir/$file");
+			}
+		}
+		@rmdir($dir);
+	}
+
 
 	public static function queryPathExistsProvider() {
 		return self::queryPathProvider(true);
@@ -73,7 +95,11 @@ class Helper {
 
 		for($i = 0; $i < self::COUNT_PATH_PROVIDER; ++$i) {
 			$name = uniqid();
-			$path = self::getTmpDir() . "/query/" . $name;
+			$path = implode(DIRECTORY_SEPARATOR, [
+				self::getTmpDir(),
+				"query",
+				$name,
+			]);
 
 			if($exists) {
 				mkdir($path, 0775, true);
