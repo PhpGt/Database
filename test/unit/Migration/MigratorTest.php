@@ -2,7 +2,7 @@
 namespace Gt\Database\Test\Migration;
 
 use Exception;
-use Gt\Database\Client;
+use Gt\Database\Database;
 use Gt\Database\Connection\Settings;
 use Gt\Database\Migration\MigrationDirectoryNotFoundException;
 use Gt\Database\Migration\MigrationFileNameFormatException;
@@ -34,6 +34,7 @@ class MigratorTest extends TestCase {
 		$path = $this->getMigrationDirectory();
 		$settings = $this->createSettings($path);
 		$migrator = new Migrator($settings, $path);
+		$migrator->createMigrationTable();
 		self::assertEquals(0, $migrator->getMigrationCount());
 	}
 
@@ -197,6 +198,7 @@ class MigratorTest extends TestCase {
 		$path = $this->getMigrationDirectory();
 		$settings = $this->createSettings($path);
 		$migrator = new Migrator($settings, $path);
+		$migrator->createMigrationTable();
 		self::assertEquals(0, $migrator->getMigrationCount());
 	}
 
@@ -304,7 +306,7 @@ class MigratorTest extends TestCase {
 		}
 		catch(Exception $exception) {}
 
-		$db = new Client($settings);
+		$db = new Database($settings);
 		$result = $db->executeSql("PRAGMA table_info(test);");
 // There should be one more column than the number of files, due to the fact that the first
 // migration creates the table with two columns.
@@ -375,7 +377,7 @@ class MigratorTest extends TestCase {
 		}
 
 		$settings = $this->createSettings($path);
-		$db = new Client($settings);
+		$db = new Database($settings);
 		$db->executeSql(implode("\n", [
 			"create table `_migration` (",
 			"`" . Migrator::COLUMN_QUERY_NUMBER . "` int primary key,",

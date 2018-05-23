@@ -2,9 +2,10 @@
 namespace Gt\Database\Migration;
 
 use DirectoryIterator;
-use Gt\Database\Client;
+use Gt\Database\Database;
 use Gt\Database\Connection\Settings;
 use Gt\Database\DatabaseException;
+use PDOException;
 use SplFileInfo;
 
 class Migrator {
@@ -33,7 +34,7 @@ class Migrator {
 			$settings = $settings->withoutSchema(); // @codeCoverageIgnore
 		}
 
-		$this->dbClient = new Client($settings);
+		$this->dbClient = new Database($settings);
 
 		if($forced) {
 			$this->deleteAndRecreateSchema();
@@ -72,7 +73,7 @@ class Migrator {
 
 	public function createMigrationTable():void {
 		$this->dbClient->executeSql(implode("\n", [
-			"create table `{$this->tableName}` (",
+			"create table if not exists `{$this->tableName}` (",
 			"`" . self::COLUMN_QUERY_NUMBER . "` int primary key,",
 			"`" . self::COLUMN_QUERY_HASH . "` varchar(32) not null,",
 			"`" . self::COLUMN_MIGRATED_AT . "` datetime not null )",
@@ -88,7 +89,7 @@ class Migrator {
 			);
 			$row = $result->fetch();
 		}
-		catch(DatabaseException $exception) {
+		catch(PDOException $exception) {
 			return 0;
 		}
 

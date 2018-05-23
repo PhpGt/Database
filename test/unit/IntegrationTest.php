@@ -14,13 +14,13 @@ class IntegrationTest extends TestCase {
 	private $settings;
 	/** @var string */
 	private $queryBase;
-	/** @var Client */
+	/** @var Database */
 	private $db;
 
 	public function setUp() {
 		$this->queryBase = Helper::getTmpDir() . "/query";
 
-		$this->db = new Client($this->settingsSingleton());
+		$this->db = new Database($this->settingsSingleton());
 		$driver = $this->db->getDriver();
 
 		$connection = $driver->getConnection();
