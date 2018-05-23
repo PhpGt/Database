@@ -5,7 +5,7 @@ use Gt\Database\Connection\Settings;
 use Gt\Database\Query\QueryCollection;
 use PHPUnit\Framework\TestCase;
 
-class ClientTest extends TestCase {
+class DatabaseTest extends TestCase {
 	public function testInterface() {
 		$db = new Database();
 		static::assertInstanceOf(Database::class, $db);

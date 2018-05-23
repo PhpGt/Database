@@ -36,39 +36,34 @@ class Database {
 	}
 
 	public function fetch(string $queryName, ...$bindings):?Row {
-		$result = $this->query($queryName, $bindings);
+		$result = $this->query($queryName, ...$bindings);
 
 		return $result->fetch();
 	}
 
 	public function fetchAll(string $queryName, ...$bindings):ResultSet {
-		return $this->query($queryName, $bindings);
+		return $this->query($queryName, ...$bindings);
 	}
 
 	public function insert(string $queryName, ...$bindings):int {
-		$result = $this->query($queryName, $bindings);
+		$result = $this->query($queryName, ...$bindings);
 
 		return $result->lastInsertId();
 	}
 
 	public function delete(string $queryName, ...$bindings):int {
-		$result = $this->query($queryName, $bindings);
+		$result = $this->query($queryName, ...$bindings);
 
 		return $result->affectedRows();
 	}
 
 	public function update(string $queryName, ...$bindings):int {
-		$result = $this->query($queryName, $bindings);
+		$result = $this->query($queryName, ...$bindings);
 
 		return $result->affectedRows();
 	}
 
 	public function query(string $queryName, ...$bindings):ResultSet {
-		while(isset($bindings[0])
-			&& is_array($bindings[0])) {
-			$bindings = $bindings[0];
-		}
-
 		$queryCollectionName = substr(
 			$queryName,
 			0,
@@ -85,7 +80,7 @@ class Database {
 			$connectionName
 		);
 
-		return $queryCollection->query($queryFile, $bindings);
+		return $queryCollection->query($queryFile, ...$bindings);
 	}
 
 	public function setCurrentConnectionName(string $connectionName) {

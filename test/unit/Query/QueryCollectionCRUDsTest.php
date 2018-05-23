@@ -46,7 +46,11 @@ class QueryCollectionCRUDsTest extends TestCase {
 
 		static::assertEquals(
 			$lastInsertID,
-			$this->queryCollection->insert("something", $placeholderVars));
+			$this->queryCollection->insert(
+				"something",
+				$placeholderVars
+			)
+		);
 	}
 
 	public function testCreateNoParams() {

@@ -20,7 +20,10 @@ class QueryCollectionTest extends TestCase {
 			->method("execute")
 			->with($placeholderVars);
 
-		$resultSet = $this->queryCollection->query("something", $placeholderVars);
+		$resultSet = $this->queryCollection->query(
+			"something",
+			$placeholderVars
+		);
 
 		static::assertInstanceOf(
 			ResultSet::class,
