@@ -126,6 +126,8 @@ class SqlQuery extends Query {
 	protected function bindingsEmptyOrNonAssociative(array $bindings):bool {
 		return
 			$bindings === []
-			|| array_keys($bindings) === range(0, count($bindings) - 1);
+			|| array_keys($bindings) === range(
+				0,
+				count($bindings) - 1);
 	}
 }
