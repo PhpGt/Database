@@ -5,10 +5,10 @@ use Gt\Database\Connection\Settings;
 use Gt\Database\Query\QueryCollection;
 use PHPUnit\Framework\TestCase;
 
-class ClientTest extends TestCase {
+class DatabaseTest extends TestCase {
 	public function testInterface() {
-		$db = new Client();
-		static::assertInstanceOf(Client::class, $db);
+		$db = new Database();
+		static::assertInstanceOf(Database::class, $db);
 	}
 
 	/**
@@ -21,7 +21,7 @@ class ClientTest extends TestCase {
 			Settings::DRIVER_SQLITE,
 			Settings::SCHEMA_IN_MEMORY
 		);
-		$db = new Client($settings);
+		$db = new Database($settings);
 
 		$queryCollection = $db->queryCollection($name);
 		static::assertInstanceOf(QueryCollection::class, $queryCollection);
@@ -39,7 +39,7 @@ class ClientTest extends TestCase {
 			Settings::DRIVER_SQLITE,
 			Settings::SCHEMA_IN_MEMORY
 		);
-		$db = new Client($settings);
+		$db = new Database($settings);
 		$db->queryCollection($name);
 	}
 }

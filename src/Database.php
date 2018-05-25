@@ -17,7 +17,7 @@ use PDOException;
  * connections. If only one database connection is required, a name is not
  * required as the default name will be used.
  */
-class Client {
+class Database {
 	/** @var QueryCollectionFactory[] */
 	protected $queryCollectionFactoryArray;
 	/** @var Driver[] */
@@ -64,11 +64,6 @@ class Client {
 	}
 
 	public function query(string $queryName, ...$bindings):ResultSet {
-		while(isset($bindings[0])
-			&& is_array($bindings[0])) {
-			$bindings = $bindings[0];
-		}
-
 		$queryCollectionName = substr(
 			$queryName,
 			0,
