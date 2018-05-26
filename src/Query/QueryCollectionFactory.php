@@ -45,7 +45,7 @@ class QueryCollectionFactory {
 	 * @param  string $name Name of the QueryCollection
 	 * @return string       Absolute path to directory
 	 */
-	protected function locateDirectory(string $name)/* :?string */ {
+	protected function locateDirectory(string $name):?string {
 		foreach(new DirectoryIterator($this->basePath) as $fileInfo) {
 			if($fileInfo->isDot()
 				|| !$fileInfo->isDir()) {

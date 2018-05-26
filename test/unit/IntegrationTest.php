@@ -130,11 +130,37 @@ class IntegrationTest extends TestCase {
 			"number" => 55,
 		]);
 
-		$rqr = $this->db->executeSql("SELECT id, name FROM test_table");
-
 		static::assertEquals(1, $result1->id);
 		static::assertEquals(2, $result2->id);
 		static::assertNull($resultNull);
+	}
+
+	public function testMultipleArrayParameterUsage() {
+		$queryCollectionPath = $this->queryBase . "/exampleCollection";
+		$getByNameNumberQueryPath = $queryCollectionPath . "/getByNameNumber.sql";
+
+		mkdir($queryCollectionPath, 0775, true);
+		file_put_contents(
+			$getByNameNumberQueryPath,
+			"SELECT id, name, number FROM test_table WHERE name = :name and number = :number"
+		);
+
+		$result1 = $this->db->fetch("exampleCollection/getByNameNumber", [
+			"name" => "one",
+			"number" => 1,
+		]);
+		$result2 = $this->db->fetch("exampleCollection/getByNameNumber",
+			[	"name" => "two"] ,
+			["number" => 2]
+		);
+		$result3 = $this->db->fetch("exampleCollection/getByNameNumber", [
+			["name" => "three"],
+			["number" => 3],
+		]);
+
+		static::assertEquals(1, $result1->id);
+		static::assertEquals(2, $result2->id);
+		static::assertEquals(3, $result3->id);
 	}
 
 	private function settingsSingleton():Settings {
