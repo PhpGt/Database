@@ -14,6 +14,10 @@ class Row implements Iterator {
 		$this->setProperties($data);
 	}
 
+	public function toArray():array {
+		return $this->data;
+	}
+
 	public function __get($name) {
 		if(!isset($this->$name)) {
 			throw new NoSuchColumnException($name);

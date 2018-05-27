@@ -35,9 +35,19 @@ abstract class Query {
 	 * key-value-pair bindings may be double or triple nested at this point.
 	 */
 	protected function flattenBindings(array $bindings):array {
-		if(!isset($bindings[0])
-			|| !is_array($bindings[0])) {
+		if(!isset($bindings[0])) {
 			return $bindings;
+		}
+
+		if(is_object($bindings[0])
+		&& method_exists($bindings[0], "toArray")) {
+			$bindings = array_map(function($element) {
+				if(method_exists($element, "toArray")) {
+					return $element->toArray();
+				}
+
+				return $element;
+			}, $bindings);
 		}
 
 		$flatArray = [];
@@ -53,6 +63,10 @@ abstract class Query {
 				}
 
 				$b = $merged;
+			}
+
+			if(!is_array($b)) {
+				$b = [$b];
 			}
 
 			$flatArray = array_merge($flatArray, $b);
