@@ -7,19 +7,19 @@ Encloses your application's database scripts within a simple and standardised in
 ***
 
 <a href="https://circleci.com/gh/PhpGt/Database" target="_blank">
-	<img src="https://img.shields.io/circleci/project/PhpGt/Database/master.svg?style=flat-square" alt="Build status" />
+	<img src="https://badge.status.php.gt/database-build.svg" alt="Build status" />
 </a>
 <a href="https://scrutinizer-ci.com/g/PhpGt/Database" target="_blank">
-	<img src="https://img.shields.io/scrutinizer/g/PhpGt/Database/master.svg?style=flat-square" alt="Code quality" />
+	<img src="https://badge.status.php.gt/database-quality.svg" alt="Code quality" />
 </a>
 <a href="https://scrutinizer-ci.com/g/PhpGt/Database" target="_blank">
-	<img src="https://img.shields.io/scrutinizer/coverage/g/PhpGt/Database/master.svg?style=flat-square" alt="Code coverage" />
+	<img src="https://badge.status.php.gt/database-coverage.svg" alt="Code coverage" />
 </a>
 <a href="https://packagist.org/packages/PhpGt/Database" target="_blank">
-	<img src="https://img.shields.io/packagist/v/PhpGt/Database.svg?style=flat-square" alt="Current version" />
+	<img src="https://badge.status.php.gt/database-version.svg" alt="Current version" />
 </a>
-<a href="http://www.php.gt/input" target="_blank">
-	<img src="https://img.shields.io/badge/docs-www.php.gt/database-26a5e3.svg?style=flat-square" alt="PHP.G/Database documentation" />
+<a href="http://www.php.gt/database" target="_blank">
+	<img src="https://badge.status.php.gt/database-docs.svg" alt="PHP.Gt/Database documentation" />
 </a>
 
 ## Example usage
