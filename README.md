@@ -18,8 +18,8 @@ Encloses your application's database scripts within a simple and standardised in
 <a href="https://packagist.org/packages/PhpGt/Database" target="_blank">
 	<img src="https://badge.status.php.gt/database-version.svg" alt="Current version" />
 </a>
-<a href="http://www.php.gt/input" target="_blank">
-	<img src="https://badge.status.php.gt/database-docs.svg" alt="PHP.G/Database documentation" />
+<a href="http://www.php.gt/database" target="_blank">
+	<img src="https://badge.status.php.gt/database-docs.svg" alt="PHP.Gt/Database documentation" />
 </a>
 
 ## Example usage
