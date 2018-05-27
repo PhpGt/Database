@@ -23,4 +23,41 @@ abstract class Query {
 	}
 
 	abstract public function execute(array $bindings = []):ResultSet;
+
+	/**
+	 * $bindings can either be :
+	 * 1) An array of individual values for binding to the question mark placeholder,
+	 * passed in as variable arguments.
+	 * 2) An array containing subarrays containing key-value-pairs for binding to
+	 * named placeholders.
+	 *
+	 * Due to the use of variable arguments on the Database and QueryCollection classes,
+	 * key-value-pair bindings may be double or triple nested at this point.
+	 */
+	protected function flattenBindings(array $bindings):array {
+		if(!isset($bindings[0])
+			|| !is_array($bindings[0])) {
+			return $bindings;
+		}
+
+		$flatArray = [];
+		foreach($bindings as $i => $b) {
+			while(isset($b[0])
+			&& is_array($b[0])) {
+				$merged = [];
+				foreach($b as $innerKey => $innerValue) {
+					$merged = array_merge(
+						$merged,
+						$innerValue
+					);
+				}
+
+				$b = $merged;
+			}
+
+			$flatArray = array_merge($flatArray, $b);
+		}
+
+		return $flatArray;
+	}
 }
