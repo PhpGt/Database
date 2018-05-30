@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Config.git",
-                "reference": "e5a172e66541a023fe1da9200cb46be0f9823df5"
+                "reference": "354a09a3c68d99d1c50e5207ec56bd36d3573b8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Config/zipball/e5a172e66541a023fe1da9200cb46be0f9823df5",
-                "reference": "e5a172e66541a023fe1da9200cb46be0f9823df5",
+                "url": "https://api.github.com/repos/PhpGt/Config/zipball/354a09a3c68d99d1c50e5207ec56bd36d3573b8d",
+                "reference": "354a09a3c68d99d1c50e5207ec56bd36d3573b8d",
                 "shasum": ""
             },
             "require": {
@@ -43,7 +43,7 @@
                 }
             ],
             "description": "Load configuration from ini files or environment variables.",
-            "time": "2018-05-25T16:52:25+00:00"
+            "time": "2018-05-30T11:17:44+00:00"
         }
     ],
     "packages-dev": [
