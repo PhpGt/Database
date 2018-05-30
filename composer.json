@@ -1,6 +1,6 @@
 {
     "name": "phpgt/database",
-    "description": "Database API organisation for PHP 7 projects.",
+    "description": "Database API organisation.",
     "type": "library",
     "minimum-stability": "dev",
 
