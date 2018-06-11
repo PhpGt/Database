@@ -1,5 +1,6 @@
 build:
   environment:
+    docker: true
     php:
       version: 7.1.0
   tests:
