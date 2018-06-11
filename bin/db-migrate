@@ -1,5 +1,8 @@
 #!/usr/bin/env php
 <?php
+
+use Gt\Config;
+use Gt\Config\ConfigFactory;
 use Gt\Database\Connection\Settings;
 use Gt\Database\Migration\Config;
 use Gt\Database\Migration\Migrator;
@@ -22,14 +25,7 @@ if(!empty($argv[1])
 	$forced = true;
 }
 
-// Load the default config supplied by WebEngine, if available:
-$webEngineConfig = new Config("$repoBasePath/vendor/phpgt/webengine/config.default.ini");
-$config = new Config(
-	"$repoBasePath/config.ini",
-	[
-		"database" => $webEngineConfig["database"] ?? [],
-	]
-);
+$config = ConfigFactory::createForProject($repoBasePath);
 
 $settings = new Settings(
 	implode(DIRECTORY_SEPARATOR, [
