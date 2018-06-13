@@ -2,6 +2,7 @@
 <?php
 
 use Gt\Config\Config;
+use Gt\Config\ConfigFactory;
 use Gt\Database\Connection\Settings;
 use Gt\Database\Migration\Migrator;
 /**
@@ -23,8 +24,31 @@ if(!empty($argv[1])
 	$forced = true;
 }
 
-$config = new Config($repoBasePath);
-$config->setDefault("$repoBasePath/vendor/phpgt/webengine", "config.default.ini");
+$defaultPath = implode(DIRECTORY_SEPARATOR, [
+	$repoBasePath,
+	"vendor",
+	"phpgt",
+	"webengine",
+]);
+foreach(["config.default.ini", "default.ini"] as $defaultFile) {
+	$defaultFilePath = $defaultPath . DIRECTORY_SEPARATOR . $defaultFile;
+
+	if(is_file($defaultFilePath)) {
+		$defaultPath = $defaultFilePath;
+	}
+}
+
+if(!is_file($defaultPath)) {
+	$defaultPath = null;
+}
+
+$config = ConfigFactory::createForProject($repoBasePath);
+
+if($defaultPath) {
+	$default = ConfigFactory::createFromPathName($defaultPath);
+}
+
+$config->merge($default);
 
 $settings = new Settings(
 	implode(DIRECTORY_SEPARATOR, [
