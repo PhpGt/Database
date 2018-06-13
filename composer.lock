@@ -4,79 +4,28 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "44d82f33cdeace70c1da61bc67009997",
+    "content-hash": "925c12664a90d266c6284a9cda613285",
     "packages": [
-        {
-            "name": "magicalex/write-ini-file",
-            "version": "v1.2.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Magicalex/WriteiniFile.git",
-                "reference": "d77f20c9a4ba7e713541539c74d0f14d92283bb6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Magicalex/WriteiniFile/zipball/d77f20c9a4ba7e713541539c74d0f14d92283bb6",
-                "reference": "d77f20c9a4ba7e713541539c74d0f14d92283bb6",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.6.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "5.7.*",
-                "satooshi/php-coveralls": "1.0.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "WriteiniFile\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "Magicalex",
-                    "email": "magicalex@mondedie.fr"
-                }
-            ],
-            "description": "Write-ini-file php library for create, remove, erase, add, and update ini file",
-            "homepage": "https://github.com/Magicalex/WriteIniFile",
-            "keywords": [
-                "file",
-                "ini",
-                "write",
-                "write_ini_file"
-            ],
-            "time": "2017-03-21T02:45:50+00:00"
-        },
         {
             "name": "phpgt/config",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Config.git",
-                "reference": "cd4e1a5a6b38669488a68d739745a828d061a964"
+                "reference": "354a09a3c68d99d1c50e5207ec56bd36d3573b8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Config/zipball/cd4e1a5a6b38669488a68d739745a828d061a964",
-                "reference": "cd4e1a5a6b38669488a68d739745a828d061a964",
+                "url": "https://api.github.com/repos/PhpGt/Config/zipball/354a09a3c68d99d1c50e5207ec56bd36d3573b8d",
+                "reference": "354a09a3c68d99d1c50e5207ec56bd36d3573b8d",
                 "shasum": ""
             },
             "require": {
-                "magicalex/write-ini-file": "v1.2.3",
                 "php": ">=7.1.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "6.4.*"
             },
-            "bin": [
-                "bin/config-generate"
-            ],
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -94,7 +43,7 @@
                 }
             ],
             "description": "Load configuration from ini files or environment variables.",
-            "time": "2018-06-11T09:15:22+00:00"
+            "time": "2018-05-30T11:17:44+00:00"
         }
     ],
     "packages-dev": [
@@ -159,12 +108,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "cfd694a76182f68ac662f8d60852dd42fd2d0892"
+                "reference": "478465659fd987669df0bd8a9bf22a8710e5f1b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/cfd694a76182f68ac662f8d60852dd42fd2d0892",
-                "reference": "cfd694a76182f68ac662f8d60852dd42fd2d0892",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/478465659fd987669df0bd8a9bf22a8710e5f1b6",
+                "reference": "478465659fd987669df0bd8a9bf22a8710e5f1b6",
                 "shasum": ""
             },
             "require": {
@@ -199,7 +148,7 @@
                 "object",
                 "object graph"
             ],
-            "time": "2018-06-03T10:06:13+00:00"
+            "time": "2018-05-29T17:25:09+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -773,12 +722,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "39786a30d2cf34ba4955ec2287c53bdc8a4aa9e9"
+                "reference": "526470b48d051ea68df646e0884a9349e776bd0c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/39786a30d2cf34ba4955ec2287c53bdc8a4aa9e9",
-                "reference": "39786a30d2cf34ba4955ec2287c53bdc8a4aa9e9",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/526470b48d051ea68df646e0884a9349e776bd0c",
+                "reference": "526470b48d051ea68df646e0884a9349e776bd0c",
                 "shasum": ""
             },
             "require": {
@@ -849,7 +798,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-06-10T12:07:12+00:00"
+            "time": "2018-05-25T12:14:11+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -1562,9 +1511,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "phpgt/config": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

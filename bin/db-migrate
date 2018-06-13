@@ -1,10 +1,8 @@
 #!/usr/bin/env php
 <?php
 
-use Gt\Config;
-use Gt\Config\ConfigFactory;
+use Gt\Config\Config;
 use Gt\Database\Connection\Settings;
-use Gt\Database\Migration\Config;
 use Gt\Database\Migration\Migrator;
 /**
  * Database migration iterates over a set of incremental schema changes and
@@ -25,27 +23,28 @@ if(!empty($argv[1])
 	$forced = true;
 }
 
-$config = ConfigFactory::createForProject($repoBasePath);
+$config = new Config($repoBasePath);
+$config->setDefault("$repoBasePath/vendor/phpgt/webengine", "config.default.ini");
 
 $settings = new Settings(
 	implode(DIRECTORY_SEPARATOR, [
 		$repoBasePath,
-		$config["database"]["query_path"]
+		$config->get("database.query_path")
 	]),
-	$config["database"]["dsn"],
-	$config["database"]["schema"],
-	$config["database"]["host"],
-	$config["database"]["port"],
-	$config["database"]["username"],
-	$config["database"]["password"]
+	$config->get("database.dsn"),
+	$config->get("database.schema"),
+	$config->get("database.host"),
+	$config->get("database.port"),
+	$config->get("database.username"),
+	$config->get("database.password")
 );
 
 $migrationPath = implode(DIRECTORY_SEPARATOR, [
 	$repoBasePath,
-	$config["database"]["query_path"],
-	$config["database"]["migration_path"],
+	$config->get("database.query_path"),
+	$config->get("database.migration_path"),
 ]);
-$migrationTable = $config["database"]["migration_table"];
+$migrationTable = $config->get("database.migration_table");
 
 $migrator = new Migrator($settings, $migrationPath, $migrationTable, $forced);
 $migrator->createMigrationTable();

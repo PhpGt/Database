@@ -1,13 +1,13 @@
 {
     "name": "phpgt/database",
-    "description": "Database API organisation for PHP 7 projects.",
+    "description": "Database API organisation.",
     "type": "library",
     "minimum-stability": "dev",
 
     "require": {
         "php": "^7.1",
         "ext-pdo": "*",
-	"phpgt/config": "dev-master"
+        "phpgt/config": "*"
     },
 
     "require-dev": {
