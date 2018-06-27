@@ -74,13 +74,18 @@ class ResultSet implements Iterator, Countable {
 		}
 	}
 
-	public function toArray():array {
-		$data = array_map(function($element) {
-			/** @var Row $element */
-			return $element->toArray();
-		},
-			$this->fetchAll()
-		);
+	public function toArray($elementsToArray = false):array {
+		if($elementsToArray) {
+			$data = array_map(function($element) {
+				/** @var Row $element */
+				return $element->toArray();
+			},
+				$this->fetchAll()
+			);
+		}
+		else {
+			$data = $this->fetchAll();
+		}
 
 		return $data;
 	}
