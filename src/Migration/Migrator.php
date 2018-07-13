@@ -140,6 +140,8 @@ class Migrator {
 		array $migrationFileList,
 		int $migrationCount = null
 	):int {
+		$fileNumber = 0;
+
 		foreach($migrationFileList as $i => $file) {
 			$fileNumber = $i + 1;
 			$md5 = md5_file($file);
@@ -180,6 +182,8 @@ class Migrator {
 		array $migrationFileList,
 		int $existingMigrationCount = 0
 	):int {
+		$fileNumber = 0;
+		
 		foreach($migrationFileList as $i => $file) {
 			$fileNumber = $i + 1;
 
