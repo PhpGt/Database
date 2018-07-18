@@ -10,7 +10,7 @@ class DefaultSettings implements SettingsInterface {
 	const COLLATION = "utf8_unicode_ci";
 
 	const DEFAULT_NAME = "default";
-	const DEFAULT_DATASOURCE = Settings::DRIVER_SQLITE;
+	const DEFAULT_DRIVER = Settings::DRIVER_SQLITE;
 	const DEFAULT_SCHEMA = Settings::SCHEMA_IN_MEMORY;
 	const DEFAULT_HOST = "localhost";
 	const DEFAULT_PORT = [
@@ -36,8 +36,8 @@ class DefaultSettings implements SettingsInterface {
 		return sys_get_temp_dir();
 	}
 
-	public function getDataSource():string {
-		return self::DEFAULT_DATASOURCE;
+	public function getDriver():string {
+		return self::DEFAULT_DRIVER;
 	}
 
 	public function getSchema():string {
@@ -49,7 +49,7 @@ class DefaultSettings implements SettingsInterface {
 	}
 
 	public function getPort():int {
-		return self::DEFAULT_PORT[self::getDataSource()];
+		return self::DEFAULT_PORT[self::getDriver()];
 	}
 
 	public function getUsername():string {
@@ -70,11 +70,11 @@ class DefaultSettings implements SettingsInterface {
 
 	public function getConnectionSettings():array {
 		// NOTE: It's not possible to test the 'port' values returned by this method
-		// because the DefaultSettings can only ever return the DEFAULT_DATASOURCE port
+		// because the DefaultSettings can only ever return the DEFAULT_DRIVER port
 		return array_merge(
 			DefaultSettings::DEFAULT_CONFIG,
 			[
-				"driver" => $this->getDataSource(),
+				"driver" => $this->getDriver(),
 				"host" => $this->getHost(),
 				"port" => $this->getPort(),
 				"database" => $this->getSchema(),
@@ -88,7 +88,7 @@ class DefaultSettings implements SettingsInterface {
 
 	public function getConnectionString():string {
 		return implode(":", [
-			$this->getDataSource(),
+			$this->getDriver(),
 			$this->getSchema(),
 		]);
 	}
@@ -97,8 +97,8 @@ class DefaultSettings implements SettingsInterface {
 		// TODO: Implement withBaseDirectory() method.
 	}
 
-	public function withDataSource(string $dataSource):Settings {
-		// TODO: Implement withDataSource() method.
+	public function withDriver(string $driver):Settings {
+		// TODO: Implement withDriver() method.
 	}
 
 	public function withSchema(string $schema):Settings {

@@ -9,7 +9,7 @@ class SettingsTest extends TestCase {
 	public function setUp() {
 		$this->properties = [
 			"baseDirectory" => "/tmp",
-			"dataSource" => "test-data-source",
+			"driver" => "test-driver",
 			"database" => "test-database",
 			"host" => "test-host",
 			"port" => 1234,
@@ -23,7 +23,7 @@ class SettingsTest extends TestCase {
 	public function testPropertiesSet() {
 		$settings = new Settings(
 			$this->properties["baseDirectory"],
-			$this->properties["dataSource"],
+			$this->properties["driver"],
 			$this->properties["database"],
 			$this->properties["host"],
 			$this->properties["port"],
@@ -34,7 +34,7 @@ class SettingsTest extends TestCase {
 		);
 
 		static::assertEquals($this->properties["baseDirectory"], $settings->getBaseDirectory());
-		static::assertEquals($this->properties["dataSource"], $settings->getDataSource());
+		static::assertEquals($this->properties["driver"], $settings->getDriver());
 		static::assertEquals($this->properties["database"], $settings->getSchema());
 		static::assertEquals($this->properties["host"], $settings->getHost());
 		static::assertEquals($this->properties["port"], $settings->getPort());
@@ -46,7 +46,7 @@ class SettingsTest extends TestCase {
 
 	public function testDefaultConnectionName() {
 		$details = [
-			"dataSource" => "test-data-source",
+			"driver" => "test-driver",
 			"database" => "test-database",
 			"host" => "test-host",
 			"port" => 4321,
@@ -56,7 +56,7 @@ class SettingsTest extends TestCase {
 
 		$settings = new Settings(
 			"/tmp",
-			$details["dataSource"],
+			$details["driver"],
 			$details["database"],
 			$details["host"],
 			$details["port"],
@@ -70,7 +70,7 @@ class SettingsTest extends TestCase {
 	public function testGetConnectionSettings() {
 		$settings = new Settings(
 			$this->properties["baseDirectory"],
-			$this->properties["dataSource"],
+			$this->properties["driver"],
 			$this->properties["database"],
 			$this->properties["host"],
 			$this->properties["port"],
@@ -81,7 +81,7 @@ class SettingsTest extends TestCase {
 		);
 
 		$expected = [
-			"driver" => $this->properties["dataSource"],
+			"driver" => $this->properties["driver"],
 			"host" => $this->properties["host"],
 			"port" => $this->properties["port"],
 			"schema" => $this->properties["database"],
@@ -100,7 +100,7 @@ class SettingsTest extends TestCase {
 	public function testSetConfig() {
 		$settings = new Settings(
 			$this->properties["baseDirectory"],
-			$this->properties["dataSource"],
+			$this->properties["driver"],
 			$this->properties["database"],
 			$this->properties["host"],
 			$this->properties["port"],
