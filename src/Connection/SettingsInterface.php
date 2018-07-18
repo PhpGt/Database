@@ -3,7 +3,7 @@ namespace Gt\Database\Connection;
 
 interface SettingsInterface {
 	public function getBaseDirectory():string;
-	public function getDataSource():string;
+	public function getDriver():string;
 	public function getSchema():string;
 	public function getHost():string;
 	public function getPort():int;
@@ -14,7 +14,7 @@ interface SettingsInterface {
 	public function getConnectionString():string;
 
 	public function withBaseDirectory(string $baseDirectory):Settings;
-	public function withDataSource(string $dataSource):Settings;
+	public function withDriver(string $driver):Settings;
 	public function withSchema(string $schema):Settings;
 	public function withHost(string $host):Settings;
 	public function withPort(int $port):Settings;
