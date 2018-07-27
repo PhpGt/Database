@@ -17,7 +17,7 @@ class Settings implements SettingsInterface {
 	/** @var string */
 	protected $baseDirectory;
 	/** @var string */
-	protected $dataSource;
+	protected $driver;
 	/** @var string */
 	protected $schema;
 	/** @var string */
@@ -37,7 +37,7 @@ class Settings implements SettingsInterface {
 
 	public function __construct(
 		string $baseDirectory,
-		string $dataSource,
+		string $driver,
 		string $schema = null,
 		string $host = DefaultSettings::DEFAULT_HOST,
 		int $port = null,
@@ -47,11 +47,11 @@ class Settings implements SettingsInterface {
 		string $connectionName = DefaultSettings::DEFAULT_NAME
 	) {
 		if(is_null($port)) {
-			$port = DefaultSettings::DEFAULT_PORT[$dataSource];
+			$port = DefaultSettings::DEFAULT_PORT[$driver];
 		}
 
 		$this->baseDirectory = $baseDirectory;
-		$this->dataSource = $dataSource;
+		$this->driver = $driver;
 		$this->schema = $schema;
 		$this->host = $host;
 		$this->port = $port;
@@ -69,8 +69,8 @@ class Settings implements SettingsInterface {
 		return $this->baseDirectory;
 	}
 
-	public function getDataSource():string {
-		return $this->dataSource;
+	public function getDriver():string {
+		return $this->driver;
 	}
 
 	public function getSchema():string {
@@ -103,7 +103,7 @@ class Settings implements SettingsInterface {
 
 	public function getConnectionSettings():array {
 		$currentSettings = [
-			"driver" => $this->getDataSource(),
+			"driver" => $this->getDriver(),
 			"host" => $this->getHost(),
 			"schema" => $this->getSchema(),
 			"port" => $this->getPort(),
@@ -122,10 +122,10 @@ class Settings implements SettingsInterface {
 	}
 
 	public function getConnectionString():string {
-		$source = $this->getDataSource();
-		$connectionString = "$source:";
+		$driver = $this->getDriver();
+		$connectionString = "$driver:";
 
-		switch($source) {
+		switch($driver) {
 		case self::DRIVER_SQLITE:
 			$connectionString .= $this->getSchema();
 			break;

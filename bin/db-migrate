@@ -48,27 +48,30 @@ if($defaultPath) {
 	$default = ConfigFactory::createFromPathName($defaultPath);
 }
 
-$config->merge($default);
+if($default) {
+	$config->merge($default);
+}
 
 $settings = new Settings(
 	implode(DIRECTORY_SEPARATOR, [
 		$repoBasePath,
 		$config->get("database.query_path")
 	]),
-	$config->get("database.driver"),
+
+	$config->get("database.driver") ?? mysql,
 	$config->get("database.schema"),
-	$config->get("database.host"),
-	$config->get("database.port"),
+	$config->get("database.host") ?? "localhost",
+	$config->get("database.port") ?? "3306",
 	$config->get("database.username"),
 	$config->get("database.password")
 );
 
 $migrationPath = implode(DIRECTORY_SEPARATOR, [
 	$repoBasePath,
-	$config->get("database.query_path"),
-	$config->get("database.migration_path"),
+	$config->get("database.query_path") ?? "query",
+	$config->get("database.migration_path") ?? "_migration",
 ]);
-$migrationTable = $config->get("database.migration_table");
+$migrationTable = $config->get("database.migration_table") ?? "_migration";
 
 $migrator = new Migrator($settings, $migrationPath, $migrationTable, $forced);
 $migrator->createMigrationTable();

@@ -12,15 +12,15 @@ class DefaultSettingsTest extends TestCase {
 	public function testDefaults() {
 		$settings = new DefaultSettings();
 		static::assertEquals(
-			DefaultSettings::DEFAULT_DATASOURCE,
-			$settings->getDataSource()
+			DefaultSettings::DEFAULT_DRIVER,
+			$settings->getDriver()
 		);
 		static::assertEquals(
 			DefaultSettings::DEFAULT_SCHEMA,
 			$settings->getSchema()
 		);
 		static::assertEquals(
-			DefaultSettings::DEFAULT_PORT[DefaultSettings::DEFAULT_DATASOURCE],
+			DefaultSettings::DEFAULT_PORT[DefaultSettings::DEFAULT_DRIVER],
 			$settings->getPort()
 		);
 		static::assertEquals(
@@ -37,10 +37,10 @@ class DefaultSettingsTest extends TestCase {
 		);
 	}
 
-	/** @dataProvider getDataSources */
+	/** @dataProvider getDrivers */
 	public function testDefaultPort(string $dsn, int $port) {
 // NOTE: Have to use a Settings object here as it's not possible to use anything other
-// than the default_datasource otherwise
+// than the default_driver otherwise
 		$settings = new Settings(
 			"/tmp",
 			$dsn,
@@ -62,7 +62,7 @@ class DefaultSettingsTest extends TestCase {
 		], $settings->getConnectionSettings());
 	}
 
-	public function getDataSources():array {
+	public function getDrivers():array {
 		return [
 			[Settings::DRIVER_MYSQL, 3306],
 			[Settings::DRIVER_POSTGRES, 5432],

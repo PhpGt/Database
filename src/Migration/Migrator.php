@@ -13,7 +13,7 @@ class Migrator {
 	const COLUMN_QUERY_HASH = "query_hash";
 	const COLUMN_MIGRATED_AT = "migrated_at";
 
-	protected $dataSource;
+	protected $driver;
 	protected $schema;
 	protected $dbClient;
 	protected $path;
@@ -28,9 +28,9 @@ class Migrator {
 		$this->schema = $settings->getSchema();
 		$this->path = $path;
 		$this->tableName = $tableName;
-		$this->dataSource = $settings->getDataSource();
+		$this->driver = $settings->getDriver();
 
-		if($this->dataSource !== Settings::DRIVER_SQLITE) {
+		if($this->driver !== Settings::DRIVER_SQLITE) {
 			$settings = $settings->withoutSchema(); // @codeCoverageIgnore
 		}
 
@@ -44,7 +44,7 @@ class Migrator {
 	}
 
 	public function checkMigrationTableExists():bool {
-		switch($this->dataSource) {
+		switch($this->driver) {
 		case Settings::DRIVER_SQLITE:
 			$result = $this->dbClient->executeSql(
 				"select name from sqlite_master "
@@ -140,6 +140,8 @@ class Migrator {
 		array $migrationFileList,
 		int $migrationCount = null
 	):int {
+		$fileNumber = 0;
+
 		foreach($migrationFileList as $i => $file) {
 			$fileNumber = $i + 1;
 			$md5 = md5_file($file);
@@ -180,6 +182,8 @@ class Migrator {
 		array $migrationFileList,
 		int $existingMigrationCount = 0
 	):int {
+		$fileNumber = 0;
+		
 		foreach($migrationFileList as $i => $file) {
 			$fileNumber = $i + 1;
 
@@ -211,7 +215,7 @@ class Migrator {
 	 */
 	protected function selectSchema() {
 // SQLITE databases represent their own schema.
-		if($this->dataSource === Settings::DRIVER_SQLITE) {
+		if($this->driver === Settings::DRIVER_SQLITE) {
 			return;
 		}
 
@@ -236,7 +240,7 @@ class Migrator {
 		try {
 			$now = "now()";
 
-			if($this->dataSource === Settings::DRIVER_SQLITE) {
+			if($this->driver === Settings::DRIVER_SQLITE) {
 				$now = "datetime('now')";
 			}
 
@@ -264,7 +268,7 @@ class Migrator {
 	 * @codeCoverageIgnore
 	 */
 	protected function deleteAndRecreateSchema() {
-		if($this->dataSource === Settings::DRIVER_SQLITE) {
+		if($this->driver === Settings::DRIVER_SQLITE) {
 			return;
 		}
 

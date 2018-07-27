@@ -12,14 +12,14 @@ trait ImmutableSettings {
 		return $clone;
 	}
 
-	public function withDataSource(string $dataSource):self {
-		if($this->dataSource === $dataSource) {
+	public function withDriver(string $driver):self {
+		if($this->driver === $driver) {
 			return $this;
 		}
 
 		$clone = clone $this;
-		$clone->dataSource = $dataSource;
-		return $dataSource;
+		$clone->driver = $driver;
+		return $clone;
 	}
 
 	public function withSchema(string $schema):self {
