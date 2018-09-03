@@ -59,12 +59,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Config.git",
-                "reference": "c3be70aa63c32d377e9fdd1e8f26f2288eda9d95"
+                "reference": "8c2fe9b607557be34058c091f10408bda40d8bb5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Config/zipball/c3be70aa63c32d377e9fdd1e8f26f2288eda9d95",
-                "reference": "c3be70aa63c32d377e9fdd1e8f26f2288eda9d95",
+                "url": "https://api.github.com/repos/PhpGt/Config/zipball/8c2fe9b607557be34058c091f10408bda40d8bb5",
+                "reference": "8c2fe9b607557be34058c091f10408bda40d8bb5",
                 "shasum": ""
             },
             "require": {
@@ -72,7 +72,7 @@
                 "php": ">=7.1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "6.4.*"
+                "phpunit/phpunit": "6.4.*|7.3.*"
             },
             "bin": [
                 "bin/config-generate"
@@ -94,7 +94,7 @@
                 }
             ],
             "description": "Load configuration from ini files or environment variables.",
-            "time": "2018-07-30T14:51:28+00:00"
+            "time": "2018-08-23T10:34:31+00:00"
         }
     ],
     "packages-dev": [
@@ -104,12 +104,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/instantiator.git",
-                "reference": "870a62d7b0d63d4e0ffa8f2ce3ab7c8a53d1846d"
+                "reference": "17becf3b5d22399af644022f9b5a9755eff4375a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/870a62d7b0d63d4e0ffa8f2ce3ab7c8a53d1846d",
-                "reference": "870a62d7b0d63d4e0ffa8f2ce3ab7c8a53d1846d",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/17becf3b5d22399af644022f9b5a9755eff4375a",
+                "reference": "17becf3b5d22399af644022f9b5a9755eff4375a",
                 "shasum": ""
             },
             "require": {
@@ -146,12 +146,12 @@
                 }
             ],
             "description": "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
-            "homepage": "https://github.com/doctrine/instantiator",
+            "homepage": "https://www.doctrine-project.org/projects/instantiator.html",
             "keywords": [
                 "constructor",
                 "instantiate"
             ],
-            "time": "2018-03-05T09:41:42+00:00"
+            "time": "2018-09-01T09:40:46+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -769,16 +769,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.3.2",
+            "version": "7.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "34705f81bddc3f505b9599a2ef96e2b4315ba9b8"
+                "reference": "1bd5629cccfb2c0a9ef5474b4ff772349e1ec898"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/34705f81bddc3f505b9599a2ef96e2b4315ba9b8",
-                "reference": "34705f81bddc3f505b9599a2ef96e2b4315ba9b8",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1bd5629cccfb2c0a9ef5474b4ff772349e1ec898",
+                "reference": "1bd5629cccfb2c0a9ef5474b4ff772349e1ec898",
                 "shasum": ""
             },
             "require": {
@@ -849,7 +849,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-08-22T06:39:21+00:00"
+            "time": "2018-09-01T15:49:55+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
