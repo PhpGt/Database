@@ -19,6 +19,25 @@ class ResultSetTest extends TestCase {
 		self::assertCount(3, $resultSet);
 	}
 
+	public function testCountMidIteration() {
+		$resultSet = new ResultSet($this->getStatementMock());
+
+		foreach($resultSet as $i => $row) {
+			$expectedId = $i + 1;
+			self::assertEquals(
+				$expectedId,
+				$row->id
+			);
+
+			if($i > 0) {
+				self::assertCount(
+					3,
+					$resultSet
+				);
+			}
+		}
+	}
+
 	public function testFirstRowArrayAccess() {
 		$resultSet = new ResultSet($this->getStatementMock());
 		$firstRow = self::FAKE_DATA[0];
