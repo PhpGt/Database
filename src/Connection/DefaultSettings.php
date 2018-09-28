@@ -30,8 +30,6 @@ class DefaultSettings implements SettingsInterface {
 		]
 	];
 
-	const DEFAULT_TABLE_PREFIX = "";
-
 	public function getBaseDirectory():string {
 		return sys_get_temp_dir();
 	}
@@ -64,10 +62,6 @@ class DefaultSettings implements SettingsInterface {
 		return self::DEFAULT_NAME;
 	}
 
-	public function getTablePrefix():string {
-		return "";
-	}
-
 	public function getConnectionSettings():array {
 		// NOTE: It's not possible to test the 'port' values returned by this method
 		// because the DefaultSettings can only ever return the DEFAULT_DRIVER port
@@ -82,7 +76,6 @@ class DefaultSettings implements SettingsInterface {
 				"password" => $this->getPassword(),
 				"charset" => self::CHARSET,
 				"collation" => self::COLLATION,
-				"prefix" => $this->getTablePrefix(),
 			]);
 	}
 

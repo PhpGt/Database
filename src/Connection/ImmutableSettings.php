@@ -73,16 +73,6 @@ trait ImmutableSettings {
 		return $clone;
 	}
 
-	public function withTablePrefix(string $tablePrefix):SettingsInterface {
-		if($this->tablePrefix === $tablePrefix) {
-			return $this;
-		}
-
-		$clone = clone $this;
-		$clone->tablePrefix = $tablePrefix;
-		return $clone;
-	}
-
 	public function withConnectionName(string $connectionName):SettingsInterface {
 		if($this->connectionName === $connectionName) {
 			return $this;

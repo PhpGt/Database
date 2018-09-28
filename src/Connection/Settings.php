@@ -29,8 +29,6 @@ class Settings implements SettingsInterface {
 	/** @var string */
 	protected $password;
 	/** @var string */
-	protected $tablePrefix;
-	/** @var string */
 	protected $connectionName;
 	/** @var array */
 	protected $config = [];
@@ -43,7 +41,6 @@ class Settings implements SettingsInterface {
 		int $port = null,
 		string $username = DefaultSettings::DEFAULT_USERNAME,
 		string $password = DefaultSettings::DEFAULT_PASSWORD,
-		string $tablePrefix = DefaultSettings::DEFAULT_TABLE_PREFIX,
 		string $connectionName = DefaultSettings::DEFAULT_NAME
 	) {
 		if(is_null($port)) {
@@ -57,7 +54,6 @@ class Settings implements SettingsInterface {
 		$this->port = $port;
 		$this->username = $username;
 		$this->password = $password;
-		$this->tablePrefix = $tablePrefix;
 		$this->connectionName = $connectionName;
 	}
 
@@ -97,10 +93,6 @@ class Settings implements SettingsInterface {
 		return $this->connectionName;
 	}
 
-	public function getTablePrefix():string {
-		return $this->tablePrefix;
-	}
-
 	public function getConnectionSettings():array {
 		$currentSettings = [
 			"driver" => $this->getDriver(),
@@ -111,7 +103,6 @@ class Settings implements SettingsInterface {
 			"password" => $this->getPassword(),
 			"charset" => self::CHARSET,
 			"collation" => self::COLLATION,
-			"prefix" => $this->getTablePrefix(),
 		];
 
 		return array_merge(
