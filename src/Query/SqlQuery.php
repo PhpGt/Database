@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Database\Query;
 
+use Gt\Database\Connection\Connection;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -55,33 +56,40 @@ class SqlQuery extends Query {
 		}
 	}
 
-	protected function preparePdo():PDO {
-		$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-		return $this->connection;
-	}
-
 	/**
 	 * Certain words are reserved for use by different SQL engines, such as "limit"
 	 * and "offset", and can't be used by the driver as bound parameters. This
 	 * function returns the SQL for the query after replacing the bound parameters
 	 * manually using string replacement.
 	 */
-	protected function injectSpecialBindings(string $sql, array $bindings):string {
+	public function injectSpecialBindings(
+		string $sql,
+		array $bindings
+	):string {
 		foreach(self::SPECIAL_BINDINGS as $special) {
 			$specialPlaceholder = ":" . $special;
 
 			if(!array_key_exists($special, $bindings)) {
 				continue;
 			}
-			$sql = str_replace($specialPlaceholder, $bindings[$special], $sql);
+
+			$replacement = $this->escapeSpecialBinding(
+				$bindings[$special],
+				$special
+			);
+
+			$sql = str_replace(
+				$specialPlaceholder,
+				$replacement,
+				$sql
+			);
 			unset($bindings[$special]);
 		}
 
 		return $sql;
 	}
 
-	protected function prepareBindings(array $bindings):array {
+	public function prepareBindings(array $bindings):array {
 		foreach($bindings as $key => $value) {
 			if(is_bool($value)) {
 				$bindings[$key] = (int)$value;
@@ -94,7 +102,7 @@ class SqlQuery extends Query {
 		return $bindings;
 	}
 
-	protected function ensureParameterCharacter(array $bindings):array {
+	public function ensureParameterCharacter(array $bindings):array {
 		if($this->bindingsEmptyOrNonAssociative($bindings)) {
 			return $bindings;
 		}
@@ -109,7 +117,7 @@ class SqlQuery extends Query {
 		return $bindings;
 	}
 
-	protected function removeUnusedBindings(array $bindings, string $sql):array {
+	public function removeUnusedBindings(array $bindings, string $sql):array {
 		if($this->bindingsEmptyOrNonAssociative($bindings)) {
 			return $bindings;
 		}
@@ -123,11 +131,49 @@ class SqlQuery extends Query {
 		return $bindings;
 	}
 
-	protected function bindingsEmptyOrNonAssociative(array $bindings):bool {
+	public function bindingsEmptyOrNonAssociative(array $bindings):bool {
 		return
 			$bindings === []
 			|| array_keys($bindings) === range(
 				0,
 				count($bindings) - 1);
+	}
+
+	protected function preparePdo():PDO {
+		$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		return $this->connection;
+	}
+
+	protected function escapeSpecialBinding(
+		string $value,
+		string $type
+	):string {
+		$value = preg_replace(
+			"/[^0-9a-z,'\"`\s]/i",
+			"",
+			$value
+		);
+
+// TODO: In v2 we will properly parse the different parts of the special bindings.
+// See https://github.com/PhpGt/Database/issues/117
+		switch($type) {
+		// [GROUP BY {col_name | expr | position}, ... [WITH ROLLUP]]
+		case "groupBy":
+			break;
+
+		// [ORDER BY {col_name | expr | position}
+		case "orderBy":
+			break;
+
+		// [LIMIT {[offset,] row_count | row_count OFFSET offset}]
+		case "limit":
+			break;
+
+		// [LIMIT {[offset,] row_count | row_count OFFSET offset}]
+		case "offset":
+			break;
+		}
+
+		return (string)$value;
 	}
 }

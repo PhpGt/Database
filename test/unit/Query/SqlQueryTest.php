@@ -219,6 +219,52 @@ class SqlQueryTest extends TestCase {
 		}
 	}
 
+	/**
+	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider()
+	 */
+	public function testSpecialBindingsNoAscDesc(
+		string $queryName,
+		string $queryCollectionPath,
+		string $filePath
+	) {
+		$sql = "select * from something order by :orderBy limit :limit offset :offset";
+		file_put_contents($filePath, $sql);
+		$query = new SqlQuery($filePath, $this->driverSingleton());
+		$injectedSql = $query->injectSpecialBindings($sql, [
+			"orderBy" => "sortColumn",
+			"limit" => 100,
+			"offset" => 25,
+		]);
+
+		self::assertNotContains(":orderBy", $injectedSql);
+		self::assertNotContains(":limit", $injectedSql);
+		self::assertNotContains(":offset", $injectedSql);
+
+		self::assertContains("order by sortColumn", $injectedSql);
+		self::assertContains("limit 100", $injectedSql);
+		self::assertContains("offset 25", $injectedSql);
+	}
+
+	/**
+	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider()
+	 */
+	public function testSpecialBindingsAscDesc(
+		string $queryName,
+		string $queryCollectionPath,
+		string $filePath
+	) {
+		$sql = "select * from something order by :orderBy limit :limit offset :offset";
+		file_put_contents($filePath, $sql);
+		$query = new SqlQuery($filePath, $this->driverSingleton());
+		$injectedSql = $query->injectSpecialBindings($sql, [
+			"orderBy" => "sortColumn desc",
+			"limit" => 100,
+			"offset" => 25,
+		]);
+
+		self::assertContains("order by sortColumn desc", $injectedSql);
+	}
+
 	private function driverSingleton():Driver {
 		if(is_null($this->driver)) {
 			$settings = new Settings(
