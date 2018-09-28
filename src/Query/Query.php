@@ -15,7 +15,7 @@ abstract class Query {
 		}
 		
 		if (!strstr($filePath,'.sql')) {
-			throw new QueryFileTypeException($filePath);
+			throw new QueryFileExtensionException($filePath);
 		}
 
 		$this->filePath = $filePath;
