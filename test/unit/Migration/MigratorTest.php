@@ -316,6 +316,44 @@ class MigratorTest extends TestCase {
 		);
 	}
 
+	/**
+	 * @dataProvider dataMigrationFileList
+	 */
+	public function testNonSqlExtensions(array $fileList) {
+		$path = $this->getMigrationDirectory();
+		$this->createMigrationFiles($fileList, $path);
+
+		$extensionsToCreate = ["txt", "md", "sql"];
+
+		for($i = 0; $i < 10; $i++) {
+			$randomFile = implode(DIRECTORY_SEPARATOR, [
+				$path,
+				uniqid() . $extensionsToCreate[array_rand($extensionsToCreate)],
+			]);
+			file_put_contents($randomFile, "Hello, Database!");
+		}
+
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
+		$absoluteFileList = array_map(function($file)use($path) {
+			return implode(DIRECTORY_SEPARATOR, [
+				$path,
+				$file,
+			]);
+		},$fileList);
+
+		$migrator->createMigrationTable();
+
+		$exception = null;
+
+		try {
+			$migrator->performMigration($absoluteFileList);
+		}
+		catch(Exception $exception) {}
+
+		self::assertNull($exception);
+	}
+
 	public function dataMigrationFileList():array {
 		$fileList = $this->generateFileList();
 		return [
