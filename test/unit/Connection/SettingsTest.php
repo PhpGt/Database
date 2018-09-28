@@ -15,7 +15,6 @@ class SettingsTest extends TestCase {
 			"port" => 1234,
 			"username" => "test-username",
 			"password" => "test-password",
-			"tablePrefix" => "test_",
 			"connectionName" => "test-connection",
 		];
 	}
@@ -29,7 +28,6 @@ class SettingsTest extends TestCase {
 			$this->properties["port"],
 			$this->properties["username"],
 			$this->properties["password"],
-			$this->properties["tablePrefix"],
 			$this->properties["connectionName"]
 		);
 
@@ -40,7 +38,6 @@ class SettingsTest extends TestCase {
 		static::assertEquals($this->properties["port"], $settings->getPort());
 		static::assertEquals($this->properties["username"], $settings->getUsername());
 		static::assertEquals($this->properties["password"], $settings->getPassword());
-		static::assertEquals($this->properties["tablePrefix"], $settings->getTablePrefix());
 		static::assertEquals($this->properties["connectionName"], $settings->getConnectionName());
 	}
 
@@ -76,7 +73,6 @@ class SettingsTest extends TestCase {
 			$this->properties["port"],
 			$this->properties["username"],
 			$this->properties["password"],
-			$this->properties["tablePrefix"],
 			$this->properties["connectionName"]
 		);
 
@@ -89,7 +85,6 @@ class SettingsTest extends TestCase {
 			"password" => $this->properties["password"],
 			"charset" => Settings::CHARSET,
 			"collation" => Settings::COLLATION,
-			"prefix" => $this->properties["tablePrefix"],
 			"options" => DefaultSettings::DEFAULT_CONFIG["options"],
 		];
 
@@ -106,7 +101,6 @@ class SettingsTest extends TestCase {
 			$this->properties["port"],
 			$this->properties["username"],
 			$this->properties["password"],
-			$this->properties["tablePrefix"],
 			$this->properties["connectionName"]
 		);
 

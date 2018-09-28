@@ -6,12 +6,12 @@
 
     "require": {
         "php": "^7.1",
-        "ext-pdo": "*",
+        "ext-PDO": "*",
         "phpgt/config": "*"
     },
 
     "require-dev": {
-        "phpunit/phpunit": "^6.3|^7.0",
+        "phpunit/phpunit": "^7.0",
         "ext-sqlite3": "*"
     },
 

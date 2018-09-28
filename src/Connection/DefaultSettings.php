@@ -30,8 +30,6 @@ class DefaultSettings implements SettingsInterface {
 		]
 	];
 
-	const DEFAULT_TABLE_PREFIX = "";
-
 	public function getBaseDirectory():string {
 		return sys_get_temp_dir();
 	}
@@ -64,10 +62,6 @@ class DefaultSettings implements SettingsInterface {
 		return self::DEFAULT_NAME;
 	}
 
-	public function getTablePrefix():string {
-		return "";
-	}
-
 	public function getConnectionSettings():array {
 		// NOTE: It's not possible to test the 'port' values returned by this method
 		// because the DefaultSettings can only ever return the DEFAULT_DRIVER port
@@ -82,7 +76,6 @@ class DefaultSettings implements SettingsInterface {
 				"password" => $this->getPassword(),
 				"charset" => self::CHARSET,
 				"collation" => self::COLLATION,
-				"prefix" => $this->getTablePrefix(),
 			]);
 	}
 
@@ -91,45 +84,5 @@ class DefaultSettings implements SettingsInterface {
 			$this->getDriver(),
 			$this->getSchema(),
 		]);
-	}
-
-	public function withBaseDirectory(string $baseDirectory):Settings {
-		// TODO: Implement withBaseDirectory() method.
-	}
-
-	public function withDriver(string $driver):Settings {
-		// TODO: Implement withDriver() method.
-	}
-
-	public function withSchema(string $schema):Settings {
-		// TODO: Implement withSchema() method.
-	}
-
-	public function withHost(string $host):Settings {
-		// TODO: Implement withHost() method.
-	}
-
-	public function withPort(int $port):Settings {
-		// TODO: Implement withPort() method.
-	}
-
-	public function withUsername(string $username):Settings {
-		// TODO: Implement withUsername() method.
-	}
-
-	public function withPassword(string $password):Settings {
-		// TODO: Implement withPassword() method.
-	}
-
-	public function withTablePrefix(string $tablePrefix):Settings {
-		// TODO: Implement withTablePrefix() method.
-	}
-
-	public function withConnectionName(string $connectionName):Settings {
-		// TODO: Implement withConnectionName() method.
-	}
-
-	public function withoutSchema():Settings {
-		// TODO: Implement withoutSchema() method.
 	}
 }

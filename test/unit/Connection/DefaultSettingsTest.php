@@ -57,7 +57,6 @@ class DefaultSettingsTest extends TestCase {
 			"password" => DefaultSettings::DEFAULT_PASSWORD,
 			"charset" => DefaultSettings::CHARSET,
 			"collation" => DefaultSettings::COLLATION,
-			"prefix" => "",
 			"options" => DefaultSettings::DEFAULT_CONFIG["options"],
 		], $settings->getConnectionSettings());
 	}
