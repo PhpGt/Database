@@ -93,43 +93,43 @@ class DefaultSettings implements SettingsInterface {
 		]);
 	}
 
-	public function withBaseDirectory(string $baseDirectory):Settings {
+	public function withBaseDirectory(string $baseDirectory):SettingsInterface {
 		// TODO: Implement withBaseDirectory() method.
 	}
 
-	public function withDriver(string $driver):Settings {
+	public function withDriver(string $driver):SettingsInterface {
 		// TODO: Implement withDriver() method.
 	}
 
-	public function withSchema(string $schema):Settings {
+	public function withSchema(string $schema):SettingsInterface {
 		// TODO: Implement withSchema() method.
 	}
 
-	public function withHost(string $host):Settings {
+	public function withHost(string $host):SettingsInterface {
 		// TODO: Implement withHost() method.
 	}
 
-	public function withPort(int $port):Settings {
+	public function withPort(int $port):SettingsInterface {
 		// TODO: Implement withPort() method.
 	}
 
-	public function withUsername(string $username):Settings {
+	public function withUsername(string $username):SettingsInterface {
 		// TODO: Implement withUsername() method.
 	}
 
-	public function withPassword(string $password):Settings {
+	public function withPassword(string $password):SettingsInterface {
 		// TODO: Implement withPassword() method.
 	}
 
-	public function withTablePrefix(string $tablePrefix):Settings {
+	public function withTablePrefix(string $tablePrefix):SettingsInterface {
 		// TODO: Implement withTablePrefix() method.
 	}
 
-	public function withConnectionName(string $connectionName):Settings {
+	public function withConnectionName(string $connectionName):SettingsInterface {
 		// TODO: Implement withConnectionName() method.
 	}
 
-	public function withoutSchema():Settings {
+	public function withoutSchema():SettingsInterface {
 		// TODO: Implement withoutSchema() method.
 	}
 }

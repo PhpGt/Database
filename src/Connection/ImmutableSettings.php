@@ -1,8 +1,9 @@
-<?php
+<?php /** @noinspection PhpIncompatibleReturnTypeInspection */
+
 namespace Gt\Database\Connection;
 
 trait ImmutableSettings {
-	public function withBaseDirectory(string $baseDirectory):self {
+	public function withBaseDirectory(string $baseDirectory):SettingsInterface {
 		if($this->baseDirectory === $baseDirectory) {
 			return $this;
 		}
@@ -12,7 +13,7 @@ trait ImmutableSettings {
 		return $clone;
 	}
 
-	public function withDriver(string $driver):self {
+	public function withDriver(string $driver):SettingsInterface {
 		if($this->driver === $driver) {
 			return $this;
 		}
@@ -22,7 +23,7 @@ trait ImmutableSettings {
 		return $clone;
 	}
 
-	public function withSchema(string $schema):self {
+	public function withSchema(string $schema):SettingsInterface {
 		if($this->schema === $schema) {
 			return $this;
 		}
@@ -32,7 +33,7 @@ trait ImmutableSettings {
 		return $clone;
 	}
 
-	public function withHost(string $host):self {
+	public function withHost(string $host):SettingsInterface {
 		if($this->host === $host) {
 			return $this;
 		}
@@ -42,7 +43,7 @@ trait ImmutableSettings {
 		return $clone;
 	}
 
-	public function withPort(int $port):self {
+	public function withPort(int $port):SettingsInterface {
 		if($this->port === $port) {
 			return $this;
 		}
@@ -52,7 +53,7 @@ trait ImmutableSettings {
 		return $clone;
 	}
 
-	public function withUsername(string $username):self {
+	public function withUsername(string $username):SettingsInterface {
 		if($this->username === $username) {
 			return $this;
 		}
@@ -62,7 +63,7 @@ trait ImmutableSettings {
 		return $clone;
 	}
 
-	public function withPassword(string $password):self {
+	public function withPassword(string $password):SettingsInterface {
 		if($this->password === $password) {
 			return $this;
 		}
@@ -72,7 +73,7 @@ trait ImmutableSettings {
 		return $clone;
 	}
 
-	public function withTablePrefix(string $tablePrefix):self {
+	public function withTablePrefix(string $tablePrefix):SettingsInterface {
 		if($this->tablePrefix === $tablePrefix) {
 			return $this;
 		}
@@ -82,7 +83,7 @@ trait ImmutableSettings {
 		return $clone;
 	}
 
-	public function withConnectionName(string $connectionName):self {
+	public function withConnectionName(string $connectionName):SettingsInterface {
 		if($this->connectionName === $connectionName) {
 			return $this;
 		}
@@ -92,7 +93,7 @@ trait ImmutableSettings {
 		return $clone;
 	}
 
-	public function withoutSchema():self {
+	public function withoutSchema():SettingsInterface {
 		$clone = $this->withSchema("");
 		return $clone;
 	}

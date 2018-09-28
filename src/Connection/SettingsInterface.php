@@ -10,17 +10,15 @@ interface SettingsInterface {
 	public function getUsername():string;
 	public function getPassword():string;
 	public function getConnectionName():string;
-	public function getTablePrefix():string;
 	public function getConnectionString():string;
 
-	public function withBaseDirectory(string $baseDirectory):Settings;
-	public function withDriver(string $driver):Settings;
-	public function withSchema(string $schema):Settings;
-	public function withHost(string $host):Settings;
-	public function withPort(int $port):Settings;
-	public function withUsername(string $username):Settings;
-	public function withPassword(string $password):Settings;
-	public function withTablePrefix(string $tablePrefix):Settings;
-	public function withConnectionName(string $connectionName):Settings;
-	public function withoutSchema():Settings;
+	public function withBaseDirectory(string $baseDirectory):SettingsInterface;
+	public function withDriver(string $driver):SettingsInterface;
+	public function withSchema(string $schema):SettingsInterface;
+	public function withHost(string $host):SettingsInterface;
+	public function withPort(int $port):SettingsInterface;
+	public function withUsername(string $username):SettingsInterface;
+	public function withPassword(string $password):SettingsInterface;
+	public function withConnectionName(string $connectionName):SettingsInterface;
+	public function withoutSchema():SettingsInterface;
 }
