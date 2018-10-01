@@ -19,6 +19,39 @@ class ResultSetTest extends TestCase {
 		self::assertCount(3, $resultSet);
 	}
 
+	public function testCountMidIteration() {
+		$resultSet = new ResultSet($this->getStatementMock());
+// Subsequent calls to count should not have side effects:
+		self::assertCount(
+			3,
+			$resultSet
+		);
+		self::assertCount(
+			3,
+			$resultSet
+		);
+
+		foreach($resultSet as $i => $row) {
+			$expectedId = $i + 1;
+			self::assertEquals(
+				$expectedId,
+				$row->id,
+				"Row does not match"
+			);
+
+			if($i > 0) {
+				self::assertCount(
+					3,
+					$resultSet
+				);
+			}
+		}
+
+// We know that $i should be 0, 1, 2 ... but we need to check it, in case
+// the manipulation of the iteration index breaks things.
+		self::assertEquals(2, $i);
+	}
+
 	public function testFirstRowArrayAccess() {
 		$resultSet = new ResultSet($this->getStatementMock());
 		$firstRow = self::FAKE_DATA[0];
@@ -91,6 +124,9 @@ class ResultSetTest extends TestCase {
 		$statement = $this->createMock(PDOStatement::class);
 		$statement->method("fetch")
 			->will(self::returnCallback([$this, "getNextFakeData"]));
+		$statement->method("execute")
+			->willReturnCallback([$this, "rewindFakeData"]);
+//			->will(self::callback([$this, "rewindFakeData"]));
 
 		return $statement;
 	}
@@ -104,5 +140,9 @@ class ResultSetTest extends TestCase {
 
 		return $data;
 
+	}
+
+	public function rewindFakeData() {
+		$this->fake_data_index = 0;
 	}
 }

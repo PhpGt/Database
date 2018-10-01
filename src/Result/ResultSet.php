@@ -58,6 +58,10 @@ class ResultSet implements Iterator, Countable {
 	 * @return Row[]
 	 */
 	public function fetchAll():array {
+		$this->statement->execute();
+		$this->row_index = 0;
+		$this->iterator_index = 0;
+
 		$data = [];
 
 		while($row = $this->fetch()) {
@@ -69,7 +73,7 @@ class ResultSet implements Iterator, Countable {
 
 	protected function fetchUpToIteratorIndex() {
 		while(is_null($this->row_index)
-			|| $this->row_index < $this->iterator_index) {
+		|| $this->row_index < $this->iterator_index) {
 			$this->fetch();
 		}
 	}
@@ -119,8 +123,10 @@ class ResultSet implements Iterator, Countable {
 	}
 
 	public function count():int {
+		$currentIteratorIndex = $this->iterator_index;
+		$count = count($this->fetchAll());
 		$this->rewind();
-
-		return count($this->fetchAll());
+		$this->iterator_index = $currentIteratorIndex;
+		return $count;
 	}
 }
