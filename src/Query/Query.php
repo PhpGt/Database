@@ -13,6 +13,14 @@ abstract class Query {
 		if(!is_file($filePath)) {
 			throw new QueryNotFoundException($filePath);
 		}
+		
+		if (!strstr($filePath,'.sql')) {
+<<<<<<< HEAD
+			throw new QueryFileExtensionException($filePath);
+=======
+			throw new QueryFileTypeException($filePath);
+>>>>>>> 3787747... Throw Exception When File is Not .sql
+		}
 
 		$this->filePath = $filePath;
 		$this->connection = $driver->getConnection();
