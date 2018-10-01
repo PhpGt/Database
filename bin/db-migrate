@@ -58,7 +58,7 @@ $settings = new Settings(
 		$config->get("database.query_path")
 	]),
 
-	$config->get("database.driver") ?? mysql,
+	$config->get("database.driver") ?? 'mysql',
 	$config->get("database.schema"),
 	$config->get("database.host") ?? "localhost",
 	$config->get("database.port") ?? "3306",
