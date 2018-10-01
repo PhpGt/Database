@@ -26,6 +26,11 @@
             "name": "James Fellows",
             "email": "james.fellows@finanscapes.com"
         }
+        ,
+        {
+            "name": "Christopher Paul Shaw",
+            "email": "i-am-in-your-code-stealing-your-lulz@chris-shaw.com"
+        }
     ],
 
     "autoload": {
