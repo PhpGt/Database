@@ -158,6 +158,22 @@ class ImmutableSettingsTest extends TestCase {
 		self::assertNotSame($settings, $newSettings);
 	}
 
+	public function testWithoutSchema() {
+		$settings = new DefaultSettings();
+		$currentSchema = $settings->getSchema();
+		$newSettings = $settings->withoutSchema();
+
+		self::assertEquals(
+			$currentSchema,
+			$settings->getSchema()
+		);
+		self::assertEquals(
+			"",
+			$newSettings->getSchema()
+		);
+		self::assertNotSame($settings, $newSettings);
+	}
+
 	public function testImmutableSameWhenNoChanges() {
 		$settings = new DefaultSettings();
 		$newSettings = $settings->withBaseDirectory(sys_get_temp_dir());
