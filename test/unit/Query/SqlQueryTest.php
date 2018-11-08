@@ -294,6 +294,13 @@ class SqlQueryTest extends TestCase {
 				$injectedSql
 			);
 		}
+
+		$i++;
+
+		self::assertNotContains(
+			"statusList__$i",
+			$injectedSql
+		);
 	}
 
 	private function driverSingleton():Driver {
