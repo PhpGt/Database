@@ -120,6 +120,13 @@ class SqlQuery extends Query {
 			if($value instanceof DateTime) {
 				$bindings[$key] = $value->format("Y-m-d H:i:s");
 			}
+			if(is_array($value)) {
+				foreach($value as $i => $innerValue) {
+					$newKey = $key . "__" . $i;
+					$bindings[$newKey] = $innerValue;
+				}
+				unset($bindings[$key]);
+			}
 		}
 
 		return $bindings;

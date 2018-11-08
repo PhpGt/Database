@@ -303,6 +303,39 @@ class SqlQueryTest extends TestCase {
 		);
 	}
 
+	/**
+	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider()
+	 */
+	public function testPrepareBindingsWithArray(
+		string $queryName,
+		string $queryCollectionPath,
+		string $filePath
+	) {
+		$sql = "select * from something where `status` in (:statusList)";
+		file_put_contents($filePath, $sql);
+		$query = new SqlQuery($filePath, $this->driverSingleton());
+		$bindings = [
+			"statusList" => [
+				"good",
+				"very-good",
+				"excellent"
+			],
+		];
+		$preparedBindings = $query->prepareBindings(
+			$bindings
+		);
+
+		self::assertArrayHasKey("statusList", $bindings);
+		self::assertArrayNotHasKey("statusList", $preparedBindings);
+
+		foreach($bindings["statusList"] as $i => $binding) {
+			self::assertArrayHasKey(
+				"statusList__$i",
+				$preparedBindings
+			);
+		}
+	}
+
 	private function driverSingleton():Driver {
 		if(is_null($this->driver)) {
 			$settings = new Settings(
