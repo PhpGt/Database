@@ -334,6 +334,12 @@ class SqlQueryTest extends TestCase {
 				$preparedBindings
 			);
 		}
+
+		$i++;
+		self::assertArrayNotHasKey(
+			"statusList__$i",
+			$preparedBindings
+		);
 	}
 
 	private function driverSingleton():Driver {
