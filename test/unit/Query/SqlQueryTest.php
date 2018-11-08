@@ -265,6 +265,37 @@ class SqlQueryTest extends TestCase {
 		self::assertContains("order by sortColumn desc", $injectedSql);
 	}
 
+	/**
+	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider()
+	 */
+	public function testSpecialBindingsInClause(
+		string $queryName,
+		string $queryCollectionPath,
+		string $filePath
+	) {
+		$sql = "select * from something where `status` in (:statusList)";
+		file_put_contents($filePath, $sql);
+		$query = new SqlQuery($filePath, $this->driverSingleton());
+		$bindings = [
+			"statusList" => [
+				"good",
+				"very-good",
+				"excellent"
+			],
+		];
+		$injectedSql = $query->injectSpecialBindings(
+			$sql,
+			$bindings
+		);
+
+		for($i = 0; $i < count($bindings["statusList"]); $i++) {
+			self::assertContains(
+				"statusList__$i",
+				$injectedSql
+			);
+		}
+	}
+
 	private function driverSingleton():Driver {
 		if(is_null($this->driver)) {
 			$settings = new Settings(

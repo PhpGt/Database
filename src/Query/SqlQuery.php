@@ -2,6 +2,7 @@
 namespace Gt\Database\Query;
 
 use Gt\Database\Connection\Connection;
+use Gt\Database\Connection\Driver;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -98,8 +99,13 @@ class SqlQuery extends Query {
 					$keyParamString = ":$newKey";
 					$inString .= "$keyParamString, ";
 				}
+
 				$inString = rtrim($inString, " ,");
-				$sql = str_replace($key, $inString, $sql);
+				$sql = str_replace(
+					":$key",
+					$inString,
+					$sql
+				);
 			}
 		}
 
