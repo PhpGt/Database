@@ -18,7 +18,10 @@ class SqlQuery extends Query {
 
 	public function getSql(array $bindings = []):string {
 		$sql = file_get_contents($this->getFilePath());
-		$sql = $this->injectSpecialBindings($sql, $bindings);
+		$sql = $this->injectSpecialBindings(
+			$sql,
+			$bindings
+		);
 
 		return $sql;
 	}
@@ -84,6 +87,20 @@ class SqlQuery extends Query {
 				$sql
 			);
 			unset($bindings[$special]);
+		}
+
+		foreach($bindings as $key => $value) {
+			if(is_array($value)) {
+				$inString = "";
+
+				foreach($value as $i => $innerValue) {
+					$newKey = $key . "__" . $i;
+					$keyParamString = ":$newKey";
+					$inString .= "$keyParamString, ";
+				}
+				$inString = rtrim($inString, " ,");
+				$sql = str_replace($key, $inString, $sql);
+			}
 		}
 
 		return $sql;
