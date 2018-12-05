@@ -231,31 +231,21 @@ class Migrator {
 	}
 
 	protected function recordMigrationSuccess(int $number, string $hash) {
-		try {
-			$now = "now()";
+		$now = "now()";
 
-			if($this->driver === Settings::DRIVER_SQLITE) {
-				$now = "datetime('now')";
-			}
+		if($this->driver === Settings::DRIVER_SQLITE) {
+			$now = "datetime('now')";
+		}
 
-			$this->dbClient->executeSql(implode("\n", [
-				"insert into `{$this->tableName}` (",
-				"`" . self::COLUMN_QUERY_NUMBER . "`, ",
-				"`" . self::COLUMN_QUERY_HASH . "`, ",
-				"`" . self::COLUMN_MIGRATED_AT . "` ",
-				") values (",
-				"?, ?, $now",
-				")",
-			]), [$number, $hash]);
-		}
-		catch(\Exception $exception) {
-			echo "Error storing migration progress in database table "
-				. $this->tableName;
-			echo PHP_EOL;
-			echo $exception->getMessage();
-			echo PHP_EOL;
-			exit(1);
-		}
+		$this->dbClient->executeSql(implode("\n", [
+			"insert into `{$this->tableName}` (",
+			"`" . self::COLUMN_QUERY_NUMBER . "`, ",
+			"`" . self::COLUMN_QUERY_HASH . "`, ",
+			"`" . self::COLUMN_MIGRATED_AT . "` ",
+			") values (",
+			"?, ?, $now",
+			")",
+		]), [$number, $hash]);
 	}
 
 	/**

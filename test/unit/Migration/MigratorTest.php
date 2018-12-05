@@ -5,6 +5,7 @@ use DateTime;
 use Exception;
 use Gt\Database\Database;
 use Gt\Database\Connection\Settings;
+use Gt\Database\DatabaseException;
 use Gt\Database\Migration\MigrationDirectoryNotFoundException;
 use Gt\Database\Migration\MigrationFileNameFormatException;
 use Gt\Database\Migration\MigrationIntegrityException;
@@ -410,6 +411,25 @@ class MigratorTest extends TestCase {
 		catch(Exception $exception) {}
 
 		self::assertNull($exception);
+	}
+
+	/** @dataProvider dataMigrationFileList */
+	public function testMigrationSuccessThrowsException(array $fileList) {
+		$path = $this->getMigrationDirectory();
+
+		$this->createMigrationFiles($fileList, $path);
+
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
+		$absoluteFileList = array_map(function($file)use($path) {
+			return implode(DIRECTORY_SEPARATOR, [
+				$path,
+				$file,
+			]);
+		},$fileList);
+
+		self::expectException(DatabaseException::class);
+		$migrator->performMigration($absoluteFileList);
 	}
 
 	public function dataMigrationFileList():array {
