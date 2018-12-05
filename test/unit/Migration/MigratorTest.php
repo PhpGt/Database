@@ -302,7 +302,9 @@ class MigratorTest extends TestCase {
 		$exception = null;
 
 		try {
+			ob_start();
 			$migrator->performMigration($absoluteFileList);
+			ob_end_clean();
 		}
 		catch(Exception $exception) {}
 
@@ -347,7 +349,9 @@ class MigratorTest extends TestCase {
 		$exception = null;
 
 		try {
+			ob_start();
 			$migrator->performMigration($absoluteFileList);
+			ob_end_clean();
 		}
 		catch(Exception $exception) {}
 
@@ -453,7 +457,7 @@ class MigratorTest extends TestCase {
 	private function generateFileList($missingFiles = false, $duplicateFiles = false) {
 		$fileList = [];
 
-		$migLength = rand(10, 200);
+		$migLength = rand(10, 30);
 		for($migNum = 1; $migNum <= $migLength; $migNum++) {
 			$fileName = str_pad(
 				$migNum,
