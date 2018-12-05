@@ -1,4 +1,4 @@
-<img src="logo.png" alt="Database logic organisation for PHP 7 projects." align="right" />
+<img src="logo.png" alt="Database logic organisation." align="right" />
 
 # Database API organisation for PHP 7 projects.
 
