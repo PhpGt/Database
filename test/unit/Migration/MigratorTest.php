@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Database\Test\Migration;
 
+use DateTime;
 use Exception;
 use Gt\Database\Database;
 use Gt\Database\Connection\Settings;
@@ -61,9 +62,7 @@ class MigratorTest extends TestCase {
 		self::assertEquals(0, $migrator->getMigrationCount());
 	}
 
-	/**
-	 * @dataProvider dataMigrationFileList
-	 */
+	/** @dataProvider dataMigrationFileList */
 	public function testGetMigrationFileList(array $fileList) {
 		$path = $this->getMigrationDirectory();
 		$this->createFiles($fileList, $path);
@@ -84,9 +83,7 @@ class MigratorTest extends TestCase {
 		$migrator->getMigrationFileList();
 	}
 
-	/**
-	 * @dataProvider dataMigrationFileList
-	 */
+	/** @dataProvider dataMigrationFileList */
 	public function testCheckFileListOrder(array $fileList) {
 		$path = $this->getMigrationDirectory();
 		$this->createFiles($fileList, $path);
@@ -107,9 +104,7 @@ class MigratorTest extends TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider dataMigrationFileListMissing
-	 */
+	/** @dataProvider dataMigrationFileListMissing */
 	public function testCheckFileListOrderMissing(array $fileList) {
 		$path = $this->getMigrationDirectory();
 		$this->createFiles($fileList, $path);
@@ -121,9 +116,7 @@ class MigratorTest extends TestCase {
 		$migrator->checkFileListOrder($actualFileList);
 	}
 
-	/**
-	 * @dataProvider dataMigrationFileListDuplicate
-	 */
+	/** @dataProvider dataMigrationFileListDuplicate */
 	public function testCheckFileListOrderDuplicate(array $fileList) {
 		$path = $this->getMigrationDirectory();
 		$this->createFiles($fileList, $path);
@@ -135,9 +128,7 @@ class MigratorTest extends TestCase {
 		$migrator->checkFileListOrder($actualFileList);
 	}
 
-	/**
-	 * @dataProvider dataMigrationFileList
-	 */
+	/** @dataProvider dataMigrationFileList */
 	public function testCheckIntegrityGood(array $fileList) {
 		$path = $this->getMigrationDirectory();
 
@@ -159,9 +150,7 @@ class MigratorTest extends TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider dataMigrationFileList
-	 */
+	/** @dataProvider dataMigrationFileList */
 	public function testCheckIntegrityBad(array $fileList) {
 		$path = $this->getMigrationDirectory();
 
@@ -202,9 +191,7 @@ class MigratorTest extends TestCase {
 		self::assertEquals(0, $migrator->getMigrationCount());
 	}
 
-	/**
-	 * @dataProvider dataMigrationFileList
-	 */
+	/** @dataProvider dataMigrationFileList */
 	public function testMigrationCountNotZeroAfterMigration(array $fileList) {
 		$path = $this->getMigrationDirectory();
 
@@ -224,6 +211,16 @@ class MigratorTest extends TestCase {
 			count($absoluteFileList),
 			$migrator->getMigrationCount()
 		);
+	}
+
+	/** @dataProvider dataMigrationFileList */
+	public function testMigrationCountReturnsZeroOnException(array $fileList) {
+		$path = $this->getMigrationDirectory();
+
+		$this->createMigrationFiles($fileList, $path);
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
+		self::assertEquals(0, $migrator->getMigrationCount());
 	}
 
 	/**
@@ -317,6 +314,39 @@ class MigratorTest extends TestCase {
 		count($absoluteFileList) + 1,
 			$result->fetchAll()
 		);
+	}
+
+	/** @dataProvider dataMigrationFileList */
+	public function testPerformMigrationAlreadyCompleted(array $fileList) {
+		$path = $this->getMigrationDirectory();
+		$this->createMigrationFiles($fileList, $path);
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
+		$absoluteFileList = array_map(function($file)use($path) {
+			return implode(DIRECTORY_SEPARATOR, [
+				$path,
+				$file,
+			]);
+		}, $fileList);
+
+		$existingCount = count($absoluteFileList);
+
+		$migrator->createMigrationTable();
+		$exception = null;
+
+		try {
+			ob_start();
+			$numCompleted = $migrator->performMigration(
+				$absoluteFileList,
+				$existingCount
+			);
+			ob_end_clean();
+		}
+		catch(Exception $exception) {}
+
+		self::assertNull($exception);
+		self::assertEquals(0, $numCompleted);
+
 	}
 
 	/**
