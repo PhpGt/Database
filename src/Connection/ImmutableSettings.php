@@ -59,7 +59,7 @@ trait ImmutableSettings {
 		}
 
 		$clone = clone $this;
-		$clone->username;
+		$clone->username = $username;
 		return $clone;
 	}
 

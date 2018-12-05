@@ -11,10 +11,9 @@ use PHPUnit_Framework_MockObject_MockObject;
 class QueryCollectionCRUDsTest extends TestCase {
 	/** @var  QueryCollection */
 	private $queryCollection;
-	/** @var  PHPUnit_Framework_MockObject_MockObject */
 	private $mockQuery;
 
-	public function setUp() {
+	public function setUp():void {
 		$mockQueryFactory = $this->createMock(QueryFactory::class);
 		$this->mockQuery = $this->createMock(Query::class);
 		$mockQueryFactory

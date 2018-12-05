@@ -30,36 +30,66 @@ class DefaultSettings implements SettingsInterface {
 		]
 	];
 
+	/** @var string */
+	protected $baseDirectory;
+	/** @var string */
+	protected $driver;
+	/** @var string */
+	protected $schema;
+	/** @var string */
+	protected $host;
+	/** @var int */
+	protected $port;
+	/** @var string */
+	protected $username;
+	/** @var string */
+	protected $password;
+	/** @var string */
+	protected $connectionName;
+	/** @var array */
+	protected $config = [];
+
+	public function __construct() {
+		$this->baseDirectory = sys_get_temp_dir();
+		$this->driver = self::DEFAULT_DRIVER;
+		$this->schema = self::DEFAULT_SCHEMA;
+		$this->host = self::DEFAULT_HOST;
+		$this->port = self::DEFAULT_PORT[$this->driver];
+		$this->username = self::DEFAULT_USERNAME;
+		$this->password = self::DEFAULT_PASSWORD;
+		$this->connectionName = self::DEFAULT_NAME;
+	}
+
 	public function getBaseDirectory():string {
-		return sys_get_temp_dir();
+		return $this->baseDirectory;
 	}
 
 	public function getDriver():string {
-		return self::DEFAULT_DRIVER;
+		return $this->driver;
 	}
 
 	public function getSchema():string {
-		return self::DEFAULT_SCHEMA;
+		return $this->schema;
 	}
 
 	public function getHost():string {
-		return self::DEFAULT_HOST;
+		return $this->host;
 	}
 
 	public function getPort():int {
-		return self::DEFAULT_PORT[self::getDriver()];
+		return $this->port;
 	}
 
 	public function getUsername():string {
-		return self::DEFAULT_USERNAME;
+		return $this->username;
 	}
 
 	public function getPassword():string {
-		return self::DEFAULT_PASSWORD;
+		return $this->password;
 	}
 
 	public function getConnectionName():string {
-		return self::DEFAULT_NAME;
+		return $this->connectionName;
 	}
 
 	public function getConnectionSettings():array {

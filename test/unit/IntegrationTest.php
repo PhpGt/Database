@@ -17,7 +17,7 @@ class IntegrationTest extends TestCase {
 	/** @var Database */
 	private $db;
 
-	public function setUp() {
+	public function setUp():void {
 		$this->queryBase = Helper::getTmpDir() . "/query";
 
 		$this->db = new Database($this->settingsSingleton());

@@ -63,15 +63,15 @@ class Database {
 		return $result->affectedRows();
 	}
 
-	public function query(string $queryName, ...$bindings):ResultSet {
+	public function query(string $fullQueryPath, ...$bindings):ResultSet {
 		$queryCollectionName = substr(
-			$queryName,
+			$fullQueryPath,
 			0,
-			strrpos($queryName, "/")
+			strrpos($fullQueryPath, "/")
 		);
 		$queryFile = substr(
-			$queryName,
-			strrpos($queryName, "/") + 1
+			$fullQueryPath,
+			strrpos($fullQueryPath, "/") + 1
 		);
 
 		$connectionName = $this->currentConnectionName ?? DefaultSettings::DEFAULT_NAME;
