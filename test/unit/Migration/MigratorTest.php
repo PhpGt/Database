@@ -317,6 +317,29 @@ class MigratorTest extends TestCase {
 		);
 	}
 
+	/** @dataProvider dataMigrationFileList */
+	public function testPerformMigrationBad(array $fileList) {
+		$path = $this->getMigrationDirectory();
+		$this->createMigrationFiles($fileList, $path);
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
+		$absoluteFileList = array_map(function($file) use ($path) {
+			return implode(DIRECTORY_SEPARATOR, [
+				$path,
+				$file,
+			]);
+		}, $fileList);
+
+		$fileToMessUp = $absoluteFileList[array_rand($absoluteFileList)];
+		file_put_contents($fileToMessUp, "create nothing because nothing really matters");
+
+		$migrator->createMigrationTable();
+		$exception = null;
+
+		self::expectException(DatabaseException::class);
+		$migrator->performMigration($absoluteFileList);
+	}
+
 	/**
 	 * @dataProvider dataMigrationFileList
 	 */
