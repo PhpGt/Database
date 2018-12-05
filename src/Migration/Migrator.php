@@ -192,20 +192,11 @@ class Migrator {
 				continue;
 			}
 
-			try {
-				echo "Migration $fileNumber: `$file`." . PHP_EOL;
-				$sql = file_get_contents($file);
-				$md5 = md5_file($file);
-				$this->dbClient->executeSql($sql);
-				$this->recordMigrationSuccess($fileNumber, $md5);
-			}
-			catch(\Exception $exception) {
-				echo "Error performing migration $fileNumber.";
-				echo PHP_EOL;
-				echo $exception->getMessage();
-				echo PHP_EOL;
-				exit(1);
-			}
+			echo "Migration $fileNumber: `$file`." . PHP_EOL;
+			$sql = file_get_contents($file);
+			$md5 = md5_file($file);
+			$this->dbClient->executeSql($sql);
+			$this->recordMigrationSuccess($fileNumber, $md5);
 
 			$numCompleted++;
 		}
