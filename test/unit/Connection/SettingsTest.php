@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 class SettingsTest extends TestCase {
 	private $properties;
 
-	public function setUp() {
+	public function setUp():void {
 		$this->properties = [
 			"baseDirectory" => "/tmp",
 			"driver" => "test-driver",

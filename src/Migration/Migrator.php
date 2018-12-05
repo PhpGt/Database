@@ -9,9 +9,9 @@ use PDOException;
 use SplFileInfo;
 
 class Migrator {
-	const COLUMN_QUERY_NUMBER = "query_number";
-	const COLUMN_QUERY_HASH = "query_hash";
-	const COLUMN_MIGRATED_AT = "migrated_at";
+	const COLUMN_QUERY_NUMBER = "queryNumber";
+	const COLUMN_QUERY_HASH = "queryHash";
+	const COLUMN_MIGRATED_AT = "migratedAt";
 
 	protected $driver;
 	protected $schema;
@@ -89,7 +89,7 @@ class Migrator {
 			);
 			$row = $result->fetch();
 		}
-		catch(PDOException $exception) {
+		catch(DatabaseException $exception) {
 			return 0;
 		}
 
@@ -183,6 +183,7 @@ class Migrator {
 		int $existingMigrationCount = 0
 	):int {
 		$fileNumber = 0;
+		$numCompleted = 0;
 		
 		foreach($migrationFileList as $i => $file) {
 			$fileNumber = $i + 1;
@@ -205,9 +206,11 @@ class Migrator {
 				echo PHP_EOL;
 				exit(1);
 			}
+
+			$numCompleted++;
 		}
 
-		return $fileNumber;
+		return $numCompleted;
 	}
 
 	/**
