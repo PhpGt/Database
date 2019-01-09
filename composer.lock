@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0091d55ae2db337ab43b82b2724ee563",
+    "content-hash": "a946f39523c6f14725acaedc3a87d737",
     "packages": [
         {
             "name": "magicalex/write-ini-file",
@@ -59,12 +59,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Config.git",
-                "reference": "df436b701e143bfe033dc5a28586a1a90b4e50ad"
+                "reference": "bb88c82f5f6743d7699161439f3a83905493a986"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Config/zipball/df436b701e143bfe033dc5a28586a1a90b4e50ad",
-                "reference": "df436b701e143bfe033dc5a28586a1a90b4e50ad",
+                "url": "https://api.github.com/repos/PhpGt/Config/zipball/bb88c82f5f6743d7699161439f3a83905493a986",
+                "reference": "bb88c82f5f6743d7699161439f3a83905493a986",
                 "shasum": ""
             },
             "require": {
@@ -72,7 +72,7 @@
                 "php": ">=7.1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "6.4.*|7.3.*|7.4.*"
+                "phpunit/phpunit": "6.4.*|7.3.*|7.4.*|7.5.*"
             },
             "bin": [
                 "bin/config-generate"
@@ -94,7 +94,7 @@
                 }
             ],
             "description": "Load configuration from ini files or environment variables.",
-            "time": "2018-12-03T09:04:58+00:00"
+            "time": "2018-12-13T10:58:09+00:00"
         }
     ],
     "packages-dev": [
@@ -461,12 +461,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "3660b2eed90abdf92ac2e9dae9a238d2701bfa77"
+                "reference": "7e272180527c34a97680de85eb5aba0847a664e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/3660b2eed90abdf92ac2e9dae9a238d2701bfa77",
-                "reference": "3660b2eed90abdf92ac2e9dae9a238d2701bfa77",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/7e272180527c34a97680de85eb5aba0847a664e0",
+                "reference": "7e272180527c34a97680de85eb5aba0847a664e0",
                 "shasum": ""
             },
             "require": {
@@ -487,8 +487,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Prophecy\\": "src/"
+                "psr-4": {
+                    "Prophecy\\": "src/Prophecy"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -516,7 +516,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2018-11-04T18:50:11+00:00"
+            "time": "2018-12-18T15:40:51+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -524,12 +524,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "cdba7cfeda7f79d911ee0aafd9da21fa6a62ae2c"
+                "reference": "afe4b8aa7526dafeb5a642a70e54a0083ff54d80"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/cdba7cfeda7f79d911ee0aafd9da21fa6a62ae2c",
-                "reference": "cdba7cfeda7f79d911ee0aafd9da21fa6a62ae2c",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/afe4b8aa7526dafeb5a642a70e54a0083ff54d80",
+                "reference": "afe4b8aa7526dafeb5a642a70e54a0083ff54d80",
                 "shasum": ""
             },
             "require": {
@@ -579,7 +579,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-11-25T09:38:39+00:00"
+            "time": "2018-12-09T08:02:16+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -776,12 +776,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "543f76a930b22508506c462e8b8bd686f1cc442a"
+                "reference": "be5f75805b5323ee75ede2edce8ab9a77a61a47b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/543f76a930b22508506c462e8b8bd686f1cc442a",
-                "reference": "543f76a930b22508506c462e8b8bd686f1cc442a",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/be5f75805b5323ee75ede2edce8ab9a77a61a47b",
+                "reference": "be5f75805b5323ee75ede2edce8ab9a77a61a47b",
                 "shasum": ""
             },
             "require": {
@@ -852,7 +852,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-12-03T13:02:50+00:00"
+            "time": "2019-01-07T20:10:01+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -1025,12 +1025,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "febd209a219cea7b56ad799b30ebbea34b71eb8f"
+                "reference": "585fbcdeff7fb58c4b7596d8b2d6e97aef510611"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/febd209a219cea7b56ad799b30ebbea34b71eb8f",
-                "reference": "febd209a219cea7b56ad799b30ebbea34b71eb8f",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/585fbcdeff7fb58c4b7596d8b2d6e97aef510611",
+                "reference": "585fbcdeff7fb58c4b7596d8b2d6e97aef510611",
                 "shasum": ""
             },
             "require": {
@@ -1067,7 +1067,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2018-11-25T09:31:21+00:00"
+            "time": "2019-01-07T17:23:37+00:00"
         },
         {
             "name": "sebastian/exporter",
@@ -1421,6 +1421,64 @@
             "time": "2016-10-03T07:35:21+00:00"
         },
         {
+            "name": "symfony/polyfill-ctype",
+            "version": "v1.10.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-ctype.git",
+                "reference": "e3d826245268269cd66f8326bd8bc066687b4a19"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/e3d826245268269cd66f8326bd8bc066687b4a19",
+                "reference": "e3d826245268269cd66f8326bd8bc066687b4a19",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "suggest": {
+                "ext-ctype": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.9-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Ctype\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                },
+                {
+                    "name": "Gert de Pagter",
+                    "email": "BackEndTea@gmail.com"
+                }
+            ],
+            "description": "Symfony polyfill for ctype functions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "ctype",
+                "polyfill",
+                "portable"
+            ],
+            "time": "2018-08-06T14:22:27+00:00"
+        },
+        {
             "name": "theseer/tokenizer",
             "version": "1.1.0",
             "source": {
@@ -1462,20 +1520,21 @@
         },
         {
             "name": "webmozart/assert",
-            "version": "dev-master",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozart/assert.git",
-                "reference": "53927dddf3afa2088b355188e143bba42159bf5d"
+                "reference": "83e253c8e0be5b0257b881e1827274667c5c17a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/53927dddf3afa2088b355188e143bba42159bf5d",
-                "reference": "53927dddf3afa2088b355188e143bba42159bf5d",
+                "url": "https://api.github.com/repos/webmozart/assert/zipball/83e253c8e0be5b0257b881e1827274667c5c17a9",
+                "reference": "83e253c8e0be5b0257b881e1827274667c5c17a9",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.3.3 || ^7.0"
+                "php": "^5.3.3 || ^7.0",
+                "symfony/polyfill-ctype": "^1.8"
             },
             "require-dev": {
                 "phpunit/phpunit": "^4.6",
@@ -1508,7 +1567,7 @@
                 "check",
                 "validate"
             ],
-            "time": "2018-05-29T14:25:02+00:00"
+            "time": "2018-12-25T11:19:39+00:00"
         }
     ],
     "aliases": [],
@@ -1517,7 +1576,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.1",
+        "php": "^7.2",
         "ext-pdo": "*"
     },
     "platform-dev": {
