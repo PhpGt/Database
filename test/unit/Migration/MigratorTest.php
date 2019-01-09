@@ -13,6 +13,7 @@ use Gt\Database\Migration\MigrationSequenceOrderException;
 use Gt\Database\Migration\Migrator;
 use Gt\Database\Test\Helper\Helper;
 use PHPUnit\Framework\TestCase;
+use SplFileObject;
 use stdClass;
 
 class MigratorTest extends TestCase {
@@ -440,6 +441,56 @@ class MigratorTest extends TestCase {
 		$migrator->performMigration([]);
 		$output = ob_get_clean();
 		self::assertEmpty($output);
+	}
+
+	/** @dataProvider dataMigrationFileList */
+	public function testMigrationNoOutput(array $fileList) {
+		$path = $this->getMigrationDirectory();
+		$this->createMigrationFiles($fileList, $path);
+
+		$settings = $this->createSettings($path);
+
+		ob_start();
+
+		$migrator = new Migrator($settings, $path);
+		$absoluteFileList = array_map(function($file)use($path) {
+			return implode(DIRECTORY_SEPARATOR, [
+				$path,
+				$file,
+			]);
+		},$fileList);
+
+		$migrator->createMigrationTable();
+		$migrator->performMigration($absoluteFileList);
+
+		$output = ob_get_clean();
+		self::assertEmpty($output);
+	}
+
+	/** @dataProvider dataMigrationFileList */
+	public function testMigrationOutputToStream(array $fileList) {
+		$path = $this->getMigrationDirectory();
+		$this->createMigrationFiles($fileList, $path);
+
+		$settings = $this->createSettings($path);
+		$streamOut = new SplFileObject("php://memory", "w");
+
+		$migrator = new Migrator($settings, $path);
+		$migrator->setOutput($streamOut);
+		$absoluteFileList = array_map(function($file)use($path) {
+			return implode(DIRECTORY_SEPARATOR, [
+				$path,
+				$file,
+			]);
+		},$fileList);
+
+		$migrator->createMigrationTable();
+		$migrator->performMigration($absoluteFileList);
+
+		$streamOut->rewind();
+		$output = $streamOut->fread(4096);
+		self::assertContains("Migration 1:", $output);
+		self::assertContains("Completed migrations successfully.", $output);
 	}
 
 	public function dataMigrationFileList():array {

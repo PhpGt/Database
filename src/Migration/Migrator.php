@@ -2,16 +2,26 @@
 namespace Gt\Database\Migration;
 
 use DirectoryIterator;
+use Exception;
 use Gt\Database\Database;
 use Gt\Database\Connection\Settings;
 use Gt\Database\DatabaseException;
 use PDOException;
 use SplFileInfo;
+use SplFileObject;
 
 class Migrator {
 	const COLUMN_QUERY_NUMBER = "queryNumber";
 	const COLUMN_QUERY_HASH = "queryHash";
 	const COLUMN_MIGRATED_AT = "migratedAt";
+
+	const STREAM_OUT = "out";
+	const STREAM_ERROR = "error";
+
+	/** @var SplFileObject|null */
+	protected $streamError;
+	/** @var SplFileObject|null */
+	protected $streamOut;
 
 	protected $driver;
 	protected $schema;
@@ -41,6 +51,14 @@ class Migrator {
 		}
 
 		$this->selectSchema();
+	}
+
+	public function setOutput(
+		SplFileObject $out,
+		SplFileObject $error = null
+	):void {
+		$this->streamOut = $out;
+		$this->streamError = $error;
 	}
 
 	public function checkMigrationTableExists():bool {
@@ -192,7 +210,8 @@ class Migrator {
 				continue;
 			}
 
-			echo "Migration $fileNumber: `$file`." . PHP_EOL;
+			$this->output("Migration $fileNumber: `$file`.");
+
 			$sql = file_get_contents($file);
 			$md5 = md5_file($file);
 			$this->dbClient->executeSql($sql);
@@ -202,7 +221,10 @@ class Migrator {
 		}
 
 		if($numCompleted === 0) {
-			echo "No migrations were made." . PHP_EOL;
+			$this->output("No migrations were made.");
+		}
+		else {
+			$this->output("Completed migrations successfully.");
 		}
 
 		return $numCompleted;
@@ -228,9 +250,12 @@ class Migrator {
 			);
 		}
 		catch(DatabaseException $exception) {
-			echo "Error selecting `$schema`." . PHP_EOL;
-			echo $exception->getMessage() . PHP_EOL;
-			exit(1);
+			$this->output(
+				"Error selecting schema `$schema`.",
+				self::STREAM_ERROR
+			);
+
+			throw $exception;
 		}
 	}
 
@@ -268,10 +293,29 @@ class Migrator {
 				"create schema if not exists `{$this->schema}`"
 			);
 		}
-		catch(\Exception $exception) {
-			echo "Error recreating schema `{$this->schema}`." . PHP_EOL;
-			echo $exception->getMessage() . PHP_EOL;
-			exit(1);
+		catch(Exception $exception) {
+			$this->output(
+				"Error recreating schema `{$this->schema}`.",
+				self::STREAM_ERROR
+			);
+
+			throw $exception;
 		}
+	}
+
+	protected function output(
+		string $message,
+		string $streamName = self::STREAM_OUT
+	):void {
+		$stream = $this->streamOut;
+		if($streamName === self::STREAM_ERROR) {
+			$stream = $this->streamError;
+		}
+
+		if(is_null($stream)) {
+			return;
+		}
+
+		$stream->fwrite($message . PHP_EOL);
 	}
 }
