@@ -2,7 +2,6 @@
     "name": "phpgt/database",
     "description": "Database API organisation.",
     "type": "library",
-    "minimum-stability": "dev",
 
     "require": {
         "php": "^7.2",
