@@ -30,6 +30,10 @@ class Row implements Iterator {
 		return array_key_exists($name, $this->data);
 	}
 
+	public function contains(string $name):bool {
+		return $this->__isset($name);
+	}
+
 	protected function setProperties(array $data) {
 		foreach($data as $key => $value) {
 			$this->$key = $value;
