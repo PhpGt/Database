@@ -201,6 +201,10 @@ class Migrator {
 			$numCompleted++;
 		}
 
+		if($numCompleted === 0) {
+			echo "No migrations were made." . PHP_EOL;
+		}
+
 		return $numCompleted;
 	}
 

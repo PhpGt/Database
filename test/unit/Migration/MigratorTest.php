@@ -432,6 +432,16 @@ class MigratorTest extends TestCase {
 		$migrator->performMigration($absoluteFileList);
 	}
 
+	public function testMigrationNoOutputEmpty() {
+		$path = $this->getMigrationDirectory();
+		$settings = $this->createSettings($path);
+		$migrator = new Migrator($settings, $path);
+		ob_start();
+		$migrator->performMigration([]);
+		$output = ob_get_clean();
+		self::assertEmpty($output);
+	}
+
 	public function dataMigrationFileList():array {
 		$fileList = $this->generateFileList();
 		return [
