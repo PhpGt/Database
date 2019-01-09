@@ -11,7 +11,7 @@ class SqlQueryTest extends TestCase {
 	/** @var Driver */
 	private $driver;
 
-	public function setUp() {
+	public function setUp():void {
 		$driver = $this->driverSingleton();
 		$connection = $driver->getConnection();
 		$output = $connection->exec("CREATE TABLE test_table ( id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(32), timestamp DATETIME DEFAULT current_timestamp); CREATE UNIQUE INDEX test_table_name_uindex ON test_table (name);");

@@ -68,22 +68,14 @@ $numberOfDeletedReviews = $db->delete(
 
 ## Features at a glance
 
-+ [SQL templates][wiki-templates] (future release)
 + [Automatic database migrations][wiki-migrations]
 + [Organisation of queries using `QueryCollection`s][wiki-query-collections]
 + [Bind parameters by name or sequentially][wiki-parameters]
 + [Fully configurable][wiki-config]
 
-## Compatible database engines
+## Planned features
 
-Compatibility is provided for the following database providers:
-
-* MySQL
-* Postgres
-* SQLite
-* SQL Server
-* Mongo (planned)
-* CouchDB (planned)
++ Compatibility with no-SQL databases
 
 [wiki-templates]: https://github.com/PhpGt/Database/wiki
 [wiki-query-collections]: https://github.com/PhpGt/Database/wiki

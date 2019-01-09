@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 class SettingsTest extends TestCase {
 	private $properties;
 
-	public function setUp() {
+	public function setUp():void {
 		$this->properties = [
 			"baseDirectory" => "/tmp",
 			"driver" => "test-driver",
@@ -114,5 +114,33 @@ class SettingsTest extends TestCase {
 		$actual = $settings->getConnectionSettings();
 		static::assertArrayHasKey("options", $actual);
 		static::assertEquals($expected, $actual["options"]);
+	}
+
+	public function testGetConnectionString() {
+		$settings = new Settings(
+			$this->properties["baseDirectory"],
+			$this->properties["driver"],
+			$this->properties["database"],
+			$this->properties["host"],
+			$this->properties["port"],
+			$this->properties["username"],
+			$this->properties["password"],
+			$this->properties["connectionName"]
+		);
+
+		$expectedConnectionString = implode("", [
+			$this->properties["driver"],
+			":host=",
+			$this->properties["host"],
+			";dbname=",
+			$this->properties["database"],
+			";charset=",
+			Settings::CHARSET,
+		]);
+
+		self::assertEquals(
+			$expectedConnectionString,
+			$settings->getConnectionString()
+		);
 	}
 }

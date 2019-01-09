@@ -9,9 +9,9 @@ use PDOException;
 use SplFileInfo;
 
 class Migrator {
-	const COLUMN_QUERY_NUMBER = "query_number";
-	const COLUMN_QUERY_HASH = "query_hash";
-	const COLUMN_MIGRATED_AT = "migrated_at";
+	const COLUMN_QUERY_NUMBER = "queryNumber";
+	const COLUMN_QUERY_HASH = "queryHash";
+	const COLUMN_MIGRATED_AT = "migratedAt";
 
 	protected $driver;
 	protected $schema;
@@ -89,7 +89,7 @@ class Migrator {
 			);
 			$row = $result->fetch();
 		}
-		catch(PDOException $exception) {
+		catch(DatabaseException $exception) {
 			return 0;
 		}
 
@@ -183,6 +183,7 @@ class Migrator {
 		int $existingMigrationCount = 0
 	):int {
 		$fileNumber = 0;
+		$numCompleted = 0;
 		
 		foreach($migrationFileList as $i => $file) {
 			$fileNumber = $i + 1;
@@ -191,23 +192,16 @@ class Migrator {
 				continue;
 			}
 
-			try {
-				echo "Migration $fileNumber: `$file`." . PHP_EOL;
-				$sql = file_get_contents($file);
-				$md5 = md5_file($file);
-				$this->dbClient->executeSql($sql);
-				$this->recordMigrationSuccess($fileNumber, $md5);
-			}
-			catch(\Exception $exception) {
-				echo "Error performing migration $fileNumber.";
-				echo PHP_EOL;
-				echo $exception->getMessage();
-				echo PHP_EOL;
-				exit(1);
-			}
+			echo "Migration $fileNumber: `$file`." . PHP_EOL;
+			$sql = file_get_contents($file);
+			$md5 = md5_file($file);
+			$this->dbClient->executeSql($sql);
+			$this->recordMigrationSuccess($fileNumber, $md5);
+
+			$numCompleted++;
 		}
 
-		return $fileNumber;
+		return $numCompleted;
 	}
 
 	/**
@@ -237,31 +231,21 @@ class Migrator {
 	}
 
 	protected function recordMigrationSuccess(int $number, string $hash) {
-		try {
-			$now = "now()";
+		$now = "now()";
 
-			if($this->driver === Settings::DRIVER_SQLITE) {
-				$now = "datetime('now')";
-			}
+		if($this->driver === Settings::DRIVER_SQLITE) {
+			$now = "datetime('now')";
+		}
 
-			$this->dbClient->executeSql(implode("\n", [
-				"insert into `{$this->tableName}` (",
-				"`" . self::COLUMN_QUERY_NUMBER . "`, ",
-				"`" . self::COLUMN_QUERY_HASH . "`, ",
-				"`" . self::COLUMN_MIGRATED_AT . "` ",
-				") values (",
-				"?, ?, $now",
-				")",
-			]), [$number, $hash]);
-		}
-		catch(\Exception $exception) {
-			echo "Error storing migration progress in database table "
-				. $this->tableName;
-			echo PHP_EOL;
-			echo $exception->getMessage();
-			echo PHP_EOL;
-			exit(1);
-		}
+		$this->dbClient->executeSql(implode("\n", [
+			"insert into `{$this->tableName}` (",
+			"`" . self::COLUMN_QUERY_NUMBER . "`, ",
+			"`" . self::COLUMN_QUERY_HASH . "`, ",
+			"`" . self::COLUMN_MIGRATED_AT . "` ",
+			") values (",
+			"?, ?, $now",
+			")",
+		]), [$number, $hash]);
 	}
 
 	/**

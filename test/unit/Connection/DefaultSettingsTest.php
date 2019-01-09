@@ -61,6 +61,27 @@ class DefaultSettingsTest extends TestCase {
 		], $settings->getConnectionSettings());
 	}
 
+	/** @dataProvider getDrivers */
+	public function testGetConnectionSettings(string $dsn, int $port) {
+		$settings = new DefaultSettings();
+		$connectionSettings = $settings->getConnectionSettings();
+
+		self::assertArrayHasKey("driver", $connectionSettings);
+		self::assertArrayHasKey("host", $connectionSettings);
+		self::assertArrayHasKey("port", $connectionSettings);
+		self::assertArrayHasKey("database", $connectionSettings);
+		self::assertArrayHasKey("username", $connectionSettings);
+		self::assertArrayHasKey("password", $connectionSettings);
+		self::assertArrayHasKey("charset", $connectionSettings);
+		self::assertArrayHasKey("collation", $connectionSettings);
+		self::assertArrayHasKey("options", $connectionSettings);
+
+		self::assertEquals(
+			DefaultSettings::DEFAULT_CONFIG["options"],
+			$connectionSettings["options"]
+		);
+	}
+
 	public function getDrivers():array {
 		return [
 			[Settings::DRIVER_MYSQL, 3306],
