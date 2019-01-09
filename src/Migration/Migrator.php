@@ -6,7 +6,6 @@ use Exception;
 use Gt\Database\Database;
 use Gt\Database\Connection\Settings;
 use Gt\Database\DatabaseException;
-use PDOException;
 use SplFileInfo;
 use SplFileObject;
 
@@ -214,8 +213,18 @@ class Migrator {
 
 			$sql = file_get_contents($file);
 			$md5 = md5_file($file);
-			$this->dbClient->executeSql($sql);
-			$this->recordMigrationSuccess($fileNumber, $md5);
+
+			try {
+				$this->dbClient->executeSql($sql);
+				$this->recordMigrationSuccess($fileNumber, $md5);
+			}
+			catch(DatabaseException $exception) {
+				$this->output(
+					$exception->getMessage(),
+					self::STREAM_ERROR
+				);
+				throw $exception;
+			}
 
 			$numCompleted++;
 		}

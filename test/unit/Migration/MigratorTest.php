@@ -415,7 +415,7 @@ class MigratorTest extends TestCase {
 	}
 
 	/** @dataProvider dataMigrationFileList */
-	public function testMigrationSuccessThrowsException(array $fileList) {
+	public function testMigrationThrowsExceptionWhenNoMigrationTable(array $fileList) {
 		$path = $this->getMigrationDirectory();
 
 		$this->createMigrationFiles($fileList, $path);
@@ -491,6 +491,57 @@ class MigratorTest extends TestCase {
 		$output = $streamOut->fread(4096);
 		self::assertContains("Migration 1:", $output);
 		self::assertContains("Completed migrations successfully.", $output);
+	}
+
+	/** @dataProvider dataMigrationFileList */
+	public function testMigrationErrorOutputToStream(array $fileList) {
+		$path = $this->getMigrationDirectory();
+		$this->createMigrationFiles($fileList, $path);
+		$settings = $this->createSettings($path);
+
+		$streamOut = new SplFileObject("php://memory", "w");
+		$streamError = new SplFileObject("php://memory", "w");
+
+		$migrator = new Migrator($settings, $path);
+		$migrator->setOutput($streamOut, $streamError);
+		$absoluteFileList = array_map(function($file) use ($path) {
+			return implode(DIRECTORY_SEPARATOR, [
+				$path,
+				$file,
+			]);
+		}, $fileList);
+
+		$fileToMessUp = $absoluteFileList[array_rand($absoluteFileList)];
+		file_put_contents($fileToMessUp, "create nothing because nothing really matters");
+
+		$migrator->createMigrationTable();
+		$exception = null;
+
+		try {
+			$migrator->performMigration($absoluteFileList);
+		}
+		catch(DatabaseException $exception) {
+			$streamOut->rewind();
+			$output = $streamOut->fread(1024);
+			$streamError->rewind();
+			$outputError = $streamError->fread(1024);
+			self::assertContains(
+				"Migration 1:",
+				$output
+			);
+			self::assertNotContains(
+				"Migration 1:",
+				$outputError
+			);
+			self::assertContains(
+				"General error: 1 near \"nothing\": syntax error",
+				$outputError
+			);
+			self::assertNotContains(
+				"General error: 1 near \"nothing\": syntax error",
+				$output
+			);
+		}
 	}
 
 	public function dataMigrationFileList():array {
