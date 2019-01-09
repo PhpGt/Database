@@ -7,7 +7,7 @@ use Gt\Database\Result\Row;
 use PHPUnit\Framework\TestCase;
 
 class RowTest extends TestCase {
-	/** @dataProvider getTestRowData */
+	/** @dataProvider data_getTestRow */
 	public function testFieldAccess(array $data) {
 		$row = new Row($data);
 
@@ -32,7 +32,27 @@ class RowTest extends TestCase {
 		$row->doink;
 	}
 
-	/** @dataProvider getTestRowData */
+	public function testEmpty() {
+		$row = new Row(["col1" => "item"]);
+		$isEmpty = empty($row->col1);
+		self::assertFalse($isEmpty);
+		$isEmpty = empty($row->col2);
+		self::assertTrue($isEmpty);
+	}
+
+	public function testNullCoalesce() {
+		$row = new Row(["col1" => "item"]);
+		$value = $row->col2 ?? "DEFAULT!";
+		self::assertEquals("DEFAULT!", $value);
+	}
+
+	public function testContains() {
+		$row = new Row(["col1" => "item"]);
+		self::assertTrue($row->contains("col1"));
+		self::assertFalse($row->contains("col2"));
+	}
+
+	/** @dataProvider data_getTestRow */
 	public function testIteration(array $data) {
 		$row = new Row($data);
 
@@ -41,7 +61,7 @@ class RowTest extends TestCase {
 		}
 	}
 
-	public function getTestRowData():array {
+	public function data_getTestRow():array {
 		return [
 			[["id" => 1, "name" => "Alice"]],
 			[["col1" => "binky", "col2" => "boo", "col3", "dah"]],
