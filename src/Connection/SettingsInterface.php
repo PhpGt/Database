@@ -11,6 +11,8 @@ interface SettingsInterface {
 	public function getPassword():string;
 	public function getConnectionName():string;
 	public function getConnectionString():string;
+	public function getCharset():string;
+	public function getCollation():string;
 
 	public function withBaseDirectory(string $baseDirectory):SettingsInterface;
 	public function withDriver(string $driver):SettingsInterface;
@@ -21,4 +23,6 @@ interface SettingsInterface {
 	public function withPassword(string $password):SettingsInterface;
 	public function withConnectionName(string $connectionName):SettingsInterface;
 	public function withoutSchema():SettingsInterface;
+	public function withCharset(string $charset):SettingsInterface;
+	public function withCollation(string $collation):SettingsInterface;
 }

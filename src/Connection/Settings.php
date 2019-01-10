@@ -32,6 +32,10 @@ class Settings implements SettingsInterface {
 	protected $connectionName;
 	/** @var array */
 	protected $config = [];
+	/** @var string */
+	protected $charset;
+	/** @var string */
+	protected $collation;
 
 	public function __construct(
 		string $baseDirectory,
@@ -129,5 +133,25 @@ class Settings implements SettingsInterface {
 		}
 
 		return $connectionString;
+	}
+
+	public function getCharset():string {
+		if(!empty($this->charset)) {
+			return $this->charset;
+		}
+
+		return $this->getCharsetFromCollation();
+	}
+
+	public function getCollation():string {
+		return $this->collation ?? DefaultSettings::DEFAULT_COLLATION;
+	}
+
+	protected function getCharsetFromCollation():string {
+		return substr(
+			$this->collation,
+			0,
+			strpos($this->collation, "_")
+		);
 	}
 }

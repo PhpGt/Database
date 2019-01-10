@@ -28,6 +28,9 @@ class Migrator {
 	protected $path;
 	protected $tableName;
 
+	protected $charset;
+	protected $collate;
+
 	public function __construct(
 		Settings $settings,
 		string $path,
@@ -38,6 +41,9 @@ class Migrator {
 		$this->path = $path;
 		$this->tableName = $tableName;
 		$this->driver = $settings->getDriver();
+
+		$this->charset = $settings->getCharset();
+		$this->collate = $settings->getCollation();
 
 		if($this->driver !== Settings::DRIVER_SQLITE) {
 			$settings = $settings->withoutSchema(); // @codeCoverageIgnore
@@ -252,7 +258,7 @@ class Migrator {
 
 		try {
 			$this->dbClient->executeSql(
-				"create schema if not exists `$schema`"
+				"create schema if not exists `$schema` default character set {$this->charset} default collate {$this->collate}"
 			);
 			$this->dbClient->executeSql(
 				"use `$schema`"
@@ -299,7 +305,7 @@ class Migrator {
 				"drop schema if exists `{$this->schema}`"
 			);
 			$this->dbClient->executeSql(
-				"create schema if not exists `{$this->schema}`"
+				"create schema if not exists `{$this->schema}` default character set {$this->charset} default collate {$this->collate}"
 			);
 		}
 		catch(Exception $exception) {

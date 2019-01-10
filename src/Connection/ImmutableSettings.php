@@ -87,4 +87,24 @@ trait ImmutableSettings {
 		$clone = $this->withSchema("");
 		return $clone;
 	}
+
+	public function withCharset(string $charset):SettingsInterface {
+		if($this->charset === $charset) {
+			return $this;
+		}
+
+		$clone = clone $this;
+		$clone->charset = $charset;
+		return $clone;
+	}
+
+	public function withCollation(string $collation):SettingsInterface {
+		if($this->collation === $collation) {
+			return $this;
+		}
+
+		$clone = clone $this;
+		$clone->collation = $collation;
+		return $clone;
+	}
 }

@@ -30,6 +30,9 @@ class DefaultSettings implements SettingsInterface {
 		]
 	];
 
+	const DEFAULT_CHARSET = "utf8";
+	const DEFAULT_COLLATION = "utf8_unicode_ci";
+
 	/** @var string */
 	protected $baseDirectory;
 	/** @var string */
@@ -48,6 +51,10 @@ class DefaultSettings implements SettingsInterface {
 	protected $connectionName;
 	/** @var array */
 	protected $config = [];
+	/** @var string */
+	protected $charset;
+	/** @var string */
+	protected $collation;
 
 	public function __construct() {
 		$this->baseDirectory = sys_get_temp_dir();
@@ -93,8 +100,8 @@ class DefaultSettings implements SettingsInterface {
 	}
 
 	public function getConnectionSettings():array {
-		// NOTE: It's not possible to test the 'port' values returned by this method
-		// because the DefaultSettings can only ever return the DEFAULT_DRIVER port
+// NOTE: It's not possible to test the 'port' values returned by this method
+// because the DefaultSettings can only ever return the DEFAULT_DRIVER port
 		return array_merge(
 			DefaultSettings::DEFAULT_CONFIG,
 			[
@@ -106,7 +113,8 @@ class DefaultSettings implements SettingsInterface {
 				"password" => $this->getPassword(),
 				"charset" => self::CHARSET,
 				"collation" => self::COLLATION,
-			]);
+			]
+		);
 	}
 
 	public function getConnectionString():string {
@@ -114,5 +122,13 @@ class DefaultSettings implements SettingsInterface {
 			$this->getDriver(),
 			$this->getSchema(),
 		]);
+	}
+
+	public function getCharset():string {
+		return self::DEFAULT_CHARSET;
+	}
+
+	public function getCollation():string {
+		return self::DEFAULT_COLLATION;
 	}
 }
