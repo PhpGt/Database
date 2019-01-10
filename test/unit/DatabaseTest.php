@@ -3,6 +3,7 @@ namespace Gt\Database;
 
 use Gt\Database\Connection\Settings;
 use Gt\Database\Query\QueryCollection;
+use Gt\Database\Result\ResultSet;
 use PHPUnit\Framework\TestCase;
 
 class DatabaseTest extends TestCase {

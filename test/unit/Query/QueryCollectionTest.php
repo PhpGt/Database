@@ -4,13 +4,32 @@ namespace Gt\Database\Query;
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
 use Gt\Database\Result\ResultSet;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 
 class QueryCollectionTest extends TestCase {
 	/** @var  QueryCollection */
 	private $queryCollection;
+	/** @var MockObject|Query */
 	private $mockQuery;
+
+	public function setUp():void {
+		/** @var MockObject|QueryFactory $mockQueryFactory */
+		$mockQueryFactory = $this->createMock(QueryFactory::class);
+		$this->mockQuery = $this->createMock(Query::class);
+		$mockQueryFactory
+			->expects(static::once())
+			->method("create")
+			->with("something")
+			->willReturn($this->mockQuery);
+
+		$this->queryCollection = new QueryCollection(
+			__DIR__,
+			new Driver(new DefaultSettings()),
+			$mockQueryFactory
+		);
+	}
 
 	public function testQueryCollectionQuery() {
 		$placeholderVars = ["nombre" => "hombre"];
@@ -60,22 +79,6 @@ class QueryCollectionTest extends TestCase {
 		static::assertInstanceOf(
 			ResultSet::class,
 			$this->queryCollection->something()
-		);
-	}
-
-	public function setUp():void {
-		$mockQueryFactory = $this->createMock(QueryFactory::class);
-		$this->mockQuery = $this->createMock(Query::class);
-		$mockQueryFactory
-			->expects(static::once())
-			->method("create")
-			->with("something")
-			->willReturn($this->mockQuery);
-
-		$this->queryCollection = new QueryCollection(
-			__DIR__,
-			new Driver(new DefaultSettings()),
-			$mockQueryFactory
 		);
 	}
 }
