@@ -143,4 +143,26 @@ class SettingsTest extends TestCase {
 			$settings->getConnectionString()
 		);
 	}
+
+	public function testWithCharset() {
+		$settings = new Settings(
+			$this->properties["baseDirectory"],
+			$this->properties["driver"],
+			$this->properties["database"],
+			$this->properties["host"],
+			$this->properties["port"],
+			$this->properties["username"],
+			$this->properties["password"],
+			$this->properties["connectionName"],
+			"test_collation",
+			"the_test_charset"
+		);
+
+		self::assertEquals("test_collation", $settings->getCollation());
+		self::assertEquals("the_test_charset", $settings->getCharset());
+
+		$settings = $settings->withCharset("updated_charset");
+		self::assertEquals("updated_charset", $settings->getCharset());
+		self::assertEquals("test_collation", $settings->getCollation());
+	}
 }

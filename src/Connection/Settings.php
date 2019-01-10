@@ -45,7 +45,9 @@ class Settings implements SettingsInterface {
 		int $port = null,
 		string $username = DefaultSettings::DEFAULT_USERNAME,
 		string $password = DefaultSettings::DEFAULT_PASSWORD,
-		string $connectionName = DefaultSettings::DEFAULT_NAME
+		string $connectionName = DefaultSettings::DEFAULT_NAME,
+		string $collation = DefaultSettings::DEFAULT_COLLATION,
+		string $charset = DefaultSettings::DEFAULT_CHARSET
 	) {
 		if(is_null($port)) {
 			$port = DefaultSettings::DEFAULT_PORT[$driver];
@@ -59,6 +61,8 @@ class Settings implements SettingsInterface {
 		$this->username = $username;
 		$this->password = $password;
 		$this->connectionName = $connectionName;
+		$this->charset = $charset;
+		$this->collation = $collation;
 	}
 
 	public function setConfig(array $config) {
@@ -144,7 +148,7 @@ class Settings implements SettingsInterface {
 	}
 
 	public function getCollation():string {
-		return $this->collation ?? DefaultSettings::DEFAULT_COLLATION;
+		return $this->collation;
 	}
 
 	protected function getCharsetFromCollation():string {
