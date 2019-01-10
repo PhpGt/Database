@@ -32,6 +32,10 @@ class Settings implements SettingsInterface {
 	protected $connectionName;
 	/** @var array */
 	protected $config = [];
+	/** @var string */
+	protected $collation;
+	/** @var string */
+	protected $charset;
 
 	public function __construct(
 		string $baseDirectory,
@@ -41,7 +45,9 @@ class Settings implements SettingsInterface {
 		int $port = null,
 		string $username = DefaultSettings::DEFAULT_USERNAME,
 		string $password = DefaultSettings::DEFAULT_PASSWORD,
-		string $connectionName = DefaultSettings::DEFAULT_NAME
+		string $connectionName = DefaultSettings::DEFAULT_NAME,
+		string $collation = DefaultSettings::DEFAULT_COLLATION,
+		string $charset = null
 	) {
 		if(is_null($port)) {
 			$port = DefaultSettings::DEFAULT_PORT[$driver];
@@ -55,6 +61,8 @@ class Settings implements SettingsInterface {
 		$this->username = $username;
 		$this->password = $password;
 		$this->connectionName = $connectionName;
+		$this->collation = $collation;
+		$this->charset = $charset;
 	}
 
 	public function setConfig(array $config) {
@@ -129,5 +137,25 @@ class Settings implements SettingsInterface {
 		}
 
 		return $connectionString;
+	}
+
+	public function getCharset():string {
+		if(!empty($this->charset)) {
+			return $this->charset;
+		}
+
+		return $this->getCharsetFromCollation();
+	}
+
+	public function getCollation():string {
+		return $this->collation;
+	}
+
+	protected function getCharsetFromCollation():string {
+		return substr(
+			$this->collation,
+			0,
+			strpos($this->collation, "_")
+		);
 	}
 }
