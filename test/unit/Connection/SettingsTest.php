@@ -158,6 +158,8 @@ class SettingsTest extends TestCase {
 			"the_test_charset"
 		);
 
+		self::assertSame($settings, $settings->withCharset("the_test_charset"));
+
 		self::assertEquals("test_collation", $settings->getCollation());
 		self::assertEquals("the_test_charset", $settings->getCharset());
 
@@ -179,6 +181,8 @@ class SettingsTest extends TestCase {
 			"test_collation",
 			"the_test_charset"
 		);
+
+		self::assertSame($settings, $settings->withCollation("test_collation"));
 
 		self::assertEquals("test_collation", $settings->getCollation());
 		self::assertEquals("the_test_charset", $settings->getCharset());
