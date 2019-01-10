@@ -82,6 +82,12 @@ class DefaultSettingsTest extends TestCase {
 		);
 	}
 
+	public function testGetDefaultCharset() {
+		$settings = new DefaultSettings();
+		self::assertEquals(DefaultSettings::DEFAULT_CHARSET, $settings->getCharset());
+		self::assertEquals(DefaultSettings::DEFAULT_COLLATION, $settings->getCollation());
+	}
+
 	public function getDrivers():array {
 		return [
 			[Settings::DRIVER_MYSQL, 3306],
