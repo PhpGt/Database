@@ -187,4 +187,20 @@ class SettingsTest extends TestCase {
 		self::assertEquals("updated_collation", $settings->getCollation());
 		self::assertEquals("the_test_charset", $settings->getCharset());
 	}
+
+	public function testGetCharsetFromCollation() {
+		$settings = new Settings(
+			$this->properties["baseDirectory"],
+			$this->properties["driver"],
+			$this->properties["database"],
+			$this->properties["host"],
+			$this->properties["port"],
+			$this->properties["username"],
+			$this->properties["password"],
+			$this->properties["connectionName"],
+			"example_collation"
+		);
+
+		self::assertEquals("example", $settings->getCharset());
+	}
 }

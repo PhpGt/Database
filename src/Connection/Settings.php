@@ -33,9 +33,9 @@ class Settings implements SettingsInterface {
 	/** @var array */
 	protected $config = [];
 	/** @var string */
-	protected $charset;
-	/** @var string */
 	protected $collation;
+	/** @var string */
+	protected $charset;
 
 	public function __construct(
 		string $baseDirectory,
@@ -47,7 +47,7 @@ class Settings implements SettingsInterface {
 		string $password = DefaultSettings::DEFAULT_PASSWORD,
 		string $connectionName = DefaultSettings::DEFAULT_NAME,
 		string $collation = DefaultSettings::DEFAULT_COLLATION,
-		string $charset = DefaultSettings::DEFAULT_CHARSET
+		string $charset = null
 	) {
 		if(is_null($port)) {
 			$port = DefaultSettings::DEFAULT_PORT[$driver];
@@ -61,8 +61,8 @@ class Settings implements SettingsInterface {
 		$this->username = $username;
 		$this->password = $password;
 		$this->connectionName = $connectionName;
-		$this->charset = $charset;
 		$this->collation = $collation;
+		$this->charset = $charset;
 	}
 
 	public function setConfig(array $config) {
