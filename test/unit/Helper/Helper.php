@@ -82,6 +82,39 @@ class Helper {
 		return $data;
 	}
 
+	public function queryPathNestedProvider() {
+		$exists = true;
+		$extension = "sql";
+		$data = [];
+
+		foreach(self::queryCollectionPathProvider(true) as $qcName => $qcData) {
+			$queryCollectionPath = $qcData[1];
+
+			if(is_null($extension)) {
+				$extension = uniqid();
+			}
+
+			$queryName = uniqid("query");
+			$filename = "$queryName.$extension";
+			$filePath = implode(DIRECTORY_SEPARATOR, [
+				$queryCollectionPath,
+				$filename,
+			]);
+
+			if($exists) {
+				touch($filePath);
+			}
+
+			$data [] = [
+				$queryName,
+				$queryCollectionPath,
+				$filePath,
+			];
+		}
+
+		return $data;
+	}
+
 	public static function queryCollectionPathExistsProvider() {
 		return self::queryCollectionPathProvider(true);
 	}

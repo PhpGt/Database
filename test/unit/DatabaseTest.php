@@ -3,8 +3,8 @@ namespace Gt\Database;
 
 use Gt\Database\Connection\Settings;
 use Gt\Database\Query\QueryCollection;
-use Gt\Database\Result\ResultSet;
 use PHPUnit\Framework\TestCase;
+use Gt\Database\Test\Helper\Helper;
 
 class DatabaseTest extends TestCase {
 	public function testInterface() {
@@ -42,5 +42,22 @@ class DatabaseTest extends TestCase {
 		);
 		$db = new Database($settings);
 		$db->queryCollection($name);
+	}
+
+	/** @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNestedProvider */
+	public function testQueryCollectionDots(
+		array $nameParts,
+		string $path,
+		string $basePath
+	) {
+		$dotName = implode(".", $nameParts);
+		
+		$settings = new Settings(
+			$basePath,
+			Settings::DRIVER_SQLITE,
+			Settings::SCHEMA_IN_MEMORY
+		);
+		$db = new Database($settings);
+		$db->queryCollection($dotName);
 	}
 }
