@@ -5,12 +5,14 @@ use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
 use Gt\Database\Result\ResultSet;
 use Gt\Database\Result\Row;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 
 class QueryCollectionCRUDsTest extends TestCase {
 	/** @var  QueryCollection */
 	private $queryCollection;
+	/** @var Query|MockObject */
 	private $mockQuery;
 
 	public function setUp():void {
@@ -21,6 +23,8 @@ class QueryCollectionCRUDsTest extends TestCase {
 			->method("create")
 			->with("something")
 			->willReturn($this->mockQuery);
+
+		/** @var QueryFactory $mockQueryFactory */
 
 		$this->queryCollection = new QueryCollection(
 			__DIR__,
