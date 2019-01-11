@@ -5,6 +5,7 @@ use DirectoryIterator;
 use Gt\Database\Connection\Driver;
 
 class QueryCollectionFactory {
+	const COLLECTION_SEPARATOR_CHARACTERS = ["/", ".", "\\"];
 	/** @var Driver */
 	protected $driver;
 	/** @var string */
@@ -46,15 +47,46 @@ class QueryCollectionFactory {
 	 * @return string       Absolute path to directory
 	 */
 	protected function locateDirectory(string $name):?string {
-		foreach(new DirectoryIterator($this->basePath) as $fileInfo) {
+		$parts = [$name];
+
+		foreach(self::COLLECTION_SEPARATOR_CHARACTERS as $char) {
+			if(!strstr($name, $char)) {
+				continue;
+			}
+
+			$parts = explode($char, $name);
+		}
+
+		return $this->recurseLocateDirectory($parts);
+	}
+
+	protected function recurseLocateDirectory(
+		array $parts,
+		string $basePath = null
+	):?string {
+		$part = array_shift($parts);
+		if(is_null($basePath)) {
+			$basePath = $this->basePath;
+		}
+
+		foreach(new DirectoryIterator($basePath) as $fileInfo) {
 			if($fileInfo->isDot()
-				|| !$fileInfo->isDir()) {
+			|| !$fileInfo->isDir()) {
 				continue;
 			}
 
 			$basename = $fileInfo->getBasename();
-			if(strtolower($name) === strtolower($basename)) {
-				return $fileInfo->getRealPath();
+			if(strtolower($part) === strtolower($basename)) {
+				$realPath = $fileInfo->getRealPath();
+
+				if(empty($parts)) {
+					return $realPath;
+				}
+
+				return $this->recurseLocateDirectory(
+					$parts,
+					$realPath
+				);
 			}
 		}
 

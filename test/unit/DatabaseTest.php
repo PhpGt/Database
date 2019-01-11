@@ -50,14 +50,16 @@ class DatabaseTest extends TestCase {
 		string $path,
 		string $basePath
 	) {
+		array_pop($nameParts);
 		$dotName = implode(".", $nameParts);
-		
+
 		$settings = new Settings(
 			$basePath,
 			Settings::DRIVER_SQLITE,
 			Settings::SCHEMA_IN_MEMORY
 		);
 		$db = new Database($settings);
-		$db->queryCollection($dotName);
+		$queryCollection = $db->queryCollection($dotName);
+		self::assertInstanceOf(QueryCollection::class, $queryCollection);
 	}
 }

@@ -83,32 +83,40 @@ class Helper {
 	}
 
 	public function queryPathNestedProvider() {
-		$exists = true;
-		$extension = "sql";
 		$data = [];
 
-		foreach(self::queryCollectionPathProvider(true) as $qcName => $qcData) {
+		$n = rand(2, 6);
+
+		foreach(self::queryCollectionPathProvider(true, $n)
+		as $qcName => $qcData) {
 			$queryCollectionPath = $qcData[1];
 
-			if(is_null($extension)) {
-				$extension = uniqid();
-			}
-
 			$queryName = uniqid("query");
-			$filename = "$queryName.$extension";
+			$filename = "$queryName.sql";
 			$filePath = implode(DIRECTORY_SEPARATOR, [
 				$queryCollectionPath,
 				$filename,
 			]);
 
-			if($exists) {
-				touch($filePath);
+
+			touch($filePath);
+
+			$basePos = strpos($filePath, DIRECTORY_SEPARATOR . "query" . DIRECTORY_SEPARATOR)
+				+ strlen("/query/");
+			$nameParts = [];
+			$nameString = substr(
+				$filePath,
+				$basePos
+			);
+			foreach(explode(DIRECTORY_SEPARATOR, $nameString) as $n) {
+				$nameParts []= strtok($n, ".");
 			}
+			$basePath = substr($filePath, 0, $basePos - 1);
 
 			$data [] = [
-				$queryName,
-				$queryCollectionPath,
+				$nameParts,
 				$filePath,
+				$basePath,
 			];
 		}
 
@@ -123,11 +131,20 @@ class Helper {
 		return self::queryCollectionPathProvider(false);
 	}
 
-	private static function queryCollectionPathProvider(bool $exists) {
+	private static function queryCollectionPathProvider(
+		bool $exists,
+		int $nested = 1
+	) {
 		$data = [];
 
 		for($i = 0; $i < self::COUNT_PATH_PROVIDER; ++$i) {
-			$name = uniqid();
+			$nameParts = [];
+
+			for($n = 0; $n < $nested; $n++) {
+				$nameParts []= uniqid();
+			}
+
+			$name = implode(DIRECTORY_SEPARATOR, $nameParts);
 			$path = implode(DIRECTORY_SEPARATOR, [
 				self::getTmpDir(),
 				"query",
