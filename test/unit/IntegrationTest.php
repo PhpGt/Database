@@ -172,6 +172,42 @@ class IntegrationTest extends TestCase {
 		static::assertNull($resultNull);
 	}
 
+	public function testMultipleParameterUsageDotSeperatorNested() {
+		$queryCollectionPath = implode(DIRECTORY_SEPARATOR, [
+			$this->queryBase,
+			"deeply",
+			"nested",
+			"exampleCollection",
+		]);
+		$getByNameNumberQueryPath = implode(DIRECTORY_SEPARATOR, [
+			$queryCollectionPath,
+			"getByNameNumber.sql",
+		]);
+
+		mkdir($queryCollectionPath, 0775, true);
+		file_put_contents(
+			$getByNameNumberQueryPath,
+			"SELECT id, name, number FROM test_table WHERE name = :name and number = :number"
+		);
+
+		$result1 = $this->db->fetch("deeply.nested.exampleCollection.getByNameNumber", [
+			"name" => "one",
+			"number" => 1,
+		]);
+		$result2 = $this->db->fetch("deeply.nested.exampleCollection.getByNameNumber", [
+			"name" => "two",
+			"number" => 2,
+		]);
+		$resultNull = $this->db->fetch("deeply.nested.exampleCollection.getByNameNumber", [
+			"name" => "three",
+			"number" => 55,
+		]);
+
+		static::assertEquals(1, $result1->id);
+		static::assertEquals(2, $result2->id);
+		static::assertNull($resultNull);
+	}
+
 	public function testMultipleArrayParameterUsage() {
 		$queryCollectionPath = $this->queryBase . "/exampleCollection";
 		$getByNameNumberQueryPath = $queryCollectionPath . "/getByNameNumber.sql";
