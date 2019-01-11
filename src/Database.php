@@ -18,6 +18,7 @@ use PDOException;
  * required as the default name will be used.
  */
 class Database {
+	const COLLECTION_SEPARATOR_CHARACTERS = [".", "/", "\\"];
 	/** @var QueryCollectionFactory[] */
 	protected $queryCollectionFactoryArray;
 	/** @var Driver[] */
@@ -64,15 +65,23 @@ class Database {
 	}
 
 	public function query(string $fullQueryPath, ...$bindings):ResultSet {
-		$queryCollectionName = substr(
-			$fullQueryPath,
-			0,
-			strrpos($fullQueryPath, "/")
-		);
-		$queryFile = substr(
-			$fullQueryPath,
-			strrpos($fullQueryPath, "/") + 1
-		);
+		foreach(self::COLLECTION_SEPARATOR_CHARACTERS as $char) {
+			if(!strstr($fullQueryPath, $char)) {
+				continue;
+			}
+
+			$queryCollectionName = substr(
+				$fullQueryPath,
+				0,
+				strrpos($fullQueryPath, $char)
+			);
+			$queryFile = substr(
+				$fullQueryPath,
+				strrpos($fullQueryPath, $char) + 1
+			);
+
+			break;
+		}
 
 		$connectionName = $this->currentConnectionName ?? DefaultSettings::DEFAULT_NAME;
 		$queryCollection = $this->queryCollection(

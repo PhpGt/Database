@@ -47,9 +47,18 @@ class IntegrationTest extends TestCase {
 
 	public function testSubsequentSqlQueries() {
 		$uuid = uniqid();
-		$queryCollectionPath = $this->queryBase . "/exampleCollection";
-		$insertQueryPath = $queryCollectionPath . "/insert.sql";
-		$selectQueryPath = $queryCollectionPath . "/selectByName.sql";
+		$queryCollectionPath = implode(DIRECTORY_SEPARATOR, [
+			$this->queryBase,
+			"exampleCollection",
+		]);
+		$insertQueryPath = implode(DIRECTORY_SEPARATOR, [
+			$queryCollectionPath,
+			"insert.sql",
+		]);
+		$selectQueryPath = implode(DIRECTORY_SEPARATOR, [
+			$queryCollectionPath,
+			"selectByName.sql",
+		]);
 
 		mkdir($queryCollectionPath, 0775, true);
 // placeholders are specifically not named the same.
@@ -126,6 +135,34 @@ class IntegrationTest extends TestCase {
 			"number" => 2,
 		]);
 		$resultNull = $this->db->fetch("exampleCollection/getByNameNumber", [
+			"name" => "three",
+			"number" => 55,
+		]);
+
+		static::assertEquals(1, $result1->id);
+		static::assertEquals(2, $result2->id);
+		static::assertNull($resultNull);
+	}
+
+	public function testMultipleParameterUsageDotSeperator() {
+		$queryCollectionPath = $this->queryBase . "/exampleCollection";
+		$getByNameNumberQueryPath = $queryCollectionPath . "/getByNameNumber.sql";
+
+		mkdir($queryCollectionPath, 0775, true);
+		file_put_contents(
+			$getByNameNumberQueryPath,
+			"SELECT id, name, number FROM test_table WHERE name = :name and number = :number"
+		);
+
+		$result1 = $this->db->fetch("exampleCollection.getByNameNumber", [
+			"name" => "one",
+			"number" => 1,
+		]);
+		$result2 = $this->db->fetch("exampleCollection.getByNameNumber", [
+			"name" => "two",
+			"number" => 2,
+		]);
+		$resultNull = $this->db->fetch("exampleCollection.getByNameNumber", [
 			"name" => "three",
 			"number" => 55,
 		]);

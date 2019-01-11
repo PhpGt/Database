@@ -3,9 +3,9 @@ namespace Gt\Database\Query;
 
 use DirectoryIterator;
 use Gt\Database\Connection\Driver;
+use Gt\Database\Database;
 
 class QueryCollectionFactory {
-	const COLLECTION_SEPARATOR_CHARACTERS = ["/", ".", "\\"];
 	/** @var Driver */
 	protected $driver;
 	/** @var string */
@@ -49,12 +49,13 @@ class QueryCollectionFactory {
 	protected function locateDirectory(string $name):?string {
 		$parts = [$name];
 
-		foreach(self::COLLECTION_SEPARATOR_CHARACTERS as $char) {
+		foreach(Database::COLLECTION_SEPARATOR_CHARACTERS as $char) {
 			if(!strstr($name, $char)) {
 				continue;
 			}
 
 			$parts = explode($char, $name);
+			break;
 		}
 
 		return $this->recurseLocateDirectory($parts);
