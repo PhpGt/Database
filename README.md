@@ -27,23 +27,21 @@ Encloses your application's database scripts within a simple and standardised in
 This library organises SQL access through a consistent API. To execute an example query located at `src/query/shop_item/getItemsInCategory.sql`, the following pattern is used:
 
 ```php
-$user = $db->fetch("user/getById", 105);
+$userRow = $db->fetch("user/getById", 105);
 ```
 
 Examples of CRUD operations:
 
 ```php
-// "fetchAll" method returns an array of Row objects, optionally constructed as 
-// a custom type with well-typed properties and helper methods.
+// "fetchAll" method returns an iterable ResultSet of Row objects.
+$bookResultSet = $db->fetchAll("shopitem/getItemsInCategory", "books");
 
-$bookList = $db->fetchAll("shopitem/getItemsInCategory", "books");
-
-foreach($bookList as $book) {
-	echo "Book title: " . $book->title . PHP_EOL;
-	echo "Book price: " . $book->price . PHP_EOL;
+foreach($bookResultSet as $bookRow) {
+	echo "Book title: " . $bookRow->title . PHP_EOL;
+	echo "Book price: " . $bookRow->price . PHP_EOL;
 	
-	if($book->offerEnds) {
-		echo "Item on offer until: " . $book->offerEnds->format("dS M Y");
+	if($bookRow->offerEnds) {
+		echo "Item on offer until: " . $bookRow->offerEnds->format("dS M Y");
 	}
 }
 
@@ -69,7 +67,7 @@ $numberOfDeletedReviews = $db->delete(
 ## Features at a glance
 
 + [Automatic database migrations][wiki-migrations]
-+ [Organisation of queries using `QueryCollection`s][wiki-query-collections]
++ [Encapsulation of queries using `QueryCollection`s][wiki-query-collections]
 + [Bind parameters by name or sequentially][wiki-parameters]
 + [Fully configurable][wiki-config]
 
@@ -77,8 +75,7 @@ $numberOfDeletedReviews = $db->delete(
 
 + Compatibility with no-SQL databases
 
-[wiki-templates]: https://github.com/PhpGt/Database/wiki
-[wiki-query-collections]: https://github.com/PhpGt/Database/wiki
-[wiki-parameters]: https://github.com/PhpGt/Database/wiki
-[wiki-migrations]: https://github.com/PhpGt/Database/wiki
-[wiki-config]: https://github.com/PhpGt/Database/wiki
+[wiki-query-collections]: https://www.php.gt/docs/database/query-collections
+[wiki-parameters]: https://www.php.gt/docs/database/parameters
+[wiki-migrations]: https://www.php.gt/docs/database/migrations
+[wiki-config]: https://www.php.gt/docs/database/config
