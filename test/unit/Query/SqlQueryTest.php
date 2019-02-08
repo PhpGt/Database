@@ -3,6 +3,8 @@ namespace Gt\Database\Test;
 
 use Gt\Database\Connection\Driver;
 use Gt\Database\Connection\Settings;
+use Gt\Database\Query\PreparedStatementException;
+use Gt\Database\Query\QueryNotFoundException;
 use Gt\Database\Query\SqlQuery;
 use PHPUnit\Framework\TestCase;
 use Gt\Database\Test\Helper\Helper;
@@ -27,15 +29,13 @@ class SqlQueryTest extends TestCase {
 		static::assertTrue($success, "Success inserting fake data");
 	}
 
-	/**
-	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider
-	 * @expectedException \Gt\Database\Query\QueryNotFoundException
-	 */
+	/** @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider */
 	public function testQueryNotFound(
 		string $queryName,
 		string $queryCollectionPath,
 		string $queryPath
 	) {
+		self::expectException(QueryNotFoundException::class);
 		new SqlQuery($queryPath, $this->driverSingleton());
 	}
 
@@ -51,10 +51,7 @@ class SqlQueryTest extends TestCase {
 		static::assertFileExists($query->getFilePath());
 	}
 
-	/**
-	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExistsProvider
-	 * @expectedException \Gt\Database\Query\PreparedStatementException
-	 */
+	/** @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExistsProvider */
 	public function testBadPreparedStatementThrowsException(
 		string $queryName,
 		string $queryCollectionPath,
@@ -62,6 +59,7 @@ class SqlQueryTest extends TestCase {
 	) {
 		file_put_contents($queryPath, "insert blahblah into nothing");
 		$query = new SqlQuery($queryPath, $this->driverSingleton());
+		self::expectException(PreparedStatementException::class);
 		$query->execute();
 	}
 
@@ -236,13 +234,13 @@ class SqlQueryTest extends TestCase {
 			"offset" => 25,
 		]);
 
-		self::assertNotContains(":orderBy", $injectedSql);
-		self::assertNotContains(":limit", $injectedSql);
-		self::assertNotContains(":offset", $injectedSql);
+		self::assertStringNotContainsString(":orderBy", $injectedSql);
+		self::assertStringNotContainsString(":limit", $injectedSql);
+		self::assertStringNotContainsString(":offset", $injectedSql);
 
-		self::assertContains("order by sortColumn", $injectedSql);
-		self::assertContains("limit 100", $injectedSql);
-		self::assertContains("offset 25", $injectedSql);
+		self::assertStringContainsString("order by sortColumn", $injectedSql);
+		self::assertStringContainsString("limit 100", $injectedSql);
+		self::assertStringContainsString("offset 25", $injectedSql);
 	}
 
 	/**
@@ -262,7 +260,7 @@ class SqlQueryTest extends TestCase {
 			"offset" => 25,
 		]);
 
-		self::assertContains("order by sortColumn desc", $injectedSql);
+		self::assertStringContainsString("order by sortColumn desc", $injectedSql);
 	}
 
 	/**
@@ -289,7 +287,7 @@ class SqlQueryTest extends TestCase {
 		);
 
 		for($i = 0; $i < count($bindings["statusList"]); $i++) {
-			self::assertContains(
+			self::assertStringContainsString(
 				"statusList__$i",
 				$injectedSql
 			);
@@ -297,7 +295,7 @@ class SqlQueryTest extends TestCase {
 
 		$i++;
 
-		self::assertNotContains(
+		self::assertStringNotContainsString(
 			"statusList__$i",
 			$injectedSql
 		);

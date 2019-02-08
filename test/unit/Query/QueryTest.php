@@ -6,15 +6,13 @@ use Gt\Database\Connection\DefaultSettings;
 use PHPUnit\Framework\TestCase;
 
 class QueryTest extends TestCase {
-	/**
-	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider
-	 * @expectedException \Gt\Database\Query\QueryNotFoundException
-	 */
+	/** @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider */
 	public function testConstructionQueryPathNotExists(
 		string $queryName,
 		string $queryCollectionPath,
 		string $queryPath
 	) {
+		self::expectException(QueryNotFoundException::class);
 		new SqlQuery($queryPath, new Driver(new DefaultSettings()));
 	}
 

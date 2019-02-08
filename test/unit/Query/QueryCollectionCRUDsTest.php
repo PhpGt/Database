@@ -180,7 +180,7 @@ class QueryCollectionCRUDsTest extends TestCase {
 			->willReturn($mockResultSet);
 
 		$resultSet = $this->queryCollection->fetchAll("something");
-		static::assertInternalType("array", $resultSet->fetchAll());
+		static::assertIsArray($resultSet->fetchAll());
 		static::assertCount(0, $resultSet);
 	}
 
