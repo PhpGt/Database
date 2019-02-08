@@ -23,10 +23,7 @@ class QueryFactoryTest extends TestCase {
 		static::assertFileExists($queryFilePath);
 	}
 
-	/**
-	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider
-	 * @expectedException \Gt\Database\Query\QueryNotFoundException
-	 */
+	/** @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider */
 	public function testFindQueryFilePathNotExists(
 		string $queryName,
 		string $directoryOfQueries
@@ -36,13 +33,11 @@ class QueryFactoryTest extends TestCase {
 			new Driver(new DefaultSettings())
 		);
 
+		self::expectException(QueryNotFoundException::class);
 		$queryFactory->findQueryFilePath($queryName);
 	}
 
-	/**
-	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExtensionNotValidProvider
-	 * @expectedException \Gt\Database\Query\QueryFileExtensionException
-	 */
+	/** @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExtensionNotValidProvider */
 	public function testFindQueryFilePathWithInvalidExtension(
 		string $queryName,
 		string $directoryOfQueries
@@ -52,12 +47,11 @@ class QueryFactoryTest extends TestCase {
 			new Driver(new DefaultSettings())
 		);
 
+		self::expectException(QueryFileExtensionException::class);
 		$queryFactory->findQueryFilePath($queryName);
 	}
 
-	/**
-	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExistsProvider
-	 */
+	/** @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExistsProvider */
 	public function testQueryCreated(
 		string $queryName,
 		string $directoryOfQueries

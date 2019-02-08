@@ -3,6 +3,7 @@ namespace Gt\Database;
 
 use Gt\Database\Connection\Settings;
 use Gt\Database\Query\QueryCollection;
+use Gt\Database\Query\QueryCollectionNotFoundException;
 use PHPUnit\Framework\TestCase;
 use Gt\Database\Test\Helper\Helper;
 
@@ -12,9 +13,7 @@ class DatabaseTest extends TestCase {
 		static::assertInstanceOf(Database::class, $db);
 	}
 
-	/**
-	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryCollectionPathExistsProvider
-	 */
+	/** @dataProvider \Gt\Database\Test\Helper\Helper::queryCollectionPathExistsProvider */
 	public function testQueryCollectionPathExists(string $name, string $path) {
 		$basePath = dirname($path);
 		$settings = new Settings(
@@ -28,10 +27,7 @@ class DatabaseTest extends TestCase {
 		static::assertInstanceOf(QueryCollection::class, $queryCollection);
 	}
 
-	/**
-	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider
-	 * @expectedException \Gt\Database\Query\QueryCollectionNotFoundException
-	 */
+	/** @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider */
 	public function testQueryCollectionPathNotExists(string $name, string $path) {
 		$basePath = dirname($path);
 
@@ -41,6 +37,8 @@ class DatabaseTest extends TestCase {
 			Settings::SCHEMA_IN_MEMORY
 		);
 		$db = new Database($settings);
+
+		self::expectException(QueryCollectionNotFoundException::class);
 		$db->queryCollection($name);
 	}
 
