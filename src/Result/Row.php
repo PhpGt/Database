@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Database\Result;
 
+use DateTime;
 use Iterator;
 
 class Row implements Iterator {
@@ -11,22 +12,62 @@ class Row implements Iterator {
 
 	public function __construct(array $data = []) {
 		$this->data = $data;
-		$this->setProperties($data);
+	}
+
+	public function get(string $columnName):?string {
+		return $this->getString($columnName);
+	}
+
+	public function getString(string $columnName):string {
+		$this->checkColumn($columnName);
+		return $this->data[$columnName];
+	}
+
+	public function getInt(string $columnName):int {
+		$this->checkColumn($columnName);
+		return (int)$this->data[$columnName];
+	}
+
+	public function getFloat(string $columnName):float {
+		$this->checkColumn($columnName);
+		return (float)$this->data[$columnName];
+	}
+
+	public function getBool(string $columnName):bool {
+		$this->checkColumn($columnName);
+		return (bool)$this->data[$columnName];
+	}
+
+	public function getDateTime(string $columnName):DateTime {
+		$this->checkColumn($columnName);
+		$dateString = $this->data[$columnName];
+		if(is_null($dateString)) {
+			return null;
+		}
+
+		if(is_numeric($dateString)) {
+			$dateTime = new DateTime();
+			$dateTime->setTimestamp($dateString);
+			return $dateTime;
+		}
+
+		$dateTime = new DateTime($dateString);
+		if(!$dateTime) {
+			throw new BadlyFormedDataException($columnName);
+		}
+
+		return $dateTime;
 	}
 
 	public function toArray():array {
 		return $this->data;
 	}
 
-	public function __get($name) {
-		if(!isset($this->$name)) {
-			throw new NoSuchColumnException($name);
-		}
-
-		return $this->data[$name];
+	public function __get(string $name):string {
+		return $this->getString($name);
 	}
 
-	public function __isset($name) {
+	public function __isset(string $name):bool {
 		return array_key_exists($name, $this->data);
 	}
 
@@ -34,25 +75,20 @@ class Row implements Iterator {
 		return $this->__isset($name);
 	}
 
-	protected function setProperties(array $data) {
-		foreach($data as $key => $value) {
-			$this->$key = $value;
-		}
-	}
-
 	public function rewind():void {
 		$this->iterator_index = 0;
 		$this->iterator_data_key_list = array_keys($this->data);
 	}
 
-	public function current() {
+	public function current():?string {
 		$key = $this->key();
-
 		return $this->$key;
 	}
 
 	public function key():?string {
-		return $this->iterator_data_key_list[$this->iterator_index] ?? null;
+		return $this->iterator_data_key_list[
+			$this->iterator_index
+		] ?? null;
 	}
 
 	public function next():void {
@@ -60,6 +96,14 @@ class Row implements Iterator {
 	}
 
 	public function valid():bool {
-		return isset($this->iterator_data_key_list[$this->iterator_index]);
+		return isset($this->iterator_data_key_list[
+			$this->iterator_index
+		]);
+	}
+
+	protected function checkColumn(string $columnName):void {
+		if(!isset($this->data[$columnName])) {
+			throw new NoSuchColumnException($columnName);
+		}
 	}
 }
