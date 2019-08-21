@@ -14,32 +14,35 @@ class Row implements Iterator {
 		$this->data = $data;
 	}
 
+	public function __get(string $name):?string {
+		return $this->getString($name);
+	}
+
+	public function __isset(string $name):bool {
+		return array_key_exists($name, $this->data);
+	}
+
 	public function get(string $columnName):?string {
 		return $this->getString($columnName);
 	}
 
-	public function getString(string $columnName):string {
-		$this->checkColumn($columnName);
-		return $this->data[$columnName];
+	public function getString(string $columnName):?string {
+		return $this->data[$columnName] ?? null;
 	}
 
-	public function getInt(string $columnName):int {
-		$this->checkColumn($columnName);
-		return (int)$this->data[$columnName];
+	public function getInt(string $columnName):?int {
+		return (int)$this->data[$columnName] ?? null;
 	}
 
-	public function getFloat(string $columnName):float {
-		$this->checkColumn($columnName);
-		return (float)$this->data[$columnName];
+	public function getFloat(string $columnName):?float {
+		return (float)$this->data[$columnName] ?? null;
 	}
 
-	public function getBool(string $columnName):bool {
-		$this->checkColumn($columnName);
-		return (bool)$this->data[$columnName];
+	public function getBool(string $columnName):?bool {
+		return (bool)$this->data[$columnName] ?? null;
 	}
 
-	public function getDateTime(string $columnName):DateTime {
-		$this->checkColumn($columnName);
+	public function getDateTime(string $columnName):?DateTime {
 		$dateString = $this->data[$columnName];
 		if(is_null($dateString)) {
 			return null;
@@ -63,14 +66,6 @@ class Row implements Iterator {
 		return $this->data;
 	}
 
-	public function __get(string $name):string {
-		return $this->getString($name);
-	}
-
-	public function __isset(string $name):bool {
-		return array_key_exists($name, $this->data);
-	}
-
 	public function contains(string $name):bool {
 		return $this->__isset($name);
 	}
@@ -80,15 +75,10 @@ class Row implements Iterator {
 		$this->iterator_data_key_list = array_keys($this->data);
 	}
 
-	public function current():?string {
-		$key = $this->key();
-		return $this->$key;
-	}
-
 	public function key():?string {
 		return $this->iterator_data_key_list[
 			$this->iterator_index
-		] ?? null;
+			] ?? null;
 	}
 
 	public function next():void {
@@ -98,12 +88,11 @@ class Row implements Iterator {
 	public function valid():bool {
 		return isset($this->iterator_data_key_list[
 			$this->iterator_index
-		]);
+			]);
 	}
 
-	protected function checkColumn(string $columnName):void {
-		if(!isset($this->data[$columnName])) {
-			throw new NoSuchColumnException($columnName);
-		}
+	public function current():?string {
+		$key = $this->key();
+		return $this->$key;
 	}
 }
