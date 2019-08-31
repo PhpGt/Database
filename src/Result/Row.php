@@ -43,7 +43,7 @@ class Row implements Iterator {
 	}
 
 	public function getDateTime(string $columnName):?DateTime {
-		$dateString = $this->data[$columnName];
+		$dateString = $this->data[$columnName] ?? null;
 		if(is_null($dateString)) {
 			return null;
 		}
@@ -78,7 +78,7 @@ class Row implements Iterator {
 	public function key():?string {
 		return $this->iterator_data_key_list[
 			$this->iterator_index
-			] ?? null;
+		] ?? null;
 	}
 
 	public function next():void {
@@ -88,7 +88,7 @@ class Row implements Iterator {
 	public function valid():bool {
 		return isset($this->iterator_data_key_list[
 			$this->iterator_index
-			]);
+		]);
 	}
 
 	public function current():?string {
