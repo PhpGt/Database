@@ -31,15 +31,15 @@ class Row implements Iterator {
 	}
 
 	public function getInt(string $columnName):?int {
-		return (int)$this->data[$columnName] ?? null;
+		return (int)($this->data[$columnName] ?? null);
 	}
 
 	public function getFloat(string $columnName):?float {
-		return (float)$this->data[$columnName] ?? null;
+		return (float)($this->data[$columnName] ?? null);
 	}
 
 	public function getBool(string $columnName):?bool {
-		return (bool)$this->data[$columnName] ?? null;
+		return (bool)($this->data[$columnName] ?? null);
 	}
 
 	public function getDateTime(string $columnName):?DateTime {
