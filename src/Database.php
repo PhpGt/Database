@@ -256,8 +256,7 @@ class Database {
 		string $queryName,
 		...$bindings
 	) {
-		$result = $this->query($queryName, ...$bindings);
-		$row = $result->fetch();
+		$row = $this->fetch($queryName, ...$bindings);
 		if(is_null($row)) {
 			return null;
 		}
@@ -272,8 +271,8 @@ class Database {
 	):array {
 		$array = [];
 
-		$result = $this->query($queryName, ...$bindings);
-		foreach($result as $row) {
+		$resultSet = $this->fetchAll($queryName, ...$bindings);
+		foreach($resultSet as $row) {
 			$array []= $this->castRow($type, $row);
 		}
 
