@@ -5,7 +5,6 @@ use Gt\Database\Connection\Settings;
 use Gt\Database\Query\QueryCollection;
 use Gt\Database\Query\QueryCollectionNotFoundException;
 use PHPUnit\Framework\TestCase;
-use Gt\Database\Test\Helper\Helper;
 
 class DatabaseTest extends TestCase {
 	public function testInterface() {

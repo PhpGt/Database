@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Database;
 
+use DateTime;
 use Gt\Database\Connection\Connection;
 use Gt\Database\Result\Row;
 use Gt\Database\Connection\DefaultSettings;
@@ -18,6 +19,8 @@ use PDOException;
  * required as the default name will be used.
  */
 class Database {
+	use Fetchable;
+
 	const COLLECTION_SEPARATOR_CHARACTERS = [".", "/", "\\"];
 	/** @var QueryCollectionFactory[] */
 	protected $queryCollectionFactoryArray;
@@ -34,16 +37,6 @@ class Database {
 
 		$this->storeConnectionDriverFromSettings($connectionSettings);
 		$this->storeQueryCollectionFactoryFromSettings($connectionSettings);
-	}
-
-	public function fetch(string $queryName, ...$bindings):?Row {
-		$result = $this->query($queryName, $bindings);
-
-		return $result->fetch();
-	}
-
-	public function fetchAll(string $queryName, ...$bindings):ResultSet {
-		return $this->query($queryName, $bindings);
 	}
 
 	public function insert(string $queryName, ...$bindings):int {
