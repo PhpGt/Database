@@ -11,12 +11,12 @@ class RowTest extends TestCase {
 	public function testFieldAccess(array $data) {
 		$row = new Row($data);
 
-		foreach($data as $key => $value) {
-			if(is_float($data[$key])) {
-				self::assertEqualsWithDelta($data[$key], $value, 0.0001);
+		foreach($row as $key => $value) {
+			if(is_float($row->$key)) {
+				self::assertEqualsWithDelta($row->$key, $value, 0.0001);
 			}
 			else {
-				self::assertEquals($data[$key], $value);
+				self::assertEquals($row->$key, $value);
 			}
 		}
 	}
@@ -33,7 +33,7 @@ class RowTest extends TestCase {
 
 	public function testGetNonExistentProperty() {
 		$row = new Row(["col1" => "item"]);
-		self::assertNull($row->doink);
+		self::assertNull($row->get("doink"));
 	}
 
 	public function testEmpty() {
@@ -119,7 +119,6 @@ class RowTest extends TestCase {
 		$data = [];
 
 		$columns = ["id", "name", "example", "exampleFloat", "exampleDateTime", "exampleBool"];
-		$rows = [];
 		$rowNum = rand(2, 50);
 		for($i = 0; $i < $rowNum; $i++) {
 			$row = [];
