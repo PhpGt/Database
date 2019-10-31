@@ -130,7 +130,7 @@ trait Fetchable {
 	}
 
 	protected function castRow(string $type, Row $row) {
-		$assocArray = $row->toArray();
+		$assocArray = $row->asArray();
 		reset($assocArray);
 		$key = key($assocArray);
 		$value = $assocArray[$key];

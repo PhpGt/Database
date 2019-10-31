@@ -11,9 +11,9 @@ use PDOStatement;
  * count and getLength
  */
 class ResultSet implements Iterator, Countable {
-	/** @var \PDOStatement */
+	/** @var PDOStatement */
 	protected $statement;
-	/** @var \Gt\Database\Result\Row */
+	/** @var Row */
 	protected $current_row;
 	protected $row_index = null;
 	/** @var string */
@@ -78,11 +78,11 @@ class ResultSet implements Iterator, Countable {
 		}
 	}
 
-	public function toArray($elementsToArray = false):array {
+	public function asArray($elementsToArray = true):array {
 		if($elementsToArray) {
 			$data = array_map(function($element) {
 				/** @var Row $element */
-				return $element->toArray();
+				return $element->asArray();
 			},
 				$this->fetchAll()
 			);

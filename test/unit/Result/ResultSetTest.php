@@ -120,6 +120,25 @@ class ResultSetTest extends TestCase {
 		}
 	}
 
+	public function testAsArray() {
+		$resultSet = new ResultSet($this->getStatementMock());
+		$array = $resultSet->asArray();
+		foreach($array as $i => $rowArray) {
+			self::assertIsArray($rowArray);
+			self::assertArrayHasKey("id", $rowArray);
+			self::assertArrayHasKey("name", $rowArray);
+			self::assertIsInt($rowArray["id"]);
+		}
+	}
+
+	public function testAsArrayNoMap() {
+		$resultSet = new ResultSet($this->getStatementMock());
+		$array = $resultSet->asArray(false);
+		foreach($array as $i => $row) {
+			self::assertInstanceOf(Row::class, $row);
+		}
+	}
+
 	private function getStatementMock():PDOStatement {
 		$statement = $this->createMock(PDOStatement::class);
 		$statement->method("fetch")
