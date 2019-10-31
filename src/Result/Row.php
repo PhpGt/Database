@@ -31,19 +31,19 @@ class Row implements Iterator {
 	}
 
 	public function getInt(string $columnName):?int {
-		return (int)$this->data[$columnName] ?? null;
+		return (int)($this->data[$columnName] ?? null);
 	}
 
 	public function getFloat(string $columnName):?float {
-		return (float)$this->data[$columnName] ?? null;
+		return (float)($this->data[$columnName] ?? null);
 	}
 
 	public function getBool(string $columnName):?bool {
-		return (bool)$this->data[$columnName] ?? null;
+		return (bool)($this->data[$columnName] ?? null);
 	}
 
 	public function getDateTime(string $columnName):?DateTime {
-		$dateString = $this->data[$columnName];
+		$dateString = $this->data[$columnName] ?? null;
 		if(is_null($dateString)) {
 			return null;
 		}
@@ -78,7 +78,7 @@ class Row implements Iterator {
 	public function key():?string {
 		return $this->iterator_data_key_list[
 			$this->iterator_index
-			] ?? null;
+		] ?? null;
 	}
 
 	public function next():void {
@@ -88,7 +88,7 @@ class Row implements Iterator {
 	public function valid():bool {
 		return isset($this->iterator_data_key_list[
 			$this->iterator_index
-			]);
+		]);
 	}
 
 	public function current():?string {
