@@ -2,10 +2,13 @@
 namespace Gt\Database\Query;
 
 use Gt\Database\Connection\Driver;
+use Gt\Database\Fetchable;
 use Gt\Database\Result\ResultSet;
 use Gt\Database\Result\Row;
 
 class QueryCollection {
+	use Fetchable;
+
 	/** @var string */
 	protected $directoryPath;
 	/** @var QueryFactory */
@@ -56,25 +59,25 @@ class QueryCollection {
 		)->lastInsertId();
 	}
 
-	public function fetch(
-		string $name,
-		...$placeholderMap
-	):?Row {
-		return $this->query(
-			$name,
-			...$placeholderMap
-		)->current();
-	}
-
-	public function fetchAll(
-		string $name,
-		...$placeholderMap
-	):ResultSet {
-		return $this->query(
-			$name,
-			...$placeholderMap
-		);
-	}
+//	public function fetch(
+//		string $name,
+//		...$placeholderMap
+//	):?Row {
+//		return $this->query(
+//			$name,
+//			...$placeholderMap
+//		)->current();
+//	}
+//
+//	public function fetchAll(
+//		string $name,
+//		...$placeholderMap
+//	):ResultSet {
+//		return $this->query(
+//			$name,
+//			...$placeholderMap
+//		);
+//	}
 
 	public function update(
 		string $name,

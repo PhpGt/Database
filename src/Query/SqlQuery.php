@@ -1,8 +1,6 @@
 <?php
 namespace Gt\Database\Query;
 
-use Gt\Database\Connection\Connection;
-use Gt\Database\Connection\Driver;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -186,23 +184,23 @@ class SqlQuery extends Query {
 
 // TODO: In v2 we will properly parse the different parts of the special bindings.
 // See https://github.com/PhpGt/Database/issues/117
-		switch($type) {
-		// [GROUP BY {col_name | expr | position}, ... [WITH ROLLUP]]
-		case "groupBy":
-			break;
-
-		// [ORDER BY {col_name | expr | position}
-		case "orderBy":
-			break;
-
-		// [LIMIT {[offset,] row_count | row_count OFFSET offset}]
-		case "limit":
-			break;
-
-		// [LIMIT {[offset,] row_count | row_count OFFSET offset}]
-		case "offset":
-			break;
-		}
+//		switch($type) {
+// [GROUP BY {col_name | expr | position}, ... [WITH ROLLUP]]
+//		case "groupBy":
+//			break;
+//
+// [ORDER BY {col_name | expr | position}
+//		case "orderBy":
+//			break;
+//
+// [LIMIT {[offset,] row_count | row_count OFFSET offset}]
+//		case "limit":
+//			break;
+//
+// [LIMIT {[offset,] row_count | row_count OFFSET offset}]
+//		case "offset":
+//			break;
+//		}
 
 		return (string)$value;
 	}
