@@ -62,7 +62,7 @@ class Row implements Iterator {
 		return $dateTime;
 	}
 
-	public function toArray():array {
+	public function asArray():array {
 		return $this->data;
 	}
 

@@ -3,7 +3,6 @@
 namespace unit\Result;
 
 use DateTime;
-use Gt\Database\Result\NoSuchColumnException;
 use Gt\Database\Result\Row;
 use PHPUnit\Framework\TestCase;
 
