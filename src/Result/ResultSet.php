@@ -106,7 +106,6 @@ class ResultSet implements Iterator, Countable {
 
 	public function current():?Row {
 		$this->fetchUpToIteratorIndex();
-
 		return $this->current_row;
 	}
 

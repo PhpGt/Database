@@ -25,7 +25,6 @@ class QueryCollectionCRUDsTest extends TestCase {
 			->willReturn($this->mockQuery);
 
 		/** @var QueryFactory $mockQueryFactory */
-
 		$this->queryCollection = new QueryCollection(
 			__DIR__,
 			new Driver(new DefaultSettings()),
