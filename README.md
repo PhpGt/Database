@@ -4,6 +4,8 @@
 
 Encloses your application's database scripts within a simple and standardised interface, separating database access from your page logic.
 
+The first parameter to any database functions is always the query name, which represents a query file on disk.
+
 ***
 
 <a href="https://circleci.com/gh/PhpGt/Database" target="_blank">
@@ -37,11 +39,11 @@ Examples of CRUD operations:
 $bookResultSet = $db->fetchAll("shopitem/getItemsInCategory", "books");
 
 foreach($bookResultSet as $bookRow) {
-	echo "Book title: " . $bookRow->title . PHP_EOL;
-	echo "Book price: " . $bookRow->price . PHP_EOL;
+	echo "Book title: " . $bookRow->getString("title") . PHP_EOL;
+	echo "Book price: £" . ($bookRow->getFloat("price") + $bookRow->getFloat("vat")) . PHP_EOL;
 	
 	if($bookRow->offerEnds) {
-		echo "Item on offer until: " . $bookRow->offerEnds->format("dS M Y");
+		echo "Item on offer until: " . $bookRow->getDateTime("offerEnds")->format("dS M Y");
 	}
 }
 
