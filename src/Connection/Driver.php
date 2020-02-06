@@ -45,6 +45,13 @@ class Driver {
 			Connection::ATTR_ERRMODE => Connection::ERRMODE_EXCEPTION,
 		];
 
+		if($this->settings->getSchema() === Settings::DRIVER_MYSQL) {
+			$options[Connection::MYSQL_ATTR_INIT_COMMAND]
+				= "SET SESSION collation_connection='"
+				. $this->settings->getCollation()
+				. "'";
+		}
+
 		$this->connection = new Connection(
 			$this->settings->getConnectionString(),
 			$this->settings->getUsername(),
