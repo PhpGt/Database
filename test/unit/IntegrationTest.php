@@ -32,7 +32,7 @@ class IntegrationTest extends TestCase {
 			throw new Exception($error[2]);
 		}
 
-		$insertStatement = $connection->prepare("INSERT INTO test_table (name, number, isEven, halfNumber) VALUES ('one', 1, false, 0.5), ('two', 2, true, 1), ('three', 3, false, 1.5)");
+		$insertStatement = $connection->prepare("INSERT INTO test_table (`name`, `number`, `isEven`, `halfNumber`) VALUES ('one', 1, 0, 0.5), ('two', 2, 1, 1), ('three', 3, 0, 1.5)");
 		$success = $insertStatement->execute();
 		if($success === false) {
 			$error = $connection->errorInfo();
