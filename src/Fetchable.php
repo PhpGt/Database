@@ -107,7 +107,8 @@ trait Fetchable {
 		...$bindings
 	) {
 		$row = $this->fetch($queryName, ...$bindings);
-		if(is_null($row)) {
+		$row->rewind();
+		if(is_null($row) || is_null($row->current())) {
 			return null;
 		}
 
