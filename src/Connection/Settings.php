@@ -131,6 +131,7 @@ class Settings implements SettingsInterface {
 
 		default:
 			$connectionString .= "host=" . $this->getHost();
+			$connectionString .= ";port=" . $this->getPort();
 			$connectionString .= ";dbname=" . $this->getSchema();
 			$connectionString .= ";charset=" . self::CHARSET;
 			break;
