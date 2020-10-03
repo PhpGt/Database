@@ -132,6 +132,8 @@ class SettingsTest extends TestCase {
 			$this->properties["driver"],
 			":host=",
 			$this->properties["host"],
+			";port=",
+			$this->properties["port"],
 			";dbname=",
 			$this->properties["database"],
 			";charset=",
