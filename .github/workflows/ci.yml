@@ -47,10 +47,10 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: build-artifact
-          path: /tmp/build.tar
+          path: /tmp/github-actions
 
       - name: Extract build archive
-        run: tar -xvf /tmp/build.tar ./
+        run: tar -xvf /tmp/github-actions/build.tar ./
 
       - name: PHP Static Analysis
         uses: php-actions/phpstan@master
