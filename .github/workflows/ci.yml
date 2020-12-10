@@ -9,11 +9,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: php-actions/composer@dynamic-docker-debug
-      - name: Upload build for test runner
+
+      - name: Archive build
+        run: tar -cvf /tmp/build.tar ./
+
+      - name: Upload build archive for test runners
         uses: actions/upload-artifact@v2
         with:
           name: build-artifact
-          path: ./
+          path: /tmp/build.tar
 
   phpunit:
     runs-on: ubuntu-latest
@@ -23,7 +27,10 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: build-artifact
-          path: ./
+          path: /tmp/build.tar
+
+      - name: Extract build archive
+        run: tar -xvf /tmp/build.tar ./
 
       - name: PHP Unit tests
         uses: php-actions/phpunit@v9
@@ -40,7 +47,10 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: build-artifact
-          path: ./
+          path: /tmp/build.tar
+
+      - name: Extract build archive
+        run: tar -xvf /tmp/build.tar ./
 
       - name: PHP Static Analysis
         uses: php-actions/phpstan@master
