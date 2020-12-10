@@ -30,6 +30,7 @@ jobs:
         with:
           php_version: 8.0
           configuration: test/phpunit/phpunit.xml
+          bootstrap: vendor/autoload.php
 
   phpstan:
     runs-on: ubuntu-latest
