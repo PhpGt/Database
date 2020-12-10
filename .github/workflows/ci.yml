@@ -8,12 +8,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: php-actions/composer@v2
-      - name: Upload build for test runner
+      - uses: php-actions/composer@dynamic-docker-debug
+
+      - name: Archive build
+        run: mkdir /tmp/github-actions/ && tar -cvf /tmp/github-actions/build.tar ./
+
+      - name: Upload build archive for test runners
         uses: actions/upload-artifact@v2
         with:
           name: build-artifact
-          path: ./
+          path: /tmp/github-actions
 
   phpunit:
     runs-on: ubuntu-latest
@@ -23,13 +27,17 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: build-artifact
-          path: ./
+          path: /tmp/github-actions
+
+      - name: Extract build archive
+        run: tar -xvf /tmp/github-actions/build.tar ./
 
       - name: PHP Unit tests
         uses: php-actions/phpunit@v9
         with:
           php_version: 8.0
           configuration: test/phpunit/phpunit.xml
+          bootstrap: vendor/autoload.php
 
   phpstan:
     runs-on: ubuntu-latest
@@ -39,7 +47,10 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: build-artifact
-          path: ./
+          path: /tmp/github-actions
+
+      - name: Extract build archive
+        run: tar -xvf /tmp/github-actions/build.tar ./
 
       - name: PHP Static Analysis
         uses: php-actions/phpstan@master
