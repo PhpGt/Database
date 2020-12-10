@@ -11,13 +11,13 @@ jobs:
       - uses: php-actions/composer@dynamic-docker-debug
 
       - name: Archive build
-        run: tar -cvf /tmp/build.tar ./
+        run: mkdir /tmp/github-actions/ && tar -cvf /tmp/github-actions/build.tar ./
 
       - name: Upload build archive for test runners
         uses: actions/upload-artifact@v2
         with:
           name: build-artifact
-          path: /tmp/build.tar
+          path: /tmp/github-actions
 
   phpunit:
     runs-on: ubuntu-latest
@@ -27,10 +27,10 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: build-artifact
-          path: /tmp/build.tar
+          path: /tmp/github-actions
 
       - name: Extract build archive
-        run: tar -xvf /tmp/build.tar ./
+        run: tar -xvf /tmp/github-actions/build.tar ./
 
       - name: PHP Unit tests
         uses: php-actions/phpunit@v9
