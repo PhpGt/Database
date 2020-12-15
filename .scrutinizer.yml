@@ -12,10 +12,10 @@ build:
       tests:
         override:
           - phpcs-run ./src
-          - command: 'vendor/bin/phpunit test/phpunit --coverage-clover coverage --whitelist src'
-        coverage:
-          file: 'coverage'
-          format: 'php-clover'
+          - command: "vendor/bin/phpunit test/phpunit --coverage-clover coverage --whitelist src"
+            coverage:
+              file: "coverage"
+              format: "php-clover"
 
 checks:
   php:
