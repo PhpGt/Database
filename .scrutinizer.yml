@@ -1,16 +1,22 @@
 build:
-  environment:
-    php:
-      version: 7.4.0
-  tests:
-    override:
-      - php-scrutinizer-run
-      - phpcs-run ./src
-      -
-        command: 'vendor/bin/phpunit test/phpunit --coverage-clover coverage --whitelist src'
-        coverage:
-          file: 'coverage'
-          format: 'php-clover'
+  nodes:
+    analysis:
+      tests:
+        override:
+          - php-scrutinizer-run
+
+    tests-and-coverage:
+      environment:
+        php:
+          version: 8.0
+        tests:
+          override:
+            - php-scrutinizer-run
+            - phpcs-run ./src
+            - command: 'vendor/bin/phpunit test/phpunit --coverage-clover coverage --whitelist src'
+              coverage:
+                file: 'coverage'
+                format: 'php-clover'
 
 checks:
   php:
