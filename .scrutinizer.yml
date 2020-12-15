@@ -9,12 +9,14 @@ build:
       environment:
         php:
           version: 8.0.0
+          ini:
+            "xdebug.mode": coverage
       tests:
         override:
           - phpcs-run ./src
-          - command: "vendor/bin/phpunit test/phpunit --coverage-clover coverage --whitelist src -d XDEBUG_MODE=coverage"
+          - command: "vendor/bin/phpunit test/phpunit --coverage-clover test/phpunit/coverage --whitelist src"
             coverage:
-              file: "coverage"
+              file: "test/phpunit/coverage"
               format: "php-clover"
 
 checks:
