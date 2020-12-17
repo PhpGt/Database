@@ -40,7 +40,7 @@ jobs:
         run: tar -xvf /tmp/github-actions/build.tar ./
 
       - name: PHP Unit tests
-        uses: php-actions/phpunit@v9
+        uses: php-actions/phpunit@php-build
         with:
           php_version: 8.0
           configuration: test/phpunit/phpunit.xml
