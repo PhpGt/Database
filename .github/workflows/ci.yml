@@ -28,7 +28,7 @@ jobs:
 
   phpunit:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [composer]
 
     steps:
       - uses: actions/download-artifact@v2
@@ -49,7 +49,7 @@ jobs:
 
   phpstan:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [composer]
 
     steps:
       - uses: actions/download-artifact@v2
