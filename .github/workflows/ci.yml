@@ -3,7 +3,7 @@ name: CI
 on: [push]
 
 jobs:
-  build:
+  composer:
     runs-on: ubuntu-latest
 
     steps:
