@@ -15,7 +15,7 @@ jobs:
           path: /tmp/composer-cache
           key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
 
-      - uses: php-actions/composer@dynamic-docker
+      - uses: php-actions/composer@v5
 
       - name: Archive build
         run: mkdir /tmp/github-actions/ && tar -cvf /tmp/github-actions/build.tar ./
@@ -40,7 +40,7 @@ jobs:
         run: tar -xvf /tmp/github-actions/build.tar ./
 
       - name: PHP Unit tests
-        uses: php-actions/phpunit@php-build
+        uses: php-actions/phpunit@v2
         with:
           php_version: 8.0
           php_extensions: xdebug
@@ -61,6 +61,6 @@ jobs:
         run: tar -xvf /tmp/github-actions/build.tar ./
 
       - name: PHP Static Analysis
-        uses: php-actions/phpstan@master
+        uses: php-actions/phpstan@v2
         with:
           path: src/
