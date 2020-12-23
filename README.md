@@ -8,7 +8,7 @@ The first parameter to any database functions is always the query name, which re
 
 ***
 
-<a href="https://circleci.com/gh/PhpGt/Database" target="_blank">
+<a href="https://github.com/PhpGt/Database/actions" target="_blank">
 	<img src="https://badge.status.php.gt/database-build.svg" alt="Build status" />
 </a>
 <a href="https://scrutinizer-ci.com/g/PhpGt/Database" target="_blank">
