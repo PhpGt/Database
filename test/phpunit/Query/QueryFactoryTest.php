@@ -1,9 +1,12 @@
 <?php
-namespace Gt\Database\Query;
+namespace Gt\Database\Test\Query;
 
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
-use Gt\Database\Test\GtDatabaseTestCase;
+use Gt\Database\Query\Query;
+use Gt\Database\Query\QueryFactory;
+use Gt\Database\Query\QueryFileExtensionException;
+use Gt\Database\Query\QueryNotFoundException;
 use Gt\Database\Test\Helper\Helper;
 use PHPUnit\Framework\TestCase;
 

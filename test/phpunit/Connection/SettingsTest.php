@@ -1,5 +1,5 @@
 <?php
-namespace Gt\Database\Connection;
+namespace Gt\Database\Test\Connection;
 
 use PHPUnit\Framework\TestCase;
 

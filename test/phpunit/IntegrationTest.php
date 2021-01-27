@@ -1,10 +1,11 @@
 <?php
-namespace Gt\Database;
+namespace Gt\Database\Test;
 
 use DateTime;
 use Exception;
 use Gt\Database\Connection\Driver;
 use Gt\Database\Connection\Settings;
+use Gt\Database\Database;
 use Gt\Database\Test\Helper\Helper;
 use PHPUnit\Framework\TestCase;
 

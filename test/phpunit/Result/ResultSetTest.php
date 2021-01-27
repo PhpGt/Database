@@ -1,5 +1,5 @@
 <?php
-namespace Gt\Database\Test;
+namespace Gt\Database\Test\Result;
 
 use Gt\Database\Result\Row;
 use PDOStatement;
