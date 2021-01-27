@@ -44,9 +44,9 @@ if(!is_file($defaultPath)) {
 
 $config = ConfigFactory::createForProject($repoBasePath);
 
-if($defaultPath) {
-	$default = ConfigFactory::createFromPathName($defaultPath);
-}
+$default = $defaultPath
+	? ConfigFactory::createFromPathName($defaultPath)
+	: null;
 
 if($default) {
 	$config->merge($default);
