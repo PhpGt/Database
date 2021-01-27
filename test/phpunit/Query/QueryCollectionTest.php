@@ -1,12 +1,14 @@
 <?php
-namespace Gt\Database\Query;
+namespace Gt\Database\Test\Query;
 
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
+use Gt\Database\Query\Query;
+use Gt\Database\Query\QueryCollection;
+use Gt\Database\Query\QueryFactory;
 use Gt\Database\Result\ResultSet;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
 
 class QueryCollectionTest extends TestCase {
 	/** @var  QueryCollection */
