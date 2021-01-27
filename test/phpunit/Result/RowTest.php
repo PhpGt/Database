@@ -1,6 +1,5 @@
 <?php
-
-namespace unit\Result;
+namespace Gt\Database\Test\Result;
 
 use DateTime;
 use Gt\Database\Result\Row;

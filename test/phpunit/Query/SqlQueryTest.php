@@ -1,5 +1,5 @@
 <?php
-namespace Gt\Database\Test;
+namespace Gt\Database\Test\Query;
 
 use Gt\Database\Connection\Driver;
 use Gt\Database\Connection\Settings;

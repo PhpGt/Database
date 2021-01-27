@@ -1,7 +1,8 @@
 <?php
-namespace Gt\Database;
+namespace Gt\Database\Test;
 
 use Gt\Database\Connection\Settings;
+use Gt\Database\Database;
 use Gt\Database\Query\QueryCollection;
 use Gt\Database\Query\QueryCollectionNotFoundException;
 use PHPUnit\Framework\TestCase;
