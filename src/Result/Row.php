@@ -5,7 +5,7 @@ use DateTime;
 use Iterator;
 
 class Row implements Iterator {
-	/** @var array */
+	/** @var array<string, string> */
 	protected $data;
 	protected $iterator_index = 0;
 	protected $iterator_data_key_list = [];
@@ -23,23 +23,23 @@ class Row implements Iterator {
 	}
 
 	public function get(string $columnName):?string {
-		return $this->getString($columnName);
-	}
-
-	public function getString(string $columnName):?string {
 		return $this->data[$columnName] ?? null;
 	}
 
+	public function getString(string $columnName):?string {
+		return $this->getAsNullablePrimitive($columnName, "string");
+	}
+
 	public function getInt(string $columnName):?int {
-		return (int)($this->data[$columnName] ?? null);
+		return $this->getAsNullablePrimitive($columnName, "int");
 	}
 
 	public function getFloat(string $columnName):?float {
-		return (float)($this->data[$columnName] ?? null);
+		return $this->getAsNullablePrimitive($columnName, "float");
 	}
 
 	public function getBool(string $columnName):?bool {
-		return (bool)($this->data[$columnName] ?? null);
+		return $this->getAsNullablePrimitive($columnName, "bool");
 	}
 
 	public function getDateTime(string $columnName):?DateTime {
@@ -54,12 +54,7 @@ class Row implements Iterator {
 			return $dateTime;
 		}
 
-		$dateTime = new DateTime($dateString);
-		if(!$dateTime) {
-			throw new BadlyFormedDataException($columnName);
-		}
-
-		return $dateTime;
+		return new DateTime($dateString);
 	}
 
 	public function asArray():array {
@@ -94,5 +89,33 @@ class Row implements Iterator {
 	public function current():?string {
 		$key = $this->key();
 		return $this->$key;
+	}
+
+	/** @return mixed */
+	private function getAsNullablePrimitive(string $key, string $type) {
+		$value = $this->get($key);
+		if(is_null($value)) {
+			return null;
+		}
+
+		switch($type) {
+		case "string":
+			return $value;
+
+		case "int":
+		case "integer":
+			return (int)$value;
+
+		case "float":
+		case "double":
+		case "decimal":
+			return (float)$value;
+
+		case "bool":
+		case "boolean":
+			return (bool)$value;
+		}
+
+		throw new InvalidNullablePrimitiveException($type);
 	}
 }

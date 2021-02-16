@@ -92,7 +92,7 @@ class RowTest extends TestCase {
 		$row = new Row($data);
 		$float = $row->getFloat("exampleFloat");
 		self::assertIsFloat($float);
-		self::assertSame((float)$data["exampleFloat"], $float);
+		self::assertSame(round($data["exampleFloat"], 6), round($float, 6));
 	}
 
 	/** @dataProvider data_getTestRow */
@@ -112,6 +112,14 @@ class RowTest extends TestCase {
 			$dateTime->format("Y-m-d H:i:s"),
 			$data["exampleDateTime"]
 		);
+	}
+
+	public function testGetIntNullable() {
+		$key = uniqid();
+		$value = 123;
+		$row = new Row([$key => $value]);
+		self::assertEquals($value, $row->getInt($key));
+		self::assertNull($row->getInt("does_not_exist"));
 	}
 
 	public function data_getTestRow():array {
