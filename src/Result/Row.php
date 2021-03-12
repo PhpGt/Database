@@ -5,7 +5,7 @@ use DateTime;
 use Iterator;
 
 class Row implements Iterator {
-	/** @var array */
+	/** @var array<string, string> */
 	protected $data;
 	protected $iterator_index = 0;
 	protected $iterator_data_key_list = [];
@@ -23,7 +23,7 @@ class Row implements Iterator {
 	}
 
 	public function get(string $columnName):?string {
-		return $this->getString($columnName);
+		return $this->data[$columnName] ?? null;
 	}
 
 	public function getString(string $columnName):?string {
