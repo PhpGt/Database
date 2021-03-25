@@ -70,6 +70,10 @@ class QueryCollectionFactory {
 			$basePath = $this->basePath;
 		}
 
+		if(!is_dir($basePath)) {
+			throw new BaseQueryPathDoesNotExistException($basePath);
+		}
+
 		foreach(new DirectoryIterator($basePath) as $fileInfo) {
 			if($fileInfo->isDot()
 			|| !$fileInfo->isDir()) {
