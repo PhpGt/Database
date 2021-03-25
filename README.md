@@ -2,9 +2,9 @@
 
 # Database API organisation.
 
-Encloses your application's database scripts within a simple and standardised interface, separating database access from your page logic.
+Encloses your application's database scripts within a simple and standardised interface, separating database access from your application logic.
 
-The first parameter to any database functions is always the query name, which represents a query file on disk.
+The first parameter to any database functions is always the query name, which represents a query file on disk - either a raw SQL file or a PHP representation of a query using [SqlBuilder][sqlbuilder].
 
 ***
 
@@ -39,11 +39,11 @@ Examples of CRUD operations:
 $bookResultSet = $db->fetchAll("shopitem/getItemsInCategory", "books");
 
 foreach($bookResultSet as $bookRow) {
-	echo "Book title: " . $bookRow->getString("title") . PHP_EOL;
-	echo "Book price: £" . ($bookRow->getFloat("price") + $bookRow->getFloat("vat")) . PHP_EOL;
+	echo "Book title: ", $bookRow->getString("title"), PHP_EOL;
+	echo "Book price: £", ($bookRow->getFloat("price") + $bookRow->getFloat("vat")), PHP_EOL;
 	
 	if($bookRow->offerEnds) {
-		echo "Item on offer until: " . $bookRow->getDateTime("offerEnds")->format("dS M Y");
+		echo "Item on offer until: ", $bookRow->getDateTime("offerEnds")->format("dS M Y");
 	}
 }
 
@@ -56,8 +56,8 @@ $newCustomerId = $db->create("customer/new", [
 
 // "Update" or "delete" methods always return the number of affected rows:
 $numberOfItemsAffected = $db->update("shop/item/increasePrice", [
-	"percent" => 12.5
-	"max_increase" => 20.00
+	"percent" => 12.5,
+	"max_increase" => 20.00,
 ]);
 
 $numberOfDeletedReviews = $db->delete(
@@ -72,12 +72,11 @@ $numberOfDeletedReviews = $db->delete(
 + [Encapsulation of queries using `QueryCollection`s][wiki-query-collections]
 + [Bind parameters by name or sequentially][wiki-parameters]
 + [Fully configurable][wiki-config]
++ [Type safe getters][wiki-type-safety]
 
-## Planned features
-
-+ Compatibility with no-SQL databases
-
+[sqlbuilder]: https://www.php.gt/sqlbuilder
 [wiki-query-collections]: https://www.php.gt/docs/database/query-collections
 [wiki-parameters]: https://www.php.gt/docs/database/parameters
 [wiki-migrations]: https://www.php.gt/docs/database/migrations
 [wiki-config]: https://www.php.gt/docs/database/config
+[wiki-type-safety]: https://www.php.gt/docs/database/type-safety
