@@ -4,8 +4,8 @@ namespace Gt\Database\Connection;
 class Settings implements SettingsInterface {
 	use ImmutableSettings;
 
-	const CHARSET = "utf8";
-	const COLLATION = "utf8_unicode_ci";
+	const CHARSET = "utf8mb4";
+	const COLLATION = "utf8mb4_0900_ai_ci";
 
 	const DRIVER_MYSQL = "mysql";
 	const DRIVER_POSTGRES = "pgsql";
