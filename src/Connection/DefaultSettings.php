@@ -7,7 +7,7 @@ class DefaultSettings implements SettingsInterface {
 	use ImmutableSettings;
 
 	const CHARSET = "utf8mb4";
-	const COLLATION = "utf8mb4_0900_ai_ci";
+	const COLLATION = "utf8mb4_general_ci";
 
 	const DEFAULT_NAME = "default";
 	const DEFAULT_DRIVER = Settings::DRIVER_SQLITE;
@@ -31,7 +31,7 @@ class DefaultSettings implements SettingsInterface {
 	];
 
 	const DEFAULT_CHARSET = "utf8mb4";
-	const DEFAULT_COLLATION = "utf8mb4_0900_ai_ci";
+	const DEFAULT_COLLATION = "utf8mb4_general_ci";
 
 	/** @var string */
 	protected $baseDirectory;
