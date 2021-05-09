@@ -16,7 +16,7 @@ class QueryCollectionTest extends TestCase {
 	/** @var MockObject|Query */
 	private $mockQuery;
 
-	public function setUp():void {
+	protected function setUp():void {
 		/** @var MockObject|QueryFactory $mockQueryFactory */
 		$mockQueryFactory = $this->createMock(QueryFactory::class);
 		$this->mockQuery = $this->createMock(Query::class);
