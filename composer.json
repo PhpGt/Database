@@ -6,7 +6,7 @@
     "require": {
         "php": ">=7.4",
         "ext-PDO": "*",
-        "phpgt/config": "*"
+        "phpgt/config": "^v1.1.0"
     },
 
     "require-dev": {
@@ -46,5 +46,12 @@
 
     "bin": [
         "bin/db-migrate"
+    ],
+
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/PhpGt"
+        }
     ]
 }
