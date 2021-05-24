@@ -1,7 +1,8 @@
 <?php
 namespace Gt\Database\Result;
 
-use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Iterator;
 
 class Row implements Iterator {
@@ -42,19 +43,18 @@ class Row implements Iterator {
 		return $this->getAsNullablePrimitive($columnName, "bool");
 	}
 
-	public function getDateTime(string $columnName):?DateTime {
+	public function getDateTime(string $columnName):?DateTimeInterface {
 		$dateString = $this->data[$columnName] ?? null;
 		if(is_null($dateString)) {
 			return null;
 		}
 
 		if(is_numeric($dateString)) {
-			$dateTime = new DateTime();
-			$dateTime->setTimestamp($dateString);
-			return $dateTime;
+			$dateTime = new DateTimeImmutable();
+			return $dateTime->setTimestamp($dateString);
 		}
 
-		return new DateTime($dateString);
+		return new DateTimeImmutable($dateString);
 	}
 
 	public function asArray():array {

@@ -1,10 +1,10 @@
 <?php
 namespace Gt\Database\Query;
 
+use DateTimeInterface;
 use PDO;
 use PDOException;
 use PDOStatement;
-use DateTime;
 use Gt\Database\Result\ResultSet;
 
 class SqlQuery extends Query {
@@ -17,12 +17,10 @@ class SqlQuery extends Query {
 
 	public function getSql(array $bindings = []):string {
 		$sql = file_get_contents($this->getFilePath());
-		$sql = $this->injectSpecialBindings(
+		return $this->injectSpecialBindings(
 			$sql,
 			$bindings
 		);
-
-		return $sql;
 	}
 
 	public function execute(array $bindings = []):ResultSet {
@@ -34,7 +32,6 @@ class SqlQuery extends Query {
 		$preparedBindings = $this->prepareBindings($bindings);
 		$preparedBindings = $this->ensureParameterCharacter($preparedBindings);
 		$preparedBindings = $this->removeUnusedBindings($preparedBindings, $sql);
-		$lastInsertId = null;
 
 		try {
 			$statement->execute($preparedBindings);
@@ -49,9 +46,7 @@ class SqlQuery extends Query {
 
 	public function prepareStatement(PDO $pdo, string $sql):PDOStatement {
 		try {
-			$statement = $pdo->prepare($sql);
-
-			return $statement;
+			return $pdo->prepare($sql);
 		}
 		catch(PDOException $exception) {
 			throw new PreparedStatementException(null, 0, $exception);
@@ -115,7 +110,7 @@ class SqlQuery extends Query {
 			if(is_bool($value)) {
 				$bindings[$key] = (int)$value;
 			}
-			if($value instanceof DateTime) {
+			if($value instanceof DateTimeInterface) {
 				$bindings[$key] = $value->format("Y-m-d H:i:s");
 			}
 			if(is_array($value)) {
@@ -151,7 +146,7 @@ class SqlQuery extends Query {
 		}
 
 		foreach($bindings as $key => $value) {
-			if(!preg_match("/{$key}(\W|\$)/", $sql)) {
+			if(!preg_match("/$key(\W|\$)/", $sql)) {
 				unset($bindings[$key]);
 			}
 		}
@@ -172,6 +167,7 @@ class SqlQuery extends Query {
 		return $this->connection;
 	}
 
+	/** @noinspection PhpUnusedParameterInspection */
 	protected function escapeSpecialBinding(
 		string $value,
 		string $type
