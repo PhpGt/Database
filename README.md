@@ -64,6 +64,9 @@ $numberOfDeletedReviews = $db->delete(
 	"remove/deleteOlderThan",
 	new DateTime("-6 months")
 );
+
+// Individual type-safe fields can be pulled from queries that return only one column:
+$userName = $db->fetchString("user/getUsernameById", 105);
 ```
 
 ## Features at a glance
