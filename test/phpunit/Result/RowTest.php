@@ -1,7 +1,8 @@
 <?php
 namespace Gt\Database\Test\Result;
 
-use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Gt\Database\Result\Row;
 use PHPUnit\Framework\TestCase;
 
@@ -45,7 +46,7 @@ class RowTest extends TestCase {
 
 	public function testNullCoalesce() {
 		$row = new Row(["col1" => "item"]);
-		$value = $row->col2 ?? "DEFAULT!";
+		$value = $row->getString("col2") ?? "DEFAULT!";
 		self::assertEquals("DEFAULT!", $value);
 	}
 
@@ -92,7 +93,7 @@ class RowTest extends TestCase {
 		$row = new Row($data);
 		$float = $row->getFloat("exampleFloat");
 		self::assertIsFloat($float);
-		self::assertSame(round($data["exampleFloat"], 6), round($float, 6));
+		self::assertSame(round($data["exampleFloat"], 5), round($float, 5));
 	}
 
 	/** @dataProvider data_getTestRow */
@@ -107,7 +108,7 @@ class RowTest extends TestCase {
 	public function testGetDateTime(array $data) {
 		$row = new Row($data);
 		$dateTime = $row->getDateTime("exampleDateTime");
-		self::assertInstanceOf(DateTime::class, $dateTime);
+		self::assertInstanceOf(DateTimeInterface::class, $dateTime);
 		self::assertEquals(
 			$dateTime->format("Y-m-d H:i:s"),
 			$data["exampleDateTime"]
@@ -141,8 +142,8 @@ class RowTest extends TestCase {
 
 				case "exampleDateTime":
 					$timestamp = rand(0, 4260560700);
-					$dateTime = new DateTime();
-					$dateTime->setTimestamp($timestamp);
+					$dateTime = new DateTimeImmutable();
+					$dateTime = $dateTime->setTimestamp($timestamp);
 					$value = $dateTime->format("Y-m-d H:i:s");
 					break;
 

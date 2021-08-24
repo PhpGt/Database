@@ -1,9 +1,7 @@
 <?php
 namespace Gt\Database;
 
-use DateTime;
 use Gt\Database\Connection\Connection;
-use Gt\Database\Result\Row;
 use Gt\Database\Connection\DefaultSettings;
 use Gt\Database\Connection\Driver;
 use Gt\Database\Connection\SettingsInterface;
