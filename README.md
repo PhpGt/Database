@@ -26,7 +26,7 @@ The first parameter to any database functions is always the query name, which re
 
 ## Example usage
 
-This library organises SQL access through a consistent API. To execute an example query located at `src/query/shop_item/getItemsInCategory.sql`, the following pattern is used:
+This library organises SQL access through a consistent API. To execute an example query located at `src/query/user/getById.sql`, the following pattern is used:
 
 ```php
 $userRow = $db->fetch("user/getById", 105);
