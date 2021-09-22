@@ -46,7 +46,7 @@
     },
 
     "bin": [
-        "bin/db-migrate"
+        "bin/migrate"
     ],
 
     "funding": [
