@@ -10,8 +10,8 @@
     },
 
     "require-dev": {
-        "phpunit/phpunit": "^9.4.0",
-        "phpstan/phpstan": "^0.12.42",
+        "phpunit/phpunit": "^9.4",
+        "phpstan/phpstan": "^0.12",
         "ext-sqlite3": "*"
     },
 
