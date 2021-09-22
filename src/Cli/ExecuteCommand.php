@@ -47,7 +47,17 @@ class ExecuteCommand extends Command {
 		]);
 		$migrationTable = $config->get("database.migration_table") ?? "_migration";
 
-		$migrator = new Migrator($settings, $migrationPath, $migrationTable, $forced);
+		$migrator = new Migrator($settings, $migrationPath, $migrationTable);
+		$migrator->setOutput(
+			$this->stream->getOutStream(),
+			$this->stream->getErrorStream()
+		);
+
+		if($forced) {
+			$migrator->deleteAndRecreateSchema();
+		}
+
+		$migrator->selectSchema();
 		$migrator->createMigrationTable();
 		$migrationCount = $migrator->getMigrationCount();
 		$migrationFileList = $migrator->getMigrationFileList();

@@ -34,8 +34,7 @@ class Migrator {
 	public function __construct(
 		Settings $settings,
 		string $path,
-		string $tableName = "_migration",
-		bool $forced = false
+		string $tableName = "_migration"
 	) {
 		$this->schema = $settings->getSchema();
 		$this->path = $path;
@@ -50,12 +49,6 @@ class Migrator {
 		}
 
 		$this->dbClient = new Database($settings);
-
-		if($forced) {
-			$this->deleteAndRecreateSchema();
-		}
-
-		$this->selectSchema();
 	}
 
 	public function setOutput(
@@ -207,7 +200,7 @@ class Migrator {
 	):int {
 		$fileNumber = 0;
 		$numCompleted = 0;
-		
+
 		foreach($migrationFileList as $i => $file) {
 			$fileNumber = $i + 1;
 
@@ -248,7 +241,7 @@ class Migrator {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	protected function selectSchema() {
+	public function selectSchema() {
 // SQLITE databases represent their own schema.
 		if($this->driver === Settings::DRIVER_SQLITE) {
 			return;
@@ -295,7 +288,7 @@ class Migrator {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	protected function deleteAndRecreateSchema() {
+	public function deleteAndRecreateSchema() {
 		if($this->driver === Settings::DRIVER_SQLITE) {
 			return;
 		}
