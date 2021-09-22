@@ -13,7 +13,7 @@ class ExecuteCommand extends Command {
 	public function run(ArgumentValueList $arguments = null):void {
 		$forced = $arguments->contains("force");
 
-		$repoBasePath = $this->getRepoBasePath();
+		$repoBasePath = getcwd();
 		$defaultPath = $this->getDefaultPath($repoBasePath);
 
 		$config = ConfigFactory::createForProject($repoBasePath);
@@ -70,7 +70,7 @@ class ExecuteCommand extends Command {
 	}
 
 	public function getDescription():string {
-		return "Perform the migration";
+		return "Perform a database migration";
 	}
 
 	public function getRequiredNamedParameterList():array {
@@ -113,23 +113,5 @@ class ExecuteCommand extends Command {
 		}
 
 		return null;
-	}
-
-	private function getRepoBasePath():string {
-		$repoBasePath = __DIR__;
-		$i = 0;
-
-		do {
-			$repoBasePath = dirname($repoBasePath);
-			$i++;
-
-			if($i > 10) {
-// TODO: Decide if this functionality should be extracted into its own repo,
-// maybe PhpGt/Path? If so, this should throw a PathException.
-				return "";
-			}
-		}
-		while(!is_dir($repoBasePath . DIRECTORY_SEPARATOR . "vendor"));
-		return $repoBasePath;
 	}
 }
