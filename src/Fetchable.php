@@ -1,7 +1,8 @@
 <?php
 namespace Gt\Database;
 
-use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Gt\Database\Result\ResultSet;
 use Gt\Database\Result\Row;
 
@@ -48,7 +49,7 @@ trait Fetchable {
 		);
 	}
 
-	public function fetchDateTime(string $queryName, ...$bindings):?DateTime {
+	public function fetchDateTime(string $queryName, ...$bindings):?DateTimeInterface {
 		return $this->fetchTyped(
 			Type::DATETIME,
 			$queryName,
@@ -92,7 +93,7 @@ trait Fetchable {
 		);
 	}
 
-	/** @return DateTime[] */
+	/** @return DateTimeInterface[] */
 	public function fetchAllDateTime(string $queryName, ...$bindings):array {
 		return $this->fetchAllTyped(
 			Type::DATETIME,
@@ -144,9 +145,6 @@ trait Fetchable {
 		case "boolean":
 			return (bool)$value;
 
-		case Type::STRING:
-			return (string)$value;
-
 		case Type::INT:
 		case "integer":
 			return (int)$value;
@@ -155,8 +153,10 @@ trait Fetchable {
 			return (float)$value;
 
 		case Type::DATETIME:
-		case "datetime":
-			return new DateTime($value);
+			return new DateTimeImmutable($value);
+
+		default:
+			return (string)$value;
 		}
 	}
 }
