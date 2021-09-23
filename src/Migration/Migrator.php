@@ -218,10 +218,6 @@ class Migrator {
 				$this->recordMigrationSuccess($fileNumber, $md5);
 			}
 			catch(DatabaseException $exception) {
-				$this->output(
-					$exception->getMessage(),
-					self::STREAM_ERROR
-				);
 				throw $exception;
 			}
 
@@ -229,10 +225,10 @@ class Migrator {
 		}
 
 		if($numCompleted === 0) {
-			$this->output("No migrations were made.");
+			$this->output("Migrations are already up to date.");
 		}
 		else {
-			$this->output("Completed migrations successfully.");
+			$this->output("$numCompleted migrations were completed successfully.");
 		}
 
 		return $numCompleted;

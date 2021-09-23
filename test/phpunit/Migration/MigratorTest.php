@@ -490,7 +490,9 @@ class MigratorTest extends TestCase {
 		$streamOut->rewind();
 		$output = $streamOut->fread(4096);
 		self::assertStringContainsString("Migration 1:", $output);
-		self::assertStringContainsString("Completed migrations successfully.", $output);
+
+		$expectedCount = count($fileList);
+		self::assertStringContainsString("$expectedCount migrations were completed successfully.", $output);
 	}
 
 	/** @dataProvider dataMigrationFileList */
@@ -531,10 +533,6 @@ class MigratorTest extends TestCase {
 			);
 			self::assertStringNotContainsString(
 				"Migration 1:",
-				$outputError
-			);
-			self::assertStringContainsString(
-				"General error: 1 near \"nothing\": syntax error",
 				$outputError
 			);
 			self::assertStringNotContainsString(

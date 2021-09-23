@@ -7,7 +7,10 @@ use Gt\Cli\Parameter\NamedParameter;
 use Gt\Cli\Parameter\Parameter;
 use Gt\Config\ConfigFactory;
 use Gt\Database\Connection\Settings;
+use Gt\Database\Migration\MigrationIntegrityException;
 use Gt\Database\Migration\Migrator;
+use Gt\Database\StatementExecutionException;
+use Gt\Database\StatementPreparationException;
 
 class ExecuteCommand extends Command {
 	public function run(ArgumentValueList $arguments = null):void {
@@ -61,8 +64,17 @@ class ExecuteCommand extends Command {
 		$migrator->createMigrationTable();
 		$migrationCount = $migrator->getMigrationCount();
 		$migrationFileList = $migrator->getMigrationFileList();
-		$migrator->checkIntegrity($migrationFileList, $migrationCount);
-		$migrator->performMigration($migrationFileList, $migrationCount);
+
+		try {
+			$migrator->checkIntegrity($migrationFileList, $migrationCount);
+			$migrator->performMigration($migrationFileList, $migrationCount);
+		}
+		catch(MigrationIntegrityException $exception) {
+			$this->writeLine("There was an integrity error migrating file '" . $exception->getMessage() . "' - this migration is recorded to have been run already, but the contents of the file has changed.\nFor help, see https://www.php.gt/database/migrations#integrity-error");
+		}
+		catch(StatementPreparationException|StatementExecutionException $exception) {
+			$this->writeLine("There was an error executing migration file: " . $exception->getMessage() . "'\nFor help, see https://www.php.gt/database/migrations#error");
+		}
 	}
 
 	public function getName():string {
