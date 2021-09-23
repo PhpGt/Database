@@ -99,13 +99,21 @@ class Database {
 			$statement = $connection->prepare($query);
 		}
 		catch(PDOException $exception) {
-			throw new DatabaseException(
+			throw new StatementPreparationException(
 				$exception->getMessage(),
 				intval($exception->getCode())
 			);
 		}
 
-		$statement->execute($bindings);
+		try {
+			$statement->execute($bindings);
+		}
+		catch(PDOException $exception) {
+			throw new StatementExecutionException(
+				$exception->getMessage(),
+				intval($exception->getCode())
+			);
+		}
 
 		return new ResultSet($statement, $connection->lastInsertId());
 	}
