@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Database migration iterates over a set of incremental schema changes and
+ * stores the currently-migrated schema version within the database itself.
+ */
+
+use Gt\Cli\Application;
+use Gt\Cli\Argument\CommandArgumentList;
+use Gt\Database\Cli\ExecuteCommand;
+
+// The script must be run from the context of a project's root directory.
+foreach([ __DIR__ . "/../../..", __DIR__ . "/../vendor" ] as $vendor) {
+	$autoload = "$vendor/autoload.php";
+	if(file_exists($autoload)) {
+		require($autoload);
+		break;
+	}
+}
+
+$app = new Application(
+	"Migrate the database",
+	new CommandArgumentList("execute", ...$argv),
+	new ExecuteCommand(),
+);
+$app->run();
