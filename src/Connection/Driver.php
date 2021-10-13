@@ -40,7 +40,7 @@ class Driver {
 		return $this->connection;
 	}
 
-	protected function connect() {
+	protected function connect():void {
 		$options = [
 			Connection::ATTR_ERRMODE => Connection::ERRMODE_EXCEPTION,
 		];

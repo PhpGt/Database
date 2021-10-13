@@ -33,28 +33,18 @@ class DefaultSettings implements SettingsInterface {
 	const DEFAULT_CHARSET = "utf8mb4";
 	const DEFAULT_COLLATION = "utf8mb4_general_ci";
 
-	/** @var string */
-	protected $baseDirectory;
-	/** @var string */
-	protected $driver;
-	/** @var string */
-	protected $schema;
-	/** @var string */
-	protected $host;
-	/** @var int */
-	protected $port;
-	/** @var string */
-	protected $username;
-	/** @var string */
-	protected $password;
-	/** @var string */
-	protected $connectionName;
-	/** @var array */
-	protected $config = [];
-	/** @var string */
-	protected $charset;
-	/** @var string */
-	protected $collation;
+	protected string $baseDirectory;
+	protected string $driver;
+	protected string $schema;
+	protected string $host;
+	protected int $port;
+	protected string $username;
+	protected string $password;
+	protected string $connectionName;
+	/** @var array<string, string> */
+	protected array $config;
+	protected string $charset;
+	protected string $collation;
 
 	public function __construct() {
 		$this->baseDirectory = sys_get_temp_dir();
@@ -65,6 +55,7 @@ class DefaultSettings implements SettingsInterface {
 		$this->username = self::DEFAULT_USERNAME;
 		$this->password = self::DEFAULT_PASSWORD;
 		$this->connectionName = self::DEFAULT_NAME;
+		$this->config = [];
 	}
 
 	public function getBaseDirectory():string {
@@ -99,6 +90,7 @@ class DefaultSettings implements SettingsInterface {
 		return $this->connectionName;
 	}
 
+	/** @return array<string, string> */
 	public function getConnectionSettings():array {
 // NOTE: It's not possible to test the 'port' values returned by this method
 // because the DefaultSettings can only ever return the DEFAULT_DRIVER port

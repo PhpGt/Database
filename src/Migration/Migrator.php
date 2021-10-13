@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection ALL */
 namespace Gt\Database\Migration;
 
 use DirectoryIterator;
@@ -17,19 +17,16 @@ class Migrator {
 	const STREAM_OUT = "out";
 	const STREAM_ERROR = "error";
 
-	/** @var SplFileObject|null */
-	protected $streamError;
-	/** @var SplFileObject|null */
-	protected $streamOut;
+	protected ?SplFileObject $streamError;
+	protected ?SplFileObject $streamOut;
 
-	protected $driver;
-	protected $schema;
-	protected $dbClient;
-	protected $path;
-	protected $tableName;
-
-	protected $charset;
-	protected $collate;
+	protected string $driver;
+	protected string $schema;
+	protected Database $dbClient;
+	protected string $path;
+	protected string $tableName;
+	protected string $charset;
+	protected string $collate;
 
 	public function __construct(
 		Settings $settings,
@@ -109,9 +106,10 @@ class Migrator {
 			return 0;
 		}
 
-		return $row->{self::COLUMN_QUERY_NUMBER} ?? 0;
+		return $row?->getInt(self::COLUMN_QUERY_NUMBER) ?? 0;
 	}
 
+	/** @return array<string> */
 	public function getMigrationFileList():array {
 		if(!is_dir($this->path)) {
 			throw new MigrationDirectoryNotFoundException(
@@ -135,6 +133,7 @@ class Migrator {
 		return $fileList;
 	}
 
+	/** @param array<string> $fileList */
 	public function checkFileListOrder(array $fileList):void {
 		$counter = 0;
 		$sequence = [];
@@ -152,6 +151,7 @@ class Migrator {
 		}
 	}
 
+	/** @param array<string> $migrationFileList */
 	public function checkIntegrity(
 		array $migrationFileList,
 		int $migrationCount = null
@@ -171,7 +171,7 @@ class Migrator {
 					"limit 1",
 				]), [$fileNumber]);
 
-				$hashInDb = ($result->fetch())->{self::COLUMN_QUERY_HASH};
+				$hashInDb = ($result->fetch())->getString(self::COLUMN_QUERY_HASH);
 
 				if($hashInDb !== $md5) {
 					throw new MigrationIntegrityException($file);
@@ -194,6 +194,7 @@ class Migrator {
 		return (int)$matches[1];
 	}
 
+	/** @param array<string> $migrationFileList */
 	public function performMigration(
 		array $migrationFileList,
 		int $existingMigrationCount = 0
@@ -237,7 +238,7 @@ class Migrator {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function selectSchema() {
+	public function selectSchema():void {
 // SQLITE databases represent their own schema.
 		if($this->driver === Settings::DRIVER_SQLITE) {
 			return;
@@ -263,7 +264,7 @@ class Migrator {
 		}
 	}
 
-	protected function recordMigrationSuccess(int $number, string $hash) {
+	protected function recordMigrationSuccess(int $number, string $hash):void {
 		$now = "now()";
 
 		if($this->driver === Settings::DRIVER_SQLITE) {
@@ -284,7 +285,7 @@ class Migrator {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function deleteAndRecreateSchema() {
+	public function deleteAndRecreateSchema():void {
 		if($this->driver === Settings::DRIVER_SQLITE) {
 			return;
 		}
@@ -311,7 +312,7 @@ class Migrator {
 		string $message,
 		string $streamName = self::STREAM_OUT
 	):void {
-		$stream = $this->streamOut;
+		$stream = $this->streamOut ?? null;
 		if($streamName === self::STREAM_ERROR) {
 			$stream = $this->streamError;
 		}

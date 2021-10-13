@@ -20,12 +20,11 @@ class Database {
 	use Fetchable;
 
 	const COLLECTION_SEPARATOR_CHARACTERS = [".", "/", "\\"];
-	/** @var QueryCollectionFactory[] */
-	protected $queryCollectionFactoryArray;
-	/** @var Driver[] */
-	protected $driverArray;
-	/** @var Connection */
-	protected $currentConnectionName;
+	/** @var array<QueryCollectionFactory> */
+	protected array $queryCollectionFactoryArray;
+	/** @var array<Driver> */
+	protected array $driverArray;
+	protected Connection $currentConnectionName;
 
 	public function __construct(SettingsInterface...$connectionSettings) {
 		if(empty($connectionSettings)) {
@@ -37,25 +36,24 @@ class Database {
 		$this->storeQueryCollectionFactoryFromSettings($connectionSettings);
 	}
 
-	public function insert(string $queryName, ...$bindings):int {
+	public function insert(string $queryName, mixed...$bindings):string {
 		$result = $this->query($queryName, $bindings);
-
 		return $result->lastInsertId();
 	}
 
-	public function delete(string $queryName, ...$bindings):int {
+	public function delete(string $queryName, mixed...$bindings):int {
 		$result = $this->query($queryName, $bindings);
-
 		return $result->affectedRows();
 	}
 
-	public function update(string $queryName, ...$bindings):int {
+	public function update(string $queryName, mixed...$bindings):int {
 		$result = $this->query($queryName, $bindings);
-
 		return $result->affectedRows();
 	}
 
-	public function query(string $fullQueryPath, ...$bindings):ResultSet {
+	public function query(string $fullQueryPath, mixed...$bindings):ResultSet {
+		$queryCollectionName = $queryFile = "";
+
 		foreach(self::COLLECTION_SEPARATOR_CHARACTERS as $char) {
 			if(!strstr($fullQueryPath, $char)) {
 				continue;
@@ -83,12 +81,13 @@ class Database {
 		return $queryCollection->query($queryFile, $bindings);
 	}
 
-	public function setCurrentConnectionName(string $connectionName) {
+	public function setCurrentConnectionName(string $connectionName):void {
 		$this->currentConnectionName = $this->getNamedConnection(
 			$connectionName
 		);
 	}
 
+	/** @param array<string, mixed>|array<mixed> $bindings */
 	public function executeSql(
 		string $query,
 		array $bindings = [],
@@ -124,14 +123,16 @@ class Database {
 		return $driver->getConnection();
 	}
 
-	protected function storeConnectionDriverFromSettings(array $settingsArray) {
+	/** @param array<SettingsInterface> $settingsArray */
+	protected function storeConnectionDriverFromSettings(array $settingsArray):void {
 		foreach($settingsArray as $settings) {
 			$connectionName = $settings->getConnectionName();
 			$this->driverArray[$connectionName] = new Driver($settings);
 		}
 	}
 
-	protected function storeQueryCollectionFactoryFromSettings(array $settingsArray) {
+	/** @param array<SettingsInterface> $settingsArray */
+	protected function storeQueryCollectionFactoryFromSettings(array $settingsArray):void {
 		foreach($settingsArray as $settings) {
 			$connectionName = $settings->getConnectionName();
 			$this->queryCollectionFactoryArray[$connectionName] =

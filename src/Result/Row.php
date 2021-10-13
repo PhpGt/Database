@@ -5,14 +5,19 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Iterator;
 
+/** @implements Iterator<string, string> */
 class Row implements Iterator {
 	/** @var array<string, string> */
-	protected $data;
-	protected $iterator_index = 0;
-	protected $iterator_data_key_list = [];
+	protected array $data;
+	protected int $iteratorIndex;
+	/** @var array<string> */
+	protected array $iteratorDataKeyList;
 
+	/** @param array<string, string> $data */
 	public function __construct(array $data = []) {
 		$this->data = $data;
+		$this->iteratorIndex = 0;
+		$this->iteratorDataKeyList = [];
 	}
 
 	public function __get(string $name):?string {
@@ -51,12 +56,13 @@ class Row implements Iterator {
 
 		if(is_numeric($dateString)) {
 			$dateTime = new DateTimeImmutable();
-			return $dateTime->setTimestamp($dateString);
+			return $dateTime->setTimestamp((int)$dateString);
 		}
 
 		return new DateTimeImmutable($dateString);
 	}
 
+	/** @return array<string, string> */
 	public function asArray():array {
 		return $this->data;
 	}
@@ -66,23 +72,23 @@ class Row implements Iterator {
 	}
 
 	public function rewind():void {
-		$this->iterator_index = 0;
-		$this->iterator_data_key_list = array_keys($this->data);
+		$this->iteratorIndex = 0;
+		$this->iteratorDataKeyList = array_keys($this->data);
 	}
 
 	public function key():?string {
-		return $this->iterator_data_key_list[
-			$this->iterator_index
+		return $this->iteratorDataKeyList[
+			$this->iteratorIndex
 		] ?? null;
 	}
 
 	public function next():void {
-		$this->iterator_index++;
+		$this->iteratorIndex++;
 	}
 
 	public function valid():bool {
-		return isset($this->iterator_data_key_list[
-			$this->iterator_index
+		return isset($this->iteratorDataKeyList[
+			$this->iteratorIndex
 		]);
 	}
 
@@ -91,8 +97,7 @@ class Row implements Iterator {
 		return $this->$key;
 	}
 
-	/** @return mixed */
-	private function getAsNullablePrimitive(string $key, string $type) {
+	private function getAsNullablePrimitive(string $key, string $type):null|string|int|bool|float {
 		$value = $this->get($key);
 		if(is_null($value)) {
 			return null;

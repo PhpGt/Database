@@ -9,19 +9,19 @@ use PDOStatement;
 /**
  * @property int $length Number of rows represented, synonym of
  * count and getLength
+ *
+ * @implements Iterator<int, Row>
  */
 class ResultSet implements Iterator, Countable {
-	/** @var PDOStatement */
-	protected $statement;
-	/** @var Row */
-	protected $current_row;
-	protected $row_index = null;
-	/** @var string */
-	protected $insertId = null;
+	protected ?Row $currentRow;
+	protected int $rowIndex;
+	protected int $iteratorIndex;
 
-	public function __construct(PDOStatement $statement, string $insertId = null) {
-		$this->statement = $statement;
-		$this->insertId = $insertId;
+	public function __construct(
+		protected PDOStatement $statement,
+		protected ?string $insertId = null
+	) {
+		$this->iteratorIndex = 0;
 	}
 
 	public function affectedRows():int {
@@ -37,30 +37,28 @@ class ResultSet implements Iterator, Countable {
 			PDO::FETCH_ASSOC
 		);
 
-		if(is_null($this->row_index)) {
-			$this->row_index = 0;
+		if(!isset($this->rowIndex)) {
+			$this->rowIndex = 0;
 		}
 		else {
-			$this->row_index++;
+			$this->rowIndex++;
 		}
 
 		if(empty($data)) {
-			$this->current_row = null;
+			$this->currentRow = null;
 		}
 		else {
-			$this->current_row = new Row($data);
+			$this->currentRow = new Row($data);
 		}
 
-		return $this->current_row;
+		return $this->currentRow;
 	}
 
-	/**
-	 * @return Row[]
-	 */
+	/** @return array<Row> */
 	public function fetchAll():array {
 		$this->statement->execute();
-		$this->row_index = 0;
-		$this->iterator_index = 0;
+		$this->rowIndex = 0;
+		$this->iteratorIndex = 0;
 
 		$data = [];
 
@@ -71,17 +69,17 @@ class ResultSet implements Iterator, Countable {
 		return $data;
 	}
 
-	protected function fetchUpToIteratorIndex() {
-		while(is_null($this->row_index)
-		|| $this->row_index < $this->iterator_index) {
+	protected function fetchUpToIteratorIndex():void {
+		while(!isset($this->rowIndex)
+		|| $this->rowIndex < $this->iteratorIndex) {
 			$this->fetch();
 		}
 	}
 
-	public function asArray($elementsToArray = true):array {
+	/** @return array<int, array<string, string>> */
+	public function asArray(bool $elementsToArray = true):array {
 		if($elementsToArray) {
 			$data = array_map(function($element) {
-				/** @var Row $element */
 				return $element->asArray();
 			},
 				$this->fetchAll()
@@ -94,27 +92,24 @@ class ResultSet implements Iterator, Countable {
 		return $data;
 	}
 
-// Iterator ////////////////////////////////////////////////////////////////////
-	protected $iterator_index = 0;
-
 	public function rewind():void {
 		$this->statement->execute();
-		$this->current_row = null;
-		$this->row_index = null;
-		$this->iterator_index = 0;
+		$this->currentRow = null;
+		unset($this->rowIndex);
+		$this->iteratorIndex = 0;
 	}
 
 	public function current():?Row {
 		$this->fetchUpToIteratorIndex();
-		return $this->current_row;
+		return $this->currentRow;
 	}
 
 	public function key():int {
-		return $this->iterator_index;
+		return $this->iteratorIndex;
 	}
 
 	public function next():void {
-		$this->iterator_index++;
+		$this->iteratorIndex++;
 	}
 
 	public function valid():bool {
@@ -122,10 +117,10 @@ class ResultSet implements Iterator, Countable {
 	}
 
 	public function count():int {
-		$currentIteratorIndex = $this->iterator_index;
+		$currentIteratorIndex = $this->iteratorIndex;
 		$count = count($this->fetchAll());
 		$this->rewind();
-		$this->iterator_index = $currentIteratorIndex;
+		$this->iteratorIndex = $currentIteratorIndex;
 		return $count;
 	}
 }

@@ -10,22 +10,14 @@ use Gt\Database\Connection\ConnectionNotConfiguredException;
 
 class QueryFactory {
 	const CLASS_FOR_EXTENSION = [
-		"sql" => "\Gt\Database\Query\SqlQuery",
-		"php" => "\Gt\Database\Query\PhpQuery",
+		"sql" => SqlQuery::class,
+		"php" => "NOT_YET_IMPLEMENTED",
 	];
 
-	/** @var string Absolute path to directory on disk containing query files */
-	protected $directoryOfQueries;
-	/** @var \Gt\Database\Connection\Driver */
-	protected $driver;
-
 	public function __construct(
-		string $directoryOfQueries,
-		Driver $driver
-	) {
-		$this->directoryOfQueries = $directoryOfQueries;
-		$this->driver = $driver;
-	}
+		protected string $directoryOfQueries,
+		protected Driver $driver
+	) {}
 
 	public function findQueryFilePath(string $name):string {
 		foreach(new DirectoryIterator($this->directoryOfQueries) as $fileInfo) {
@@ -61,14 +53,14 @@ class QueryFactory {
 		return $query;
 	}
 
-	public function getQueryClassForFilePath(string $filePath) {
+	public function getQueryClassForFilePath(string $filePath):string {
 		$fileInfo = new SplFileInfo($filePath);
 		$ext = $this->getExtensionIfValid($fileInfo);
 
 		return self::CLASS_FOR_EXTENSION[$ext];
 	}
 
-	protected function getExtensionIfValid(SplFileInfo $fileInfo) {
+	protected function getExtensionIfValid(SplFileInfo $fileInfo):string {
 		$ext = strtolower($fileInfo->getExtension());
 
 		if(!array_key_exists($ext, self::CLASS_FOR_EXTENSION)) {
@@ -78,7 +70,7 @@ class QueryFactory {
 		return $ext;
 	}
 
-	protected function throwCorrectException(Exception $exception) {
+	protected function throwCorrectException(Exception $exception):void {
 		$message = $exception->getMessage();
 
 		switch(get_class($exception)) {
@@ -91,7 +83,6 @@ class QueryFactory {
 
 			$connectionName = $matches[1];
 			throw new ConnectionNotConfiguredException($connectionName);
-			break;
 
 		default:
 			throw $exception;

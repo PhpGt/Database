@@ -4,33 +4,27 @@ namespace Gt\Database\Query;
 use Gt\Database\Connection\Driver;
 use Gt\Database\Fetchable;
 use Gt\Database\Result\ResultSet;
-use Gt\Database\Result\Row;
 
 class QueryCollection {
 	use Fetchable;
 
-	/** @var string */
-	protected $directoryPath;
-	/** @var QueryFactory */
-	protected $queryFactory;
+	protected string $directoryPath;
+	protected QueryFactory $queryFactory;
 
 	public function __construct(
 		string $directoryPath,
 		Driver $driver,
 		QueryFactory $queryFactory = null
 	) {
-		if(is_null($queryFactory)) {
-			$queryFactory = new QueryFactory(
-				$directoryPath,
-				$driver
-			);
-		}
-
 		$this->directoryPath = $directoryPath;
-		$this->queryFactory = $queryFactory;
+		$this->queryFactory = $queryFactory ?? new QueryFactory(
+			$directoryPath,
+			$driver
+		);
 	}
 
-	public function __call($name, $args) {
+	/** @param array<mixed> $args */
+	public function __call(string $name, array $args):ResultSet {
 		if(isset($args[0]) && is_array($args[0])) {
 			$queryArgs = array_merge([$name], $args);
 		}
@@ -43,7 +37,7 @@ class QueryCollection {
 
 	public function query(
 		string $name,
-		...$placeholderMap
+		mixed...$placeholderMap
 	):ResultSet {
 		$query = $this->queryFactory->create($name);
 		return $query->execute($placeholderMap);
@@ -51,7 +45,7 @@ class QueryCollection {
 
 	public function insert(
 		string $name,
-		...$placeholderMap
+		mixed...$placeholderMap
 	):int {
 		return (int)$this->query(
 			$name,
@@ -59,29 +53,9 @@ class QueryCollection {
 		)->lastInsertId();
 	}
 
-//	public function fetch(
-//		string $name,
-//		...$placeholderMap
-//	):?Row {
-//		return $this->query(
-//			$name,
-//			...$placeholderMap
-//		)->current();
-//	}
-//
-//	public function fetchAll(
-//		string $name,
-//		...$placeholderMap
-//	):ResultSet {
-//		return $this->query(
-//			$name,
-//			...$placeholderMap
-//		);
-//	}
-
 	public function update(
 		string $name,
-		...$placeholderMap
+		mixed...$placeholderMap
 	):int {
 		return $this->query(
 			$name,
@@ -91,7 +65,7 @@ class QueryCollection {
 
 	public function delete(
 		string $name,
-		...$placeholderMap
+		mixed...$placeholderMap
 	):int {
 		return $this->query(
 			$name,

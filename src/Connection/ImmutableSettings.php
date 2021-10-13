@@ -84,8 +84,7 @@ trait ImmutableSettings {
 	}
 
 	public function withoutSchema():SettingsInterface {
-		$clone = $this->withSchema("");
-		return $clone;
+		return $this->withSchema("");
 	}
 
 	public function withCharset(string $charset):SettingsInterface {
