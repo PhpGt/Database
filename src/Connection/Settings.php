@@ -14,40 +14,30 @@ class Settings implements SettingsInterface {
 
 	const SCHEMA_IN_MEMORY = ":memory:";
 
-	/** @var string */
-	protected $baseDirectory;
-	/** @var string */
-	protected $driver;
-	/** @var string */
-	protected $schema;
-	/** @var string */
-	protected $host;
-	/** @var int */
-	protected $port;
-	/** @var string */
-	protected $username;
-	/** @var string */
-	protected $password;
-	/** @var string */
-	protected $connectionName;
-	/** @var array */
-	protected $config = [];
-	/** @var string */
-	protected $collation;
-	/** @var string */
-	protected $charset;
+	protected string $baseDirectory;
+	protected string $driver;
+	protected ?string $schema;
+	protected string $host;
+	protected int $port;
+	protected string $username;
+	protected string $password;
+	protected string $connectionName;
+	/** @var array<string, string> */
+	protected array $config = [];
+	protected string $collation;
+	protected ?string $charset;
 
 	public function __construct(
 		string $baseDirectory,
 		string $driver,
-		string $schema = null,
+		?string $schema = null,
 		string $host = DefaultSettings::DEFAULT_HOST,
 		int $port = null,
 		string $username = DefaultSettings::DEFAULT_USERNAME,
 		string $password = DefaultSettings::DEFAULT_PASSWORD,
 		string $connectionName = DefaultSettings::DEFAULT_NAME,
 		string $collation = DefaultSettings::DEFAULT_COLLATION,
-		string $charset = null
+		?string $charset = null
 	) {
 		if(is_null($port)) {
 			$port = DefaultSettings::DEFAULT_PORT[$driver];
@@ -57,7 +47,7 @@ class Settings implements SettingsInterface {
 		$this->driver = $driver;
 		$this->schema = $schema;
 		$this->host = $host;
-		$this->port = $port;
+		$this->port = $port ?? 0;
 		$this->username = $username;
 		$this->password = $password;
 		$this->connectionName = $connectionName;
@@ -65,7 +55,8 @@ class Settings implements SettingsInterface {
 		$this->charset = $charset;
 	}
 
-	public function setConfig(array $config) {
+	/** @param array<string, string> $config */
+	public function setConfig(array $config):void {
 		$this->config = $config;
 	}
 
@@ -101,6 +92,7 @@ class Settings implements SettingsInterface {
 		return $this->connectionName;
 	}
 
+	/** @return array<string, string> */
 	public function getConnectionSettings():array {
 		$currentSettings = [
 			"driver" => $this->getDriver(),

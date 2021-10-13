@@ -6,16 +6,15 @@ use Gt\Database\Connection\Driver;
 use Gt\Database\Database;
 
 class QueryCollectionFactory {
-	/** @var Driver */
-	protected $driver;
-	/** @var string */
-	protected $basePath;
-	/** @var array */
-	protected $queryCollectionCache = [];
+	protected Driver $driver;
+	protected string $basePath;
+	/** @var array<string, QueryCollection> */
+	protected array $queryCollectionCache;
 
 	public function __construct(Driver $driver) {
 		$this->driver = $driver;
 		$this->basePath = $this->driver->getBaseDirectory();
+		$this->queryCollectionCache = [];
 	}
 
 	public function create(string $name):QueryCollection {
@@ -61,6 +60,7 @@ class QueryCollectionFactory {
 		return $this->recurseLocateDirectory($parts);
 	}
 
+	/** @param array<string> $parts */
 	protected function recurseLocateDirectory(
 		array $parts,
 		string $basePath = null

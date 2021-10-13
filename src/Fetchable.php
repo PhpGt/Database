@@ -7,17 +7,17 @@ use Gt\Database\Result\ResultSet;
 use Gt\Database\Result\Row;
 
 trait Fetchable {
-	public function fetch(string $queryName, ...$bindings):?Row {
+	public function fetch(string $queryName, mixed...$bindings):?Row {
 		/** @var ResultSet $result */
 		$result = $this->query($queryName, ...$bindings);
 		return $result->current();
 	}
 
-	public function fetchAll(string $queryName, ...$bindings):ResultSet {
+	public function fetchAll(string $queryName, mixed...$bindings):ResultSet {
 		return $this->query($queryName, ...$bindings);
 	}
 
-	public function fetchBool(string $queryName, ...$bindings):?bool {
+	public function fetchBool(string $queryName, mixed...$bindings):?bool {
 		return $this->fetchTyped(
 			Type::BOOL,
 			$queryName,
@@ -25,7 +25,7 @@ trait Fetchable {
 		);
 	}
 
-	public function fetchString(string $queryName, ...$bindings):?string {
+	public function fetchString(string $queryName, mixed...$bindings):?string {
 		return $this->fetchTyped(
 			Type::STRING,
 			$queryName,
@@ -33,7 +33,7 @@ trait Fetchable {
 		);
 	}
 
-	public function fetchInt(string $queryName, ...$bindings):?int {
+	public function fetchInt(string $queryName, mixed...$bindings):?int {
 		return $this->fetchTyped(
 			Type::INT,
 			$queryName,
@@ -41,7 +41,7 @@ trait Fetchable {
 		);
 	}
 
-	public function fetchFloat(string $queryName, ...$bindings):?float {
+	public function fetchFloat(string $queryName, mixed...$bindings):?float {
 		return $this->fetchTyped(
 			Type::FLOAT,
 			$queryName,
@@ -49,7 +49,7 @@ trait Fetchable {
 		);
 	}
 
-	public function fetchDateTime(string $queryName, ...$bindings):?DateTimeInterface {
+	public function fetchDateTime(string $queryName, mixed...$bindings):?DateTimeInterface {
 		return $this->fetchTyped(
 			Type::DATETIME,
 			$queryName,
@@ -58,7 +58,7 @@ trait Fetchable {
 	}
 
 	/** @return bool[] */
-	public function fetchAllBool(string $queryName, ...$bindings):array {
+	public function fetchAllBool(string $queryName, mixed...$bindings):array {
 		return $this->fetchAllTyped(
 			Type::BOOL,
 			$queryName,
@@ -67,7 +67,7 @@ trait Fetchable {
 	}
 
 	/** @return string[] */
-	public function fetchAllString(string $queryName, ...$bindings):array {
+	public function fetchAllString(string $queryName, mixed...$bindings):array {
 		return $this->fetchAllTyped(
 			Type::STRING,
 			$queryName,
@@ -76,7 +76,7 @@ trait Fetchable {
 	}
 
 	/** @return int[] */
-	public function fetchAllInt(string $queryName, ...$bindings):array {
+	public function fetchAllInt(string $queryName, mixed...$bindings):array {
 		return $this->fetchAllTyped(
 			Type::INT,
 			$queryName,
@@ -85,7 +85,7 @@ trait Fetchable {
 	}
 
 	/** @return float[] */
-	public function fetchAllFloat(string $queryName, ...$bindings):array {
+	public function fetchAllFloat(string $queryName, mixed...$bindings):array {
 		return $this->fetchAllTyped(
 			Type::FLOAT,
 			$queryName,
@@ -94,7 +94,7 @@ trait Fetchable {
 	}
 
 	/** @return DateTimeInterface[] */
-	public function fetchAllDateTime(string $queryName, ...$bindings):array {
+	public function fetchAllDateTime(string $queryName, mixed...$bindings):array {
 		return $this->fetchAllTyped(
 			Type::DATETIME,
 			$queryName,
@@ -105,8 +105,8 @@ trait Fetchable {
 	protected function fetchTyped(
 		string $type,
 		string $queryName,
-		...$bindings
-	) {
+		mixed...$bindings
+	):null|string|int|bool|float|DateTimeInterface {
 		$row = $this->fetch($queryName, ...$bindings);
 		if($row) {
 			$row->rewind();
@@ -119,10 +119,11 @@ trait Fetchable {
 		return $this->castRow($type, $row);
 	}
 
+	/** @return array<null|string|int|bool|float|DateTimeInterface> */
 	protected function fetchAllTyped(
 		string $type,
 		string $queryName,
-		...$bindings
+		mixed...$bindings
 	):array {
 		$array = [];
 
@@ -134,29 +135,21 @@ trait Fetchable {
 		return $array;
 	}
 
-	protected function castRow(string $type, Row $row) {
+	protected function castRow(
+		string $type,
+		Row $row
+	):null|string|int|bool|float|DateTimeInterface {
 		$assocArray = $row->asArray();
 		reset($assocArray);
 		$key = key($assocArray);
 		$value = $assocArray[$key];
 
-		switch($type) {
-		case Type::BOOL:
-		case "boolean":
-			return (bool)$value;
-
-		case Type::INT:
-		case "integer":
-			return (int)$value;
-
-		case Type::FLOAT:
-			return (float)$value;
-
-		case Type::DATETIME:
-			return new DateTimeImmutable($value);
-
-		default:
-			return (string)$value;
-		}
+		return match ($type) {
+			Type::BOOL, "boolean" => (bool)$value,
+			Type::INT, "integer" => (int)$value,
+			Type::FLOAT => (float)$value,
+			Type::DATETIME => new DateTimeImmutable($value),
+			default => (string)$value,
+		};
 	}
 }

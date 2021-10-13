@@ -1,6 +1,4 @@
 <?php
 namespace Gt\Database;
 
-class StatementPreparationException extends DatabaseException {
-
-}
+class StatementPreparationException extends DatabaseException {}

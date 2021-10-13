@@ -15,6 +15,7 @@ class SqlQuery extends Query {
 		"orderBy",
 	];
 
+	/** @param array<string, mixed>|array<mixed> $bindings */
 	public function getSql(array $bindings = []):string {
 		$sql = file_get_contents($this->getFilePath());
 		return $this->injectSpecialBindings(
@@ -23,6 +24,7 @@ class SqlQuery extends Query {
 		);
 	}
 
+	/** @param array<string, mixed>|array<mixed> $bindings */
 	public function execute(array $bindings = []):ResultSet {
 		$bindings = $this->flattenBindings($bindings);
 
@@ -38,7 +40,11 @@ class SqlQuery extends Query {
 			$lastInsertId = $pdo->lastInsertId();
 		}
 		catch(PDOException $exception) {
-			throw new PreparedStatementException(null, 0, $exception);
+			throw new PreparedStatementException(
+				$exception->getMessage(),
+				$exception->getCode(),
+				$exception
+			);
 		}
 
 		return new ResultSet($statement, $lastInsertId);
@@ -49,7 +55,11 @@ class SqlQuery extends Query {
 			return $pdo->prepare($sql);
 		}
 		catch(PDOException $exception) {
-			throw new PreparedStatementException(null, 0, $exception);
+			throw new PreparedStatementException(
+				$exception->getMessage(),
+				(int)$exception->getCode(),
+				$exception
+			);
 		}
 	}
 
@@ -58,6 +68,8 @@ class SqlQuery extends Query {
 	 * and "offset", and can't be used by the driver as bound parameters. This
 	 * function returns the SQL for the query after replacing the bound parameters
 	 * manually using string replacement.
+	 *
+	 * @param array<string, mixed>|array<mixed> $bindings
 	 */
 	public function injectSpecialBindings(
 		string $sql,
@@ -105,6 +117,10 @@ class SqlQuery extends Query {
 		return $sql;
 	}
 
+	/**
+	 * @param array<string, mixed>|array<mixed> $bindings
+	 * @return array<string, string>|array<string>
+	 */
 	public function prepareBindings(array $bindings):array {
 		foreach($bindings as $key => $value) {
 			if(is_bool($value)) {
@@ -125,6 +141,10 @@ class SqlQuery extends Query {
 		return $bindings;
 	}
 
+	/**
+	 * @param array<string, mixed>|array<mixed> $bindings
+	 * @return array<string, mixed>|array<mixed>
+	 */
 	public function ensureParameterCharacter(array $bindings):array {
 		if($this->bindingsEmptyOrNonAssociative($bindings)) {
 			return $bindings;
@@ -140,6 +160,10 @@ class SqlQuery extends Query {
 		return $bindings;
 	}
 
+	/**
+	 * @param array<string, mixed>|array<mixed> $bindings
+	 * @return array<string, mixed>|array<mixed>
+	 */
 	public function removeUnusedBindings(array $bindings, string $sql):array {
 		if($this->bindingsEmptyOrNonAssociative($bindings)) {
 			return $bindings;
@@ -154,6 +178,7 @@ class SqlQuery extends Query {
 		return $bindings;
 	}
 
+	/**  @param array<string, mixed>|array<mixed> $bindings */
 	public function bindingsEmptyOrNonAssociative(array $bindings):bool {
 		return
 			$bindings === []
