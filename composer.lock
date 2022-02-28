@@ -59,27 +59,27 @@
         },
         {
             "name": "phpgt/cli",
-            "version": "v1.3.2",
+            "version": "v1.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Cli.git",
-                "reference": "3f00088f76225088602e6d9faa1cf90fbd2205d3"
+                "reference": "b0334aee36f9e8aad9ca8b9cda397ffe5781f96f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Cli/zipball/3f00088f76225088602e6d9faa1cf90fbd2205d3",
-                "reference": "3f00088f76225088602e6d9faa1cf90fbd2205d3",
+                "url": "https://api.github.com/repos/PhpGt/Cli/zipball/b0334aee36f9e8aad9ca8b9cda397ffe5781f96f",
+                "reference": "b0334aee36f9e8aad9ca8b9cda397ffe5781f96f",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-readline": "*",
                 "php": ">=8.0",
-                "phpgt/daemon": "1.*"
+                "phpgt/daemon": "^v1.1"
             },
             "require-dev": {
-                "phpstan/phpstan": ">=0.12.64",
-                "phpunit/phpunit": "9.*"
+                "phpstan/phpstan": "^v1.4",
+                "phpunit/phpunit": "^v9.5"
             },
             "type": "library",
             "autoload": {
@@ -106,7 +106,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PhpGt/Cli/issues",
-                "source": "https://github.com/PhpGt/Cli/tree/v1.3.2"
+                "source": "https://github.com/PhpGt/Cli/tree/v1.3.3"
             },
             "funding": [
                 {
@@ -114,7 +114,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-06-15T19:01:44+00:00"
+            "time": "2022-02-26T15:38:15+00:00"
         },
         {
             "name": "phpgt/config",
@@ -2432,5 +2432,5 @@
     "platform-dev": {
         "ext-sqlite3": "*"
     },
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.2.0"
 }
