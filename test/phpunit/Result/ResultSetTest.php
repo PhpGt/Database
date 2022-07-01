@@ -145,7 +145,6 @@ class ResultSetTest extends TestCase {
 			->will(self::returnCallback([$this, "getNextFakeData"]));
 		$statement->method("execute")
 			->willReturnCallback([$this, "rewindFakeData"]);
-//			->will(self::callback([$this, "rewindFakeData"]));
 
 		return $statement;
 	}
@@ -161,7 +160,8 @@ class ResultSetTest extends TestCase {
 
 	}
 
-	public function rewindFakeData() {
+	public function rewindFakeData():bool {
 		$this->fake_data_index = 0;
+		return true;
 	}
 }
