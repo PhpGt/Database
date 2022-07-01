@@ -1,58 +1,58 @@
 {
-    "name": "phpgt/database",
-    "description": "Database API organisation.",
-    "type": "library",
+	"name": "phpgt/database",
+	"description": "Database API organisation.",
+	"type": "library",
 
-    "require": {
-        "php": ">=8.0",
-        "ext-PDO": "*",
-        "phpgt/config": "^v1.1.0",
-        "phpgt/cli": "^1.3"
-    },
+	"require": {
+		"php": ">=8.0",
+		"ext-PDO": "*",
+		"phpgt/config": "^v1.1.0",
+		"phpgt/cli": "^1.3"
+	},
 
-    "require-dev": {
-        "phpunit/phpunit": "^9.4",
-        "phpstan/phpstan": "^0.12",
-        "ext-sqlite3": "*"
-    },
+	"require-dev": {
+		"phpstan/phpstan": "v1.8.0",
+		"phpunit/phpunit": "v9.5.21",
+		"ext-sqlite3": "*"
+	},
 
-    "license": "MIT",
+	"license": "MIT",
 
-    "authors": [
-        {
-            "name": "Greg Bowler",
-            "email": "greg.bowler@g105b.com"
-        },
-        {
-            "name": "James Fellows",
-            "email": "james.fellows@finanscapes.com"
-        }
-        ,
-        {
-            "name": "Christopher Paul Shaw",
-            "email": "i-am-in-your-code-stealing-your-lulz@chris-shaw.com"
-        }
-    ],
+	"authors": [
+		{
+			"name": "Greg Bowler",
+			"email": "greg.bowler@g105b.com"
+		},
+		{
+			"name": "James Fellows",
+			"email": "james.fellows@finanscapes.com"
+		}
+	,
+		{
+			"name": "Christopher Paul Shaw",
+			"email": "i-am-in-your-code-stealing-your-lulz@chris-shaw.com"
+		}
+	],
 
-    "autoload": {
-        "psr-4": {
-            "Gt\\Database\\": "./src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Gt\\Database\\Test\\": "./test/phpunit"
-        }
-    },
+	"autoload": {
+		"psr-4": {
+			"Gt\\Database\\": "./src"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Gt\\Database\\Test\\": "./test/phpunit"
+		}
+	},
 
-    "bin": [
-        "bin/migrate"
-    ],
+	"bin": [
+		"bin/migrate"
+	],
 
-    "funding": [
-        {
-            "type": "github",
-            "url": "https://github.com/sponsors/PhpGt"
-        }
-    ]
+	"funding": [
+		{
+			"type": "github",
+			"url": "https://github.com/sponsors/PhpGt"
+		}
+	]
 }
