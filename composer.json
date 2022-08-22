@@ -12,7 +12,7 @@
 
 	"require-dev": {
 		"phpstan/phpstan": "v1.8.1",
-		"phpunit/phpunit": "v9.5.21",
+		"phpunit/phpunit": "v9.5.22",
 		"ext-sqlite3": "*"
 	},
 
