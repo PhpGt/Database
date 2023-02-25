@@ -39,15 +39,11 @@ class Settings implements SettingsInterface {
 		string $collation = DefaultSettings::DEFAULT_COLLATION,
 		?string $charset = null
 	) {
-		if(is_null($port)) {
-			$port = DefaultSettings::DEFAULT_PORT[$driver];
-		}
-
 		$this->baseDirectory = $baseDirectory;
 		$this->driver = $driver;
 		$this->schema = $schema;
 		$this->host = $host;
-		$this->port = $port ?? 0;
+		$this->port = $port ?? DefaultSettings::DEFAULT_PORT[$driver];
 		$this->username = $username;
 		$this->password = $password;
 		$this->connectionName = $connectionName;
