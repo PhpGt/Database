@@ -90,7 +90,6 @@ class ResultSetTest extends TestCase {
 
 	public function testAccessByRowIndex() {
 		$resultSet = new ResultSet($this->getStatementMock());
-		self::FAKE_DATA[1]["name"];
 
 		$rowList = $resultSet->fetchAll();
 
@@ -128,14 +127,6 @@ class ResultSetTest extends TestCase {
 			self::assertArrayHasKey("id", $rowArray);
 			self::assertArrayHasKey("name", $rowArray);
 			self::assertIsInt($rowArray["id"]);
-		}
-	}
-
-	public function testAsArrayNoMap() {
-		$resultSet = new ResultSet($this->getStatementMock());
-		$array = $resultSet->asArray(false);
-		foreach($array as $i => $row) {
-			self::assertInstanceOf(Row::class, $row);
 		}
 	}
 

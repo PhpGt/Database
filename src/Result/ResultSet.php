@@ -77,19 +77,12 @@ class ResultSet implements Iterator, Countable {
 	}
 
 	/** @return array<int, array<string, string>> */
-	public function asArray(bool $elementsToArray = true):array {
-		if($elementsToArray) {
-			$data = array_map(function($element) {
+	public function asArray():array {
+		return array_map(function($element) {
 				return $element->asArray();
 			},
-				$this->fetchAll()
-			);
-		}
-		else {
-			$data = $this->fetchAll();
-		}
-
-		return $data;
+			$this->fetchAll()
+		);
 	}
 
 	public function rewind():void {

@@ -99,8 +99,8 @@ class SqlQuery extends Query {
 			if(is_array($value)) {
 				$inString = "";
 
-				foreach($value as $i => $innerValue) {
-					$newKey = $key . "__" . $i;
+				foreach(array_keys($value) as $innerKey) {
+					$newKey = $key . "__" . $innerKey;
 					$keyParamString = ":$newKey";
 					$inString .= "$keyParamString, ";
 				}
@@ -169,7 +169,7 @@ class SqlQuery extends Query {
 			return $bindings;
 		}
 
-		foreach($bindings as $key => $value) {
+		foreach(array_keys($bindings) as $key) {
 			if(!preg_match("/$key(\W|\$)/", $sql)) {
 				unset($bindings[$key]);
 			}
@@ -180,8 +180,7 @@ class SqlQuery extends Query {
 
 	/**  @param array<string, mixed>|array<mixed> $bindings */
 	public function bindingsEmptyOrNonAssociative(array $bindings):bool {
-		return
-			$bindings === []
+		return $bindings === []
 			|| array_keys($bindings) === range(
 				0,
 				count($bindings) - 1);

@@ -62,7 +62,7 @@ class Migrator {
 			$result = $this->dbClient->executeSql(
 				"select name from sqlite_master "
 				. "where type=? "
-				. "and name like ?",[
+				. "and name like ?", [
 					"table",
 					$this->tableName,
 				]
@@ -117,18 +117,7 @@ class Migrator {
 			);
 		}
 
-		$fileList = [];
-
-		foreach(new DirectoryIterator($this->path) as $i => $fileInfo) {
-			if($fileInfo->isDot()
-			|| $fileInfo->getExtension() !== "sql") {
-				continue;
-			}
-
-			$pathName = $fileInfo->getPathname();
-			$fileList []= $pathName;
-		}
-
+		$fileList = glob("$this->path/*.sql");
 		sort($fileList);
 		return $fileList;
 	}
@@ -295,7 +284,12 @@ class Migrator {
 				"drop schema if exists `{$this->schema}`"
 			);
 			$this->dbClient->executeSql(
-				"create schema if not exists `{$this->schema}` default character set {$this->charset} default collate {$this->collate}"
+				"create schema if not exists "
+				. $this->schema
+				. " default character set "
+				. $this->charset
+				. " default collate "
+				. $this->collate
 			);
 		}
 		catch(Exception $exception) {
