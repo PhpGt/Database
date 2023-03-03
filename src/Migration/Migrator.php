@@ -117,18 +117,7 @@ class Migrator {
 			);
 		}
 
-		$fileList = [];
-
-		foreach(new DirectoryIterator($this->path) as $i => $fileInfo) {
-			if($fileInfo->isDot()
-			|| $fileInfo->getExtension() !== "sql") {
-				continue;
-			}
-
-			$pathName = $fileInfo->getPathname();
-			$fileList []= $pathName;
-		}
-
+		$fileList = glob("$this->path/*.sql");
 		sort($fileList);
 		return $fileList;
 	}
