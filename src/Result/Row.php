@@ -97,7 +97,10 @@ class Row implements Iterator {
 		return $this->$key;
 	}
 
-	private function getAsNullablePrimitive(string $key, string $type):null|string|int|bool|float {
+	private function getAsNullablePrimitive(
+		string $key,
+		string $type,
+	):null|string|int|bool|float {
 		$value = $this->get($key);
 		if(is_null($value)) {
 			return null;

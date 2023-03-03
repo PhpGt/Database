@@ -62,7 +62,7 @@ class Migrator {
 			$result = $this->dbClient->executeSql(
 				"select name from sqlite_master "
 				. "where type=? "
-				. "and name like ?",[
+				. "and name like ?", [
 					"table",
 					$this->tableName,
 				]
@@ -284,7 +284,12 @@ class Migrator {
 				"drop schema if exists `{$this->schema}`"
 			);
 			$this->dbClient->executeSql(
-				"create schema if not exists `{$this->schema}` default character set {$this->charset} default collate {$this->collate}"
+				"create schema if not exists "
+				. $this->schema
+				. " default character set "
+				. $this->charset
+				. " default collate "
+				. $this->collate
 			);
 		}
 		catch(Exception $exception) {

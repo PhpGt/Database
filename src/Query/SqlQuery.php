@@ -180,8 +180,7 @@ class SqlQuery extends Query {
 
 	/**  @param array<string, mixed>|array<mixed> $bindings */
 	public function bindingsEmptyOrNonAssociative(array $bindings):bool {
-		return
-			$bindings === []
+		return $bindings === []
 			|| array_keys($bindings) === range(
 				0,
 				count($bindings) - 1);

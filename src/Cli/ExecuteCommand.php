@@ -19,15 +19,7 @@ class ExecuteCommand extends Command {
 		$repoBasePath = getcwd();
 		$defaultPath = $this->getDefaultPath($repoBasePath);
 
-		$config = ConfigFactory::createForProject($repoBasePath);
-
-		$default = $defaultPath
-			? ConfigFactory::createFromPathName($defaultPath)
-			: null;
-
-		if($default) {
-			$config->merge($default);
-		}
+		$config = $this->getConfig($repoBasePath, $defaultPath);
 
 		$settings = new Settings(
 			implode(DIRECTORY_SEPARATOR, [
@@ -70,10 +62,19 @@ class ExecuteCommand extends Command {
 			$migrator->performMigration($migrationFileList, $migrationCount);
 		}
 		catch(MigrationIntegrityException $exception) {
-			$this->writeLine("There was an integrity error migrating file '" . $exception->getMessage() . "' - this migration is recorded to have been run already, but the contents of the file has changed.\nFor help, see https://www.php.gt/database/migrations#integrity-error");
+			$this->writeLine(
+				"There was an integrity error migrating file '"
+				. $exception->getMessage()
+				. "' - this migration is recorded to have been run already, "
+				. "but the contents of the file has changed.\nFor help, see "
+				. "https://www.php.gt/database/migrations#integrity-error");
 		}
 		catch(StatementPreparationException|StatementExecutionException $exception) {
-			$this->writeLine("There was an error executing migration file: " . $exception->getMessage() . "'\nFor help, see https://www.php.gt/database/migrations#error");
+			$this->writeLine(
+				"There was an error executing migration file: "
+				. $exception->getMessage()
+				. "'\nFor help, see https://www.php.gt/database/migrations#error"
+			);
 		}
 	}
 
@@ -125,5 +126,23 @@ class ExecuteCommand extends Command {
 		}
 
 		return null;
+	}
+
+	/**
+	 * @param bool|string $repoBasePath
+	 * @param string|null $defaultPath
+	 * @return \Gt\Config\Config
+	 */
+	protected function getConfig(bool|string $repoBasePath, ?string $defaultPath):\Gt\Config\Config {
+		$config = ConfigFactory::createForProject($repoBasePath);
+
+		$default = $defaultPath
+			? ConfigFactory::createFromPathName($defaultPath)
+			: null;
+
+		if($default) {
+			$config->merge($default);
+		}
+		return $config;
 	}
 }
