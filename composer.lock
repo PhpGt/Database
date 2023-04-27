@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "984370377c96303e68539a8e7e4f0e88",
+    "content-hash": "47e1613c487408ebebee7ce06ae73204",
     "packages": [
         {
             "name": "magicalex/write-ini-file",
@@ -214,24 +214,26 @@
         },
         {
             "name": "phpgt/typesafegetter",
-            "version": "v1.2.4",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/TypeSafeGetter.git",
-                "reference": "ebffd758e69b8a0eebcad30f3daf408915b9ddf3"
+                "reference": "7874a16656a1aa77d5160cab239ac3f9618028f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/TypeSafeGetter/zipball/ebffd758e69b8a0eebcad30f3daf408915b9ddf3",
-                "reference": "ebffd758e69b8a0eebcad30f3daf408915b9ddf3",
+                "url": "https://api.github.com/repos/PhpGt/TypeSafeGetter/zipball/7874a16656a1aa77d5160cab239ac3f9618028f4",
+                "reference": "7874a16656a1aa77d5160cab239ac3f9618028f4",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "v1.8.0",
-                "phpunit/phpunit": "v9.5.21"
+                "phpmd/phpmd": "^2.13",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^10.1",
+                "squizlabs/php_codesniffer": "^3.7"
             },
             "type": "library",
             "autoload": {
@@ -252,7 +254,7 @@
             "description": "An interface for objects that expose type-safe getter methods.",
             "support": {
                 "issues": "https://github.com/PhpGt/TypeSafeGetter/issues",
-                "source": "https://github.com/PhpGt/TypeSafeGetter/tree/v1.2.4"
+                "source": "https://github.com/PhpGt/TypeSafeGetter/tree/v1.3.0"
             },
             "funding": [
                 {
@@ -260,7 +262,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-07-08T17:17:42+00:00"
+            "time": "2023-04-27T14:52:28+00:00"
         }
     ],
     "packages-dev": [
@@ -1150,16 +1152,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.1.1",
+            "version": "10.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "0d9401b7e8245d71079e249e3cb868e9d2337887"
+                "reference": "6f0cd95be71add539f8fd2be25b2a4a29789000b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/0d9401b7e8245d71079e249e3cb868e9d2337887",
-                "reference": "0d9401b7e8245d71079e249e3cb868e9d2337887",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/6f0cd95be71add539f8fd2be25b2a4a29789000b",
+                "reference": "6f0cd95be71add539f8fd2be25b2a4a29789000b",
                 "shasum": ""
             },
             "require": {
@@ -1231,7 +1233,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.1.1"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.1.2"
             },
             "funding": [
                 {
@@ -1247,7 +1249,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-04-17T12:17:05+00:00"
+            "time": "2023-04-22T07:38:19+00:00"
         },
         {
             "name": "psr/container",
