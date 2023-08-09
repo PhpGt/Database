@@ -32,6 +32,7 @@ class DefaultSettings implements SettingsInterface {
 
 	const DEFAULT_CHARSET = "utf8mb4";
 	const DEFAULT_COLLATION = "utf8mb4_general_ci";
+	const DEFAULT_INIT_QUERY = null;
 
 	protected string $baseDirectory;
 	protected string $driver;
@@ -45,6 +46,7 @@ class DefaultSettings implements SettingsInterface {
 	protected array $config;
 	protected string $charset;
 	protected string $collation;
+	protected ?string $initQuery;
 
 	public function __construct() {
 		$this->baseDirectory = sys_get_temp_dir();
@@ -122,5 +124,9 @@ class DefaultSettings implements SettingsInterface {
 
 	public function getCollation():string {
 		return self::DEFAULT_COLLATION;
+	}
+
+	public function getInitQuery():?string {
+		return self::DEFAULT_INIT_QUERY;
 	}
 }

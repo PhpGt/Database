@@ -26,6 +26,7 @@ class Settings implements SettingsInterface {
 	protected array $config = [];
 	protected string $collation;
 	protected ?string $charset;
+	protected ?string $initQuery;
 
 	public function __construct(
 		string $baseDirectory,
@@ -37,7 +38,8 @@ class Settings implements SettingsInterface {
 		string $password = DefaultSettings::DEFAULT_PASSWORD,
 		string $connectionName = DefaultSettings::DEFAULT_NAME,
 		string $collation = DefaultSettings::DEFAULT_COLLATION,
-		?string $charset = null
+		?string $charset = null,
+		?string $initQuery = null,
 	) {
 		$this->baseDirectory = $baseDirectory;
 		$this->driver = $driver;
@@ -49,6 +51,7 @@ class Settings implements SettingsInterface {
 		$this->connectionName = $connectionName;
 		$this->collation = $collation;
 		$this->charset = $charset;
+		$this->initQuery = $initQuery;
 	}
 
 	/** @param array<string, string> $config */
@@ -138,6 +141,10 @@ class Settings implements SettingsInterface {
 
 	public function getCollation():string {
 		return $this->collation;
+	}
+
+	public function getInitQuery():?string {
+		return $this->initQuery;
 	}
 
 	protected function getCharsetFromCollation():string {
