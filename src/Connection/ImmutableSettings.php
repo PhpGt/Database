@@ -106,4 +106,14 @@ trait ImmutableSettings {
 		$clone->collation = $collation;
 		return $clone;
 	}
+
+	public function withInitQuery(?string $initQuery):SettingsInterface {
+		if($this->initQuery === $initQuery) {
+			return $this;
+		}
+
+		$clone = clone $this;
+		$clone->initQuery = $initQuery;
+		return $clone;
+	}
 }

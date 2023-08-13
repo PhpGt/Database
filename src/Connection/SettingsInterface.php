@@ -13,6 +13,7 @@ interface SettingsInterface {
 	public function getConnectionString():string;
 	public function getCharset():string;
 	public function getCollation():string;
+	public function getInitQuery():?string;
 
 	public function withBaseDirectory(string $baseDirectory):SettingsInterface;
 	public function withDriver(string $driver):SettingsInterface;
@@ -25,4 +26,5 @@ interface SettingsInterface {
 	public function withoutSchema():SettingsInterface;
 	public function withCharset(string $charset):SettingsInterface;
 	public function withCollation(string $collation):SettingsInterface;
+	public function withInitQuery(?string $initQuery):SettingsInterface;
 }

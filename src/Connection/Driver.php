@@ -58,5 +58,11 @@ class Driver {
 			$this->settings->getPassword(),
 			$options
 		);
+
+		if($initQuery = $this->settings->getInitQuery()) {
+			foreach(explode(";", $initQuery) as $q) {
+				$this->connection->exec($q);
+			}
+		}
 	}
 }
