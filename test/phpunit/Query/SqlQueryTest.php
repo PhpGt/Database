@@ -313,9 +313,11 @@ class SqlQueryTest extends TestCase {
 		file_put_contents($filePath, $sql);
 		$query = new SqlQuery($filePath, $this->driverSingleton());
 		$data = [
-			["id" => 100, "name" => "first inserted"],
-			["id" => 101, "name" => "second inserted"],
-			["id" => 102, "name" => "third inserted"],
+			"__dynamicValueSet" => [
+				["id" => 100, "name" => "first inserted"],
+				["id" => 101, "name" => "second inserted"],
+				["id" => 102, "name" => "third inserted"],
+			],
 		];
 		$originalData = $data;
 		$injectedSql = $query->injectDynamicBindings($sql, $data);
@@ -329,13 +331,41 @@ class SqlQueryTest extends TestCase {
 		self::assertStringContainsString(":name_00001", $injectedSql);
 		self::assertStringContainsString(":name_00002", $injectedSql);
 
-		foreach($originalData as $i => $kvp) {
+		foreach($originalData["__dynamicValueSet"] as $i => $kvp) {
 			foreach($kvp as $key => $value) {
 				$indexedKey = $key . "_" . str_pad($i, 5, "0", STR_PAD_LEFT);
 				self::assertSame($data[$indexedKey], $value);
 			}
 		}
+
+		self::assertArrayNotHasKey("__dynamicValueSet", $data);
 	}
+
+	/**
+	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider()
+	 */
+	public function testDynamicBindingsWhereIn(
+		string $queryName,
+		string $queryCollectionPath,
+		string $filePath
+	) {
+		$sql = "select `id`, `name` from `test_table` where `createdAt` > :startDate and `id` in ( :__dynamicIn ) limit 10";
+		file_put_contents($filePath, $sql);
+		$query = new SqlQuery($filePath, $this->driverSingleton());
+		$data = [
+			"startDate" => "2020-01-01",
+			"__dynamicIn" => [1, 2, 3, 4, 5, 50, 60, 70, 80, 90],
+		];
+		$originalData = $data;
+		$injectedSql = $query->injectDynamicBindings($sql, $data);
+
+		self::assertStringNotContainsString("dynamicIn", $injectedSql);
+
+		self::assertStringContainsString("where `createdAt` > :startDate and `id` in ( 1, 2, 3, 4, 5, 50, 60, 70, 80, 90 ) limit 10", $injectedSql);
+		self::assertArrayNotHasKey("__dynamicIn", $data);
+		self::assertSame("2020-01-01", $data["startDate"]);
+	}
+
 	/**
 	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider()
 	 */

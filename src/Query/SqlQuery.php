@@ -118,19 +118,22 @@ class SqlQuery extends Query {
 	}
 
 	public function injectDynamicBindings(string $sql, array &$data):string {
-		$sql = $this->injectDynamicBindingsValueset($sql, $data);
+		$sql = $this->injectDynamicBindingsValueSet($sql, $data);
+		$sql = $this->injectDynamicIn($sql, $data);
 		return $sql;
 	}
 
-	private function injectDynamicBindingsValueset($sql, &$data):string {
+	private function injectDynamicBindingsValueSet(string $sql, array &$data):string {
 		$pattern = '/\(\s*:__dynamicValueSet\s\)/';
 		if(!preg_match($pattern, $sql, $matches)) {
 			return $sql;
 		}
+		if(!isset($data["__dynamicValueSet"])) {
+			return $sql;
+		}
 
 		$replacementRowList = [];
-		$originalKeys = array_keys($data[0]);
-		foreach($data as $i => $kvp) {
+		foreach($data["__dynamicValueSet"] as $i => $kvp) {
 			$indexedRow = [];
 			foreach($kvp as $key => $value) {
 				$indexedKey = $key . "_" . str_pad($i, 5, "0", STR_PAD_LEFT);
@@ -141,6 +144,7 @@ class SqlQuery extends Query {
 			unset($data[$i]);
 			array_push($replacementRowList, $indexedRow);
 		}
+		unset($data["__dynamicValueSet"]);
 
 		$replacementString = "";
 		foreach($replacementRowList as $i => $indexedKeyList) {
@@ -158,6 +162,20 @@ class SqlQuery extends Query {
 		}
 
 		return str_replace($matches[0], $replacementString, $sql);
+	}
+
+	private function injectDynamicIn(string $sql, array &$data):string {
+		$pattern = '/\(\s*:__dynamicIn\s\)/';
+		if(!preg_match($pattern, $sql, $matches)) {
+			return $sql;
+		}
+		if(!isset($data["__dynamicIn"])) {
+			return $sql;
+		}
+
+		$replacementString = implode(", ", $data["__dynamicIn"]);
+		unset($data["__dynamicIn"]);
+		return str_replace($matches[0], "( $replacementString )", $sql);
 	}
 
 	/**
