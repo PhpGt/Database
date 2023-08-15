@@ -117,6 +117,49 @@ class SqlQuery extends Query {
 		return $sql;
 	}
 
+	public function injectDynamicBindings(string $sql, array &$data):string {
+		$sql = $this->injectDynamicBindingsValueset($sql, $data);
+		return $sql;
+	}
+
+	private function injectDynamicBindingsValueset($sql, &$data):string {
+		$pattern = '/\(\s*:__dynamicValues\s\)/';
+		if(!preg_match($pattern, $sql, $matches)) {
+			return $sql;
+		}
+
+		$replacementRowList = [];
+		$originalKeys = array_keys($data[0]);
+		foreach($data as $i => $kvp) {
+			$indexedRow = [];
+			foreach($kvp as $key => $value) {
+				$indexedKey = $key . "_" . str_pad($i, 5, "0", STR_PAD_LEFT);
+				array_push($indexedRow, $indexedKey);
+
+				$data[$indexedKey] = $value;
+			}
+			unset($data[$i]);
+			array_push($replacementRowList, $indexedRow);
+		}
+
+		$replacementString = "";
+		foreach($replacementRowList as $i => $indexedKeyList) {
+			if($i > 0) {
+				$replacementString .= ",\n";
+			}
+			$replacementString .= "(";
+			foreach($indexedKeyList as $j => $key) {
+				if($j > 0) {
+					$replacementString .= ",";
+				}
+				$replacementString .= "\n\t:$key";
+			}
+			$replacementString .= "\n)";
+		}
+
+		return str_replace($matches[0], $replacementString, $sql);
+	}
+
 	/**
 	 * @param array<string, mixed>|array<mixed> $bindings
 	 * @return array<string, string>|array<string>

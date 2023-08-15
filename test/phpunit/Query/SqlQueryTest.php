@@ -304,6 +304,41 @@ class SqlQueryTest extends TestCase {
 	/**
 	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider()
 	 */
+	public function testDynamicBindingsInsertMultiple(
+		string $queryName,
+		string $queryCollectionPath,
+		string $filePath
+	) {
+		$sql = "insert into test_table (id, name) values ( :__dynamicValueSet )";
+		file_put_contents($filePath, $sql);
+		$query = new SqlQuery($filePath, $this->driverSingleton());
+		$data = [
+			["id" => 100, "name" => "first inserted"],
+			["id" => 101, "name" => "second inserted"],
+			["id" => 102, "name" => "third inserted"],
+		];
+		$originalData = $data;
+		$injectedSql = $query->injectDynamicBindings($sql, $data);
+
+		self::assertStringNotContainsString("dynamicFieldset", $injectedSql);
+
+		self::assertStringContainsString(":id_00000", $injectedSql);
+		self::assertStringContainsString(":id_00001", $injectedSql);
+		self::assertStringContainsString(":id_00002", $injectedSql);
+		self::assertStringContainsString(":name_00000", $injectedSql);
+		self::assertStringContainsString(":name_00001", $injectedSql);
+		self::assertStringContainsString(":name_00002", $injectedSql);
+
+		foreach($originalData as $i => $kvp) {
+			foreach($kvp as $key => $value) {
+				$indexedKey = $key . "_" . str_pad($i, 5, "0", STR_PAD_LEFT);
+				self::assertSame($data[$indexedKey], $value);
+			}
+		}
+	}
+	/**
+	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider()
+	 */
 	public function testPrepareBindingsWithArray(
 		string $queryName,
 		string $queryCollectionPath,
