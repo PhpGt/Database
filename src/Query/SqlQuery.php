@@ -16,12 +16,17 @@ class SqlQuery extends Query {
 	];
 
 	/** @param array<string, mixed>|array<mixed> $bindings */
-	public function getSql(array $bindings = []):string {
+	public function getSql(array &$bindings = []):string {
 		$sql = file_get_contents($this->getFilePath());
-		return $this->injectSpecialBindings(
+		$sql = $this->injectDynamicBindings(
 			$sql,
 			$bindings
 		);
+		$sql = $this->injectSpecialBindings(
+			$sql,
+			$bindings
+		);
+		return $sql;
 	}
 
 	/** @param array<string, mixed>|array<mixed> $bindings */
@@ -117,12 +122,13 @@ class SqlQuery extends Query {
 		return $sql;
 	}
 
+	/** @param array<string, string|array<string, string>> $data */
 	public function injectDynamicBindings(string $sql, array &$data):string {
 		$sql = $this->injectDynamicBindingsValueSet($sql, $data);
-		$sql = $this->injectDynamicIn($sql, $data);
-		return $sql;
+		return $this->injectDynamicIn($sql, $data);
 	}
 
+	/** @param array<string, string|array<string, string>> $data */
 	private function injectDynamicBindingsValueSet(string $sql, array &$data):string {
 		$pattern = '/\(\s*:__dynamicValueSet\s\)/';
 		if(!preg_match($pattern, $sql, $matches)) {
@@ -164,6 +170,7 @@ class SqlQuery extends Query {
 		return str_replace($matches[0], $replacementString, $sql);
 	}
 
+	/** @param array<string, string|array<string, string>> $data */
 	private function injectDynamicIn(string $sql, array &$data):string {
 		$pattern = '/\(\s*:__dynamicIn\s\)/';
 		if(!preg_match($pattern, $sql, $matches)) {
