@@ -123,7 +123,7 @@ class SqlQuery extends Query {
 	}
 
 	private function injectDynamicBindingsValueset($sql, &$data):string {
-		$pattern = '/\(\s*:__dynamicValues\s\)/';
+		$pattern = '/\(\s*:__dynamicValueSet\s\)/';
 		if(!preg_match($pattern, $sql, $matches)) {
 			return $sql;
 		}
