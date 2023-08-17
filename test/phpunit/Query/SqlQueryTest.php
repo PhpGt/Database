@@ -381,7 +381,6 @@ class SqlQueryTest extends TestCase {
 			"startDate" => "2020-01-01",
 			"__dynamicIn" => ["one", "two", "three's the last"],
 		];
-		$originalData = $data;
 		$injectedSql = $query->injectDynamicBindings($sql, $data);
 
 		self::assertStringNotContainsString("dynamicIn", $injectedSql);
