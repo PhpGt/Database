@@ -182,7 +182,7 @@ class SqlQuery extends Query {
 
 		foreach($data["__dynamicIn"] as $i => $value) {
 			if(is_string($value)) {
-				$value = str_replace("'", "\'", $value);
+				$value = str_replace("'", "''", $value);
 				$data["__dynamicIn"][$i] = "'$value'";
 			}
 		}

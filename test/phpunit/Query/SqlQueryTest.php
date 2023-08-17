@@ -385,7 +385,7 @@ class SqlQueryTest extends TestCase {
 
 		self::assertStringNotContainsString("dynamicIn", $injectedSql);
 
-		self::assertStringContainsString("where `createdAt` > :startDate and `name` in ( 'one', 'two', 'three\'s the last' ) limit 10", $injectedSql);
+		self::assertStringContainsString("where `createdAt` > :startDate and `name` in ( 'one', 'two', 'three''s the last' ) limit 10", $injectedSql);
 		self::assertArrayNotHasKey("__dynamicIn", $data);
 		self::assertSame("2020-01-01", $data["startDate"]);
 	}
