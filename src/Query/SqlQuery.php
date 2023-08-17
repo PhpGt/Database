@@ -180,6 +180,13 @@ class SqlQuery extends Query {
 			return $sql;
 		}
 
+		foreach($data["__dynamicIn"] as $i => $value) {
+			if(is_string($value)) {
+				$value = str_replace("'", "\'", $value);
+				$data["__dynamicIn"][$i] = "'$value'";
+			}
+		}
+
 		$replacementString = implode(", ", $data["__dynamicIn"]);
 		unset($data["__dynamicIn"]);
 		return str_replace($matches[0], "( $replacementString )", $sql);
