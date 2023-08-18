@@ -393,6 +393,33 @@ class SqlQueryTest extends TestCase {
 	/**
 	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider()
 	 */
+	public function testDynamicBindingsOr(
+		string $queryName,
+		string $queryCollectionPath,
+		string $filePath,
+	) {
+		$sql = "select `id`, `customerId`, `productId` from `Purchases` where :__dynamicOr limit 10";
+		file_put_contents($filePath, $sql);
+		$query = new SqlQuery($filePath, $this->driverSingleton());
+		$data = [
+			"__dynamicOr" => [
+				["customerId" => "cust_105", "productId" => 001],
+				["customerId" => "cust_450", "productId" => 941],
+				["customerId" => "cust_450", "productId" => 433],
+			]
+		];
+		$injectedSql = $query->injectDynamicBindings($sql, $data);
+
+		self::assertStringNotContainsString("dynamicOr", $injectedSql);
+
+		$injectedSql = str_replace(["\t", "\n"], " ", $injectedSql);
+		$injectedSql = str_replace("  ", " ", $injectedSql);
+		self::assertStringContainsString("where ( (`customerId` = 'cust_105' and `productId` = 1) or (`customerId` = 'cust_450' and `productId` = 941) or (`customerId` = 'cust_450' and `productId` = 433) ) limit 10", $injectedSql);
+	}
+
+	/**
+	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider()
+	 */
 	public function testPrepareBindingsWithArray(
 		string $queryName,
 		string $queryCollectionPath,

@@ -125,7 +125,9 @@ class SqlQuery extends Query {
 	/** @param array<string, string|array<string, string>> $data */
 	public function injectDynamicBindings(string $sql, array &$data):string {
 		$sql = $this->injectDynamicBindingsValueSet($sql, $data);
-		return $this->injectDynamicIn($sql, $data);
+		$sql = $this->injectDynamicIn($sql, $data);
+		$sql = $this->injectDynamicOr($sql, $data);
+		return trim($sql);
 	}
 
 	/** @param array<string, string|array<string, string>> $data */
@@ -190,6 +192,40 @@ class SqlQuery extends Query {
 		$replacementString = implode(", ", $data["__dynamicIn"]);
 		unset($data["__dynamicIn"]);
 		return str_replace($matches[0], "( $replacementString )", $sql);
+	}
+
+	private function injectDynamicOr(string $sql, array &$data):string {
+		$pattern = '/:__dynamicOr/';
+		if(!preg_match($pattern, $sql, $matches)) {
+			return $sql;
+		}
+		if(!isset($data["__dynamicOr"])) {
+			return $sql;
+		}
+
+		$replacementString = "";
+		foreach($data["__dynamicOr"] as $i => $kvp) {
+			$conditionString = "";
+			foreach($kvp as $key => $value) {
+				if(is_string($value)) {
+					$value = str_replace("'", "''", $value);
+					$value = "'$value'";
+				}
+
+				if($conditionString) {
+					$conditionString .= " and ";
+				}
+				$conditionString .= "`$key` = $value";
+			}
+
+			if($replacementString) {
+				$replacementString .= " or\n";
+			}
+			$replacementString .= "\t($conditionString)";
+		}
+
+		$replacementString = "\n(\n$replacementString\n)\n";
+		return str_replace($matches[0], $replacementString, $sql);
 	}
 
 	/**
