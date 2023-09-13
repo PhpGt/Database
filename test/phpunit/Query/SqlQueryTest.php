@@ -304,6 +304,122 @@ class SqlQueryTest extends TestCase {
 	/**
 	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider()
 	 */
+	public function testDynamicBindingsInsertMultiple(
+		string $queryName,
+		string $queryCollectionPath,
+		string $filePath
+	) {
+		$sql = "insert into test_table (`id`, `name`) values ( :__dynamicValueSet )";
+		file_put_contents($filePath, $sql);
+		$query = new SqlQuery($filePath, $this->driverSingleton());
+		$data = [
+			"__dynamicValueSet" => [
+				["id" => 100, "name" => "first inserted"],
+				["id" => 101, "name" => "second inserted"],
+				["id" => 102, "name" => "third inserted"],
+			],
+		];
+		$originalData = $data;
+		$injectedSql = $query->injectDynamicBindings($sql, $data);
+
+		self::assertStringNotContainsString("dynamicFieldset", $injectedSql);
+
+		self::assertStringContainsString(":id_00000", $injectedSql);
+		self::assertStringContainsString(":id_00001", $injectedSql);
+		self::assertStringContainsString(":id_00002", $injectedSql);
+		self::assertStringContainsString(":name_00000", $injectedSql);
+		self::assertStringContainsString(":name_00001", $injectedSql);
+		self::assertStringContainsString(":name_00002", $injectedSql);
+
+		foreach($originalData["__dynamicValueSet"] as $i => $kvp) {
+			foreach($kvp as $key => $value) {
+				$indexedKey = $key . "_" . str_pad($i, 5, "0", STR_PAD_LEFT);
+				self::assertSame($data[$indexedKey], $value);
+			}
+		}
+
+		self::assertArrayNotHasKey("__dynamicValueSet", $data);
+	}
+
+	/**
+	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider()
+	 */
+	public function testDynamicBindingsWhereIn(
+		string $queryName,
+		string $queryCollectionPath,
+		string $filePath
+	) {
+		$sql = "select `id`, `name` from `test_table` where `createdAt` > :startDate and `id` in ( :__dynamicIn ) limit 10";
+		file_put_contents($filePath, $sql);
+		$query = new SqlQuery($filePath, $this->driverSingleton());
+		$data = [
+			"startDate" => "2020-01-01",
+			"__dynamicIn" => [1, 2, 3, 4, 5, 50, 60, 70, 80, 90],
+		];
+		$originalData = $data;
+		$injectedSql = $query->injectDynamicBindings($sql, $data);
+
+		self::assertStringNotContainsString("dynamicIn", $injectedSql);
+
+		self::assertStringContainsString("where `createdAt` > :startDate and `id` in ( 1, 2, 3, 4, 5, 50, 60, 70, 80, 90 ) limit 10", $injectedSql);
+		self::assertArrayNotHasKey("__dynamicIn", $data);
+		self::assertSame("2020-01-01", $data["startDate"]);
+	}
+
+	/**
+	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider()
+	 */
+	public function testDynamicBindingsWhereInStrings(
+		string $queryName,
+		string $queryCollectionPath,
+		string $filePath
+	) {
+		$sql = "select `id`, `name` from `test_table` where `createdAt` > :startDate and `name` in ( :__dynamicIn ) limit 10";
+		file_put_contents($filePath, $sql);
+		$query = new SqlQuery($filePath, $this->driverSingleton());
+		$data = [
+			"startDate" => "2020-01-01",
+			"__dynamicIn" => ["one", "two", "three's the last"],
+		];
+		$injectedSql = $query->injectDynamicBindings($sql, $data);
+
+		self::assertStringNotContainsString("dynamicIn", $injectedSql);
+
+		self::assertStringContainsString("where `createdAt` > :startDate and `name` in ( 'one', 'two', 'three''s the last' ) limit 10", $injectedSql);
+		self::assertArrayNotHasKey("__dynamicIn", $data);
+		self::assertSame("2020-01-01", $data["startDate"]);
+	}
+
+	/**
+	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider()
+	 */
+	public function testDynamicBindingsOr(
+		string $queryName,
+		string $queryCollectionPath,
+		string $filePath,
+	) {
+		$sql = "select `id`, `customerId`, `productId` from `Purchases` where :__dynamicOr limit 10";
+		file_put_contents($filePath, $sql);
+		$query = new SqlQuery($filePath, $this->driverSingleton());
+		$data = [
+			"__dynamicOr" => [
+				["customerId" => "cust_105", "productId" => 001],
+				["customerId" => "cust_450", "productId" => 941],
+				["customerId" => "cust_450", "productId" => 433],
+			]
+		];
+		$injectedSql = $query->injectDynamicBindings($sql, $data);
+
+		self::assertStringNotContainsString("dynamicOr", $injectedSql);
+
+		$injectedSql = str_replace(["\t", "\n"], " ", $injectedSql);
+		$injectedSql = str_replace("  ", " ", $injectedSql);
+		self::assertStringContainsString("where ( (`customerId` = 'cust_105' and `productId` = 1) or (`customerId` = 'cust_450' and `productId` = 941) or (`customerId` = 'cust_450' and `productId` = 433) ) limit 10", $injectedSql);
+	}
+
+	/**
+	 * @dataProvider \Gt\Database\Test\Helper\Helper::queryPathNotExistsProvider()
+	 */
 	public function testPrepareBindingsWithArray(
 		string $queryName,
 		string $queryCollectionPath,
