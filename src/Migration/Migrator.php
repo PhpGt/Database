@@ -6,6 +6,7 @@ use Exception;
 use Gt\Database\Database;
 use Gt\Database\Connection\Settings;
 use Gt\Database\DatabaseException;
+use PhpMyAdmin\SqlParser\Parser;
 use SplFileInfo;
 use SplFileObject;
 
@@ -200,12 +201,15 @@ class Migrator {
 
 			$this->output("Migration $fileNumber: `$file`.");
 
-			$sql = file_get_contents($file);
+			$allSql = file_get_contents($file);
 			$md5 = md5_file($file);
 
 			try {
-				$this->dbClient->executeSql($sql);
-				$this->recordMigrationSuccess($fileNumber, $md5);
+				$parser = new Parser($allSql);
+				foreach($parser->statements as $sql) {
+					$this->dbClient->executeSql($sql);
+					$this->recordMigrationSuccess($fileNumber, $md5);
+				}
 			}
 			catch(DatabaseException $exception) {
 				throw $exception;
