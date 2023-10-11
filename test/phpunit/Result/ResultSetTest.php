@@ -8,9 +8,9 @@ use PHPUnit\Framework\TestCase;
 
 class ResultSetTest extends TestCase {
 	const FAKE_DATA = [
-		["id" => 1, "name" => "Alice"],
-		["id" => 2, "name" => "Bob"],
-		["id" => 3, "name" => "Charlie"],
+		["id" => 1, "name" => "Alice", "timestamp" => 576264240, "date" => "1988-04-05 17:24"],
+		["id" => 2, "name" => "Bob", "timestamp" => 554900700, "date" => "1987-08-02 11:05"],
+		["id" => 3, "name" => "Charlie", "timestamp" => 1433548800, "date" => "2015-06-06"],
 	];
 	private $fake_data_index = 0;
 
@@ -128,6 +128,13 @@ class ResultSetTest extends TestCase {
 			self::assertArrayHasKey("name", $rowArray);
 			self::assertIsInt($rowArray["id"]);
 		}
+	}
+
+	public function testAsDateTime() {
+		$resultSet = new ResultSet($this->getStatementMock());
+		$row = $resultSet->fetch();
+		self::assertEquals("1988-04-05 17:24", $row->getDateTime("date")->format("Y-m-d H:i"));
+		self::assertEquals("1988-04-05 17:24", $row->getDateTime("timestamp")->format("Y-m-d H:i"));
 	}
 
 	private function getStatementMock():PDOStatement {
