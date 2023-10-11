@@ -6,6 +6,7 @@ use PDO;
 use PDOException;
 use PDOStatement;
 use Gt\Database\Result\ResultSet;
+use PhpMyAdmin\SqlParser\Parser;
 
 /** @SuppressWarnings(PHPMD.ExcessiveClassComplexity) */
 class SqlQuery extends Query {
@@ -32,25 +33,33 @@ class SqlQuery extends Query {
 
 	/** @param array<string, mixed>|array<mixed> $bindings */
 	public function execute(array $bindings = []):ResultSet {
+		$statement = $lastInsertId = null;
+
 		$bindings = $this->flattenBindings($bindings);
-
 		$pdo = $this->preparePdo();
-		$sql = $this->getSql($bindings);
-		$statement = $this->prepareStatement($pdo, $sql);
-		$preparedBindings = $this->prepareBindings($bindings);
-		$preparedBindings = $this->ensureParameterCharacter($preparedBindings);
-		$preparedBindings = $this->removeUnusedBindings($preparedBindings, $sql);
 
-		try {
-			$statement->execute($preparedBindings);
-			$lastInsertId = $pdo->lastInsertId();
-		}
-		catch(PDOException $exception) {
-			throw new PreparedStatementException(
-				$exception->getMessage(),
-				$exception->getCode(),
-				$exception
-			);
+		$allSql = $this->getSql($bindings);
+		$allSql = str_replace(":", "__colon__", $allSql);
+
+		$parser = new Parser($allSql);
+		foreach($parser->statements as $sql) {
+			$sql = str_replace("__colon__", ":", $sql);
+			$statement = $this->prepareStatement($pdo, $sql);
+			$preparedBindings = $this->prepareBindings($bindings);
+			$preparedBindings = $this->ensureParameterCharacter($preparedBindings);
+			$preparedBindings = $this->removeUnusedBindings($preparedBindings, $sql);
+
+			try {
+				$statement->execute($preparedBindings);
+				$lastInsertId = $pdo->lastInsertId();
+			}
+			catch(PDOException $exception) {
+				throw new PreparedStatementException(
+					$exception->getMessage(),
+					$exception->getCode(),
+					$exception
+				);
+			}
 		}
 
 		return new ResultSet($statement, $lastInsertId);
