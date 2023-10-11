@@ -7,6 +7,7 @@ use PDOException;
 use PDOStatement;
 use Gt\Database\Result\ResultSet;
 
+/** @SuppressWarnings(PHPMD.ExcessiveClassComplexity) */
 class SqlQuery extends Query {
 	const SPECIAL_BINDINGS = [
 		"limit",
@@ -194,6 +195,7 @@ class SqlQuery extends Query {
 		return str_replace($matches[0], "( $replacementString )", $sql);
 	}
 
+	/** @param array<string, array<string, string>> &$data */
 	private function injectDynamicOr(string $sql, array &$data):string {
 		$pattern = '/:__dynamicOr/';
 		if(!preg_match($pattern, $sql, $matches)) {
@@ -204,7 +206,8 @@ class SqlQuery extends Query {
 		}
 
 		$replacementString = "";
-		foreach($data["__dynamicOr"] as $i => $kvp) {
+		/** @var array<string, string> $kvp */
+		foreach($data["__dynamicOr"] as $kvp) {
 			$conditionString = "";
 			foreach($kvp as $key => $value) {
 				if(is_string($value)) {
