@@ -153,7 +153,7 @@ class Migrator {
 			$md5 = md5_file($file);
 
 			if(is_null($migrationCount)
-			|| $fileNumber <= $migrationCount) {
+				|| $fileNumber <= $migrationCount) {
 				$result = $this->dbClient->executeSql(implode("\n", [
 					"select `" . self::COLUMN_QUERY_HASH . "`",
 					"from `{$this->tableName}`",
@@ -201,15 +201,19 @@ class Migrator {
 
 			$this->output("Migration $fileNumber: `$file`.");
 
-			$allSql = file_get_contents($file);
+			$allSql = trim(file_get_contents($file));
 			$md5 = md5_file($file);
 
 			try {
-				$parser = new Parser($allSql);
-				foreach($parser->statements as $sql) {
+				foreach(explode(";", $allSql) as $sql) {
+					$sql = trim($sql);
+					if(!$sql) {
+						continue;
+					}
+
 					$this->dbClient->executeSql($sql);
-					$this->recordMigrationSuccess($fileNumber, $md5);
 				}
+				$this->recordMigrationSuccess($fileNumber, $md5);
 			}
 			catch(DatabaseException $exception) {
 				throw $exception;
