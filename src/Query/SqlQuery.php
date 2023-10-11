@@ -6,6 +6,7 @@ use PDO;
 use PDOException;
 use PDOStatement;
 use Gt\Database\Result\ResultSet;
+use PHPSQLParser\PHPSQLParser;
 
 class SqlQuery extends Query {
 	const SPECIAL_BINDINGS = [
@@ -34,7 +35,13 @@ class SqlQuery extends Query {
 		$bindings = $this->flattenBindings($bindings);
 
 		$pdo = $this->preparePdo();
-		$sql = $this->getSql($bindings);
+		$totalSql = $this->getSql($bindings);
+
+		$parser = new PHPSQLParser();
+		$parsed = $parser->parse($totalSql);
+
+		var_dump($parsed);die();
+
 		$statement = $this->prepareStatement($pdo, $sql);
 		$preparedBindings = $this->prepareBindings($bindings);
 		$preparedBindings = $this->ensureParameterCharacter($preparedBindings);
