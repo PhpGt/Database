@@ -40,8 +40,6 @@ class SqlQuery extends Query {
 		$totalSql = $this->getSql($bindings);
 
 		$lexer = new PHPSQLLexer();
-		$sqlTokenList = $lexer->split($totalSql);
-
 		$splitSqlQueryList = [];
 		$currentQuery = "";
 		foreach($lexer->split($totalSql) as $token) {
