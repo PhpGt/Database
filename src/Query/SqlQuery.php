@@ -7,6 +7,7 @@ use PDOException;
 use PDOStatement;
 use Gt\Database\Result\ResultSet;
 
+/** @SuppressWarnings(PHPMD.ExcessiveClassComplexity) */
 class SqlQuery extends Query {
 	const SPECIAL_BINDINGS = [
 		"limit",
@@ -204,7 +205,7 @@ class SqlQuery extends Query {
 		}
 
 		$replacementString = "";
-		foreach($data["__dynamicOr"] as $i => $kvp) {
+		foreach($data["__dynamicOr"] as $kvp) {
 			$conditionString = "";
 			foreach($kvp as $key => $value) {
 				if(is_string($value)) {
