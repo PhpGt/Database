@@ -144,6 +144,10 @@ trait Fetchable {
 		$key = key($assocArray);
 		$value = $assocArray[$key];
 
+		if($type === Type::DATETIME && is_numeric($value)) {
+			$value = "@$value";
+		}
+
 		return match ($type) {
 			Type::BOOL, "boolean" => (bool)$value,
 			Type::INT, "integer" => (int)$value,
