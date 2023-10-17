@@ -153,7 +153,7 @@ class Migrator {
 			$md5 = md5_file($file);
 
 			if(is_null($migrationCount)
-			|| $fileNumber <= $migrationCount) {
+				|| $fileNumber <= $migrationCount) {
 				$result = $this->dbClient->executeSql(implode("\n", [
 					"select `" . self::COLUMN_QUERY_HASH . "`",
 					"from `{$this->tableName}`",
@@ -222,6 +222,10 @@ class Migrator {
 
 			try {
 				foreach($splitSqlQueryList as $sql) {
+					$sql = trim($sql);
+					if(!$sql) {
+						continue;
+					}
 					$this->dbClient->executeSql($sql);
 				}
 
