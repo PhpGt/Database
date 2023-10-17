@@ -57,6 +57,10 @@ class SqlQuery extends Query {
 
 		$statement = $lastInsertId = null;
 		foreach($splitSqlQueryList as $sql) {
+			$sql = trim($sql);
+			if(!$sql) {
+				continue;
+			}
 			$statement = $this->prepareStatement($pdo, $sql);
 			$preparedBindings = $this->prepareBindings($bindings);
 			$preparedBindings = $this->ensureParameterCharacter($preparedBindings);
