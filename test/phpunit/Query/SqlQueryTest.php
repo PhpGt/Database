@@ -456,6 +456,24 @@ class SqlQueryTest extends TestCase {
 		);
 	}
 
+	/** @dataProvider \Gt\Database\Test\Helper\Helper::queryPathExistsProvider() */
+	public function testMultipleStatements(
+		string $queryName,
+		string $queryCollectionPath,
+		string $queryPath,
+	):void {
+		file_put_contents($queryPath, "insert into test_table(name) values ('four'); insert into test_table(name) values ('five'); insert into test_table(name) values ('six'); delete from test_table where name = 'two'");
+		$query = new SqlQuery($queryPath, $this->driverSingleton());
+		$query->execute();
+		file_put_contents($queryPath, "select name from test_table order by id");
+		$resultSet = $query->execute();
+
+		$row = $resultSet->fetch();
+		self::assertSame("one", $row->getString("name"));
+		$row = $resultSet->fetch();
+		self::assertSame("three", $row->getString("name"));
+	}
+
 	private function driverSingleton():Driver {
 		if(is_null($this->driver)) {
 			$settings = new Settings(

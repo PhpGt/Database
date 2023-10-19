@@ -6,6 +6,8 @@ use PDO;
 use PDOException;
 use PDOStatement;
 use Gt\Database\Result\ResultSet;
+use PHPSQLParser\lexer\PHPSQLLexer;
+use PHPSQLParser\PHPSQLParser;
 
 /** @SuppressWarnings(PHPMD.ExcessiveClassComplexity) */
 class SqlQuery extends Query {
@@ -35,23 +37,48 @@ class SqlQuery extends Query {
 		$bindings = $this->flattenBindings($bindings);
 
 		$pdo = $this->preparePdo();
-		$sql = $this->getSql($bindings);
-		$statement = $this->prepareStatement($pdo, $sql);
-		$preparedBindings = $this->prepareBindings($bindings);
-		$preparedBindings = $this->ensureParameterCharacter($preparedBindings);
-		$preparedBindings = $this->removeUnusedBindings($preparedBindings, $sql);
+		$totalSql = $this->getSql($bindings);
 
-		try {
-			$statement->execute($preparedBindings);
-			$lastInsertId = $pdo->lastInsertId();
+		$lexer = new PHPSQLLexer();
+		$splitSqlQueryList = [];
+		$currentQuery = "";
+		foreach($lexer->split($totalSql) as $token) {
+			if($token === ";") {
+				array_push($splitSqlQueryList, $currentQuery);
+				$currentQuery = "";
+				continue;
+			}
+
+			$currentQuery .= $token;
 		}
-		catch(PDOException $exception) {
-			throw new PreparedStatementException(
-				$exception->getMessage(),
-				$exception->getCode(),
-				$exception
-			);
+		if($currentQuery) {
+			array_push($splitSqlQueryList, $currentQuery);
 		}
+
+		$statement = $lastInsertId = null;
+		foreach($splitSqlQueryList as $sql) {
+			$sql = trim($sql);
+			if(!$sql) {
+				continue;
+			}
+			$statement = $this->prepareStatement($pdo, $sql);
+			$preparedBindings = $this->prepareBindings($bindings);
+			$preparedBindings = $this->ensureParameterCharacter($preparedBindings);
+			$preparedBindings = $this->removeUnusedBindings($preparedBindings, $sql);
+
+			try {
+				$statement->execute($preparedBindings);
+				$lastInsertId = $pdo->lastInsertId();
+			}
+			catch(PDOException $exception) {
+				throw new PreparedStatementException(
+					$exception->getMessage(),
+					$exception->getCode(),
+					$exception
+				);
+			}
+		}
+
 
 		return new ResultSet($statement, $lastInsertId);
 	}

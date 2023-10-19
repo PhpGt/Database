@@ -6,6 +6,7 @@ use Exception;
 use Gt\Database\Database;
 use Gt\Database\Connection\Settings;
 use Gt\Database\DatabaseException;
+use PHPSQLParser\lexer\PHPSQLLexer;
 use SplFileInfo;
 use SplFileObject;
 
@@ -152,7 +153,7 @@ class Migrator {
 			$md5 = md5_file($file);
 
 			if(is_null($migrationCount)
-			|| $fileNumber <= $migrationCount) {
+				|| $fileNumber <= $migrationCount) {
 				$result = $this->dbClient->executeSql(implode("\n", [
 					"select `" . self::COLUMN_QUERY_HASH . "`",
 					"from `{$this->tableName}`",
@@ -200,11 +201,34 @@ class Migrator {
 
 			$this->output("Migration $fileNumber: `$file`.");
 
-			$sql = file_get_contents($file);
+			$totalSql = file_get_contents($file);
 			$md5 = md5_file($file);
 
+			$lexer = new PHPSQLLexer();
+			$splitSqlQueryList = [];
+			$currentQuery = "";
+			foreach($lexer->split($totalSql) as $token) {
+				if($token === ";") {
+					array_push($splitSqlQueryList, $currentQuery);
+					$currentQuery = "";
+					continue;
+				}
+
+				$currentQuery .= $token;
+			}
+			if($currentQuery) {
+				array_push($splitSqlQueryList, $currentQuery);
+			}
+
 			try {
-				$this->dbClient->executeSql($sql);
+				foreach($splitSqlQueryList as $sql) {
+					$sql = trim($sql);
+					if(!$sql) {
+						continue;
+					}
+					$this->dbClient->executeSql($sql);
+				}
+
 				$this->recordMigrationSuccess($fileNumber, $md5);
 			}
 			catch(DatabaseException $exception) {
