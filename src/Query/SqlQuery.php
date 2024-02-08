@@ -71,10 +71,10 @@ class SqlQuery extends Query {
 				$lastInsertId = $pdo->lastInsertId();
 			}
 			catch(PDOException $exception) {
+				$code = $exception->getCode();
 				throw new PreparedStatementException(
-					$exception->getMessage(),
-					$exception->getCode(),
-					$exception
+					$exception->getMessage() . " (Code $code)",
+					previous: $exception
 				);
 			}
 		}
