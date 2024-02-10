@@ -91,7 +91,7 @@ class DefaultSettingsTest extends TestCase {
 		self::assertEquals(DefaultSettings::DEFAULT_COLLATION, $settings->getCollation());
 	}
 
-	public function getDrivers():array {
+	public static function getDrivers():array {
 		return [
 			[Settings::DRIVER_MYSQL, 3306],
 			[Settings::DRIVER_POSTGRES, 5432],

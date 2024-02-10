@@ -82,7 +82,7 @@ class Helper {
 		return $data;
 	}
 
-	public function queryPathNestedProvider() {
+	public static function queryPathNestedProvider() {
 		$data = [];
 
 		$n = rand(2, 6);
