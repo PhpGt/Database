@@ -123,7 +123,9 @@ class SqlQuery extends Query {
 				}
 
 				if($type === "field") {
-					$replacement = "`" . $bindings[$special] . "`";
+					$words = explode(" ", $bindings[$special]);
+					$words[0] = "`" . $words[0] . "`";
+					$replacement = implode(" ", $words);
 				}
 				elseif($type === "string") {
 					$replacement = "'" . $bindings[$special] . "'";

@@ -238,7 +238,7 @@ class SqlQueryTest extends TestCase {
 		self::assertStringNotContainsString(":limit", $injectedSql);
 		self::assertStringNotContainsString(":offset", $injectedSql);
 
-		self::assertStringContainsString("order by sortColumn", $injectedSql);
+		self::assertStringContainsString("order by `sortColumn`", $injectedSql);
 		self::assertStringContainsString("limit 100", $injectedSql);
 		self::assertStringContainsString("offset 25", $injectedSql);
 	}
@@ -260,7 +260,7 @@ class SqlQueryTest extends TestCase {
 			"offset" => 25,
 		]);
 
-		self::assertStringContainsString("order by sortColumn desc", $injectedSql);
+		self::assertStringContainsString("order by `sortColumn` desc", $injectedSql);
 	}
 
 	/**
