@@ -108,7 +108,7 @@ class MigratorTest extends TestCase {
 
 	/** @dataProvider dataMigrationFileListMissing */
 	public function testCheckFileListOrderMissing(array $fileList) {
-		$path = $this->getMigrationDirectory();
+		$path = self::getMigrationDirectory();
 		$this->createFiles($fileList, $path);
 
 		$settings = $this->createSettings($path);
@@ -542,15 +542,15 @@ class MigratorTest extends TestCase {
 		}
 	}
 
-	public function dataMigrationFileList():array {
-		$fileList = $this->generateFileList();
+	public static function dataMigrationFileList():array {
+		$fileList = self::generateFileList();
 		return [
 			[$fileList]
 		];
 	}
 
-	public function dataMigrationFileListMissing():array {
-		$fileList = $this->generateFileList(
+	public static function dataMigrationFileListMissing():array {
+		$fileList = self::generateFileList(
 			true,
 			false
 		);
@@ -559,8 +559,8 @@ class MigratorTest extends TestCase {
 		];
 	}
 
-	public function dataMigrationFileListDuplicate():array {
-		$fileList = $this->generateFileList(
+	public static function dataMigrationFileListDuplicate():array {
+		$fileList = self::generateFileList(
 			false,
 			true
 		);
@@ -638,7 +638,7 @@ class MigratorTest extends TestCase {
 		}
 	}
 
-	private function generateFileList($missingFiles = false, $duplicateFiles = false) {
+	private static function generateFileList($missingFiles = false, $duplicateFiles = false) {
 		$fileList = [];
 
 		$migLength = rand(10, 30);

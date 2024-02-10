@@ -123,7 +123,7 @@ class RowTest extends TestCase {
 		self::assertNull($row->getInt("does_not_exist"));
 	}
 
-	public function data_getTestRow():array {
+	public static function data_getTestRow():array {
 		$data = [];
 
 		$columns = ["id", "name", "example", "exampleFloat", "exampleDateTime", "exampleBool"];
