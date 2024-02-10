@@ -12,10 +12,9 @@ use PHPSQLParser\PHPSQLParser;
 /** @SuppressWarnings(PHPMD.ExcessiveClassComplexity) */
 class SqlQuery extends Query {
 	const SPECIAL_BINDINGS = [
-		"limit",
-		"offset",
-		"groupBy",
-		"orderBy",
+		"field" => ["groupBy", "orderBy"],
+		"int" => ["limit", "offset"],
+		"string" => ["infileName"],
 	];
 
 	/** @param array<string, mixed>|array<mixed> $bindings */
@@ -71,10 +70,10 @@ class SqlQuery extends Query {
 				$lastInsertId = $pdo->lastInsertId();
 			}
 			catch(PDOException $exception) {
-				$code = $exception->getCode();
 				throw new PreparedStatementException(
-					$exception->getMessage() . " (Code $code)",
-					previous: $exception
+					$exception->getMessage() . " (" . $exception->getCode(),
+					0,
+					$exception
 				);
 			}
 		}
@@ -108,24 +107,35 @@ class SqlQuery extends Query {
 		string $sql,
 		array $bindings
 	):string {
-		foreach(self::SPECIAL_BINDINGS as $special) {
-			$specialPlaceholder = ":" . $special;
+		foreach(self::SPECIAL_BINDINGS as $type => $specialList) {
+			foreach($specialList as $special) {
+				$specialPlaceholder = ":" . $special;
 
-			if(!array_key_exists($special, $bindings)) {
-				continue;
+				if(!array_key_exists($special, $bindings)) {
+					continue;
+				}
+
+				if($type !== "string") {
+					$replacement = $this->escapeSpecialBinding(
+						$bindings[$special],
+						$special
+					);
+				}
+
+				if($type === "field") {
+					$replacement = "`" . $bindings[$special] . "`";
+				}
+				elseif($type === "string") {
+					$replacement = "'" . $bindings[$special] . "'";
+				}
+
+				$sql = str_replace(
+					$specialPlaceholder,
+					$replacement,
+					$sql
+				);
+				unset($bindings[$special]);
 			}
-
-			$replacement = $this->escapeSpecialBinding(
-				$bindings[$special],
-				$special
-			);
-
-			$sql = str_replace(
-				$specialPlaceholder,
-				$replacement,
-				$sql
-			);
-			unset($bindings[$special]);
 		}
 
 		foreach($bindings as $key => $value) {
