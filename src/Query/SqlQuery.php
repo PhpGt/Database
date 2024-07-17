@@ -115,6 +115,7 @@ class SqlQuery extends Query {
 					continue;
 				}
 
+				$replacement = "";
 				if($type !== "string") {
 					$replacement = $this->escapeSpecialBinding(
 						$bindings[$special],
@@ -170,7 +171,7 @@ class SqlQuery extends Query {
 		return trim($sql);
 	}
 
-	/** @param array<string, string|array<string, string>> $data */
+	/** @param array<string, string|array<string, string|array<string>>> $data */
 	private function injectDynamicBindingsValueSet(string $sql, array &$data):string {
 		$pattern = '/\(\s*:__dynamicValueSet\s\)/';
 		if(!preg_match($pattern, $sql, $matches)) {
@@ -234,6 +235,7 @@ class SqlQuery extends Query {
 		return str_replace($matches[0], "( $replacementString )", $sql);
 	}
 
+	/** @param array<string, string|array<string, array<string>>> $data */
 	private function injectDynamicOr(string $sql, array &$data):string {
 		$pattern = '/:__dynamicOr/';
 		if(!preg_match($pattern, $sql, $matches)) {
