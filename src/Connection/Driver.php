@@ -1,7 +1,10 @@
 <?php
 namespace Gt\Database\Connection;
 
+use PDO;
+
 class Driver {
+	/** @noinspection PhpUnused */
 	const AVAILABLE_DRIVERS = [
 		"cubrid",
 		"dblib", // Sybase databases
@@ -18,10 +21,8 @@ class Driver {
 		"4D",
 	];
 
-	/** @var SettingsInterface */
-	protected $settings;
-	/** @var Connection */
-	protected $connection;
+	protected SettingsInterface $settings;
+	protected Connection $connection;
 
 	public function __construct(SettingsInterface $settings) {
 		$this->settings = $settings;
@@ -42,15 +43,15 @@ class Driver {
 
 	protected function connect():void {
 		$options = [
-			Connection::ATTR_ERRMODE => Connection::ERRMODE_EXCEPTION,
+			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 		];
 
 		if($this->settings->getDriver() === Settings::DRIVER_MYSQL) {
-			$options[Connection::MYSQL_ATTR_INIT_COMMAND]
+			$options[PDO::MYSQL_ATTR_INIT_COMMAND]
 				= "SET SESSION collation_connection='"
 				. $this->settings->getCollation()
 				. "'";
-			$options[Connection::MYSQL_ATTR_LOCAL_INFILE] = true;
+			$options[PDO::MYSQL_ATTR_LOCAL_INFILE] = true;
 		}
 
 		$this->connection = new Connection(
